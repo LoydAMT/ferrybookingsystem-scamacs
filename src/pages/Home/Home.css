@@ -5,22 +5,38 @@
   height: 100vh;
   color: white;
   display: flex;
-  flex-direction: column; /* Stack elements vertically */
-  justify-content: center; /* Center content vertically */
-  padding: 20px; /* Add padding if needed */
+  flex-direction: row; /* Ensure left and right sides are side by side */
+  padding: 20px;
+}
+
+.leftSide {
+  background-color: rgba(0, 0, 0, 0); /* Distinguishing background */
+  padding: 20px;
+  width: 65%;
+  border-radius: 10px; /* Optional: rounded corners */
+}
+
+.rightSide {
+  background-color: rgba(255, 255, 255, 0); /* Distinguishing background */
+  padding: 20px;
+  border-radius: 10px; /* Optional: rounded corners */
+  display: flex;
+  align-items: center; /* Center carousel vertically */
+  justify-content: center; /* Center carousel horizontally */
 }
 
 .TextWithSquare {
-  display: flex; /* Align square and text horizontally */
-  align-items: center; /* Center items vertically */
-  margin-bottom: 20px; /* Add margin to separate from the button */
+  display: flex;
+  align-items: center;
+  margin-top: 20vh;
+  margin-bottom: 20px;
 }
 
 #square {
   background-color: #FFFFFF;
   height: 200px;
   width: 10px;
-  margin-right: 20px; /* Space between square and text */
+  margin-right: 20px;
   margin-left: 5vw;
   margin-bottom: 8vh;
 }
@@ -52,28 +68,34 @@
 .BookNow {
   display: flex;
   margin-left: 6.8vw;
-  font-family: 'Open sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 #BookNowButton {
-  width: 37%;
+  width: 60%;
   padding-top: 20px;
   padding-bottom: 20px;
   font-size: 48px;
   font-weight: bold;
-  background: linear-gradient(to right,#91F2FF 0%,#C8F8FF 50%, #91F2FF 100%);
-  color: #0866FF; /* Button text color */
+  background: linear-gradient(to right, #91F2FF 0%, #C8F8FF 50%, #91F2FF 100%);
+  color: #0866FF;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-#arrow{
+#arrow {
   padding-left: 3%;
 }
 
 #BookNowButton:hover {
-  background-color: #ddd; /* Change color on hover */
+  background-color: #ddd;
+}
+
+.carousel-container {
+  width: 25%; /* Ensure carousel fits within the container */
+  max-width: 600px; /* Adjust max-width as needed */
+  height: auto; /* Adjust height as needed */
 }
