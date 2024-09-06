@@ -1,11 +1,48 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Login.module.css';
+import { useNavigate } from 'react-router-dom';
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from 'firebase/auth';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase';
 
 function Login({ onClose }) {
-  const handleSubmit = (event) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("Login attempt");
+    setError(null);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      console.log("User logged in:", userCredential.user);
+      onClose(); 
+    } catch (error) {
+      setError(error.message);
+    }
   };
+
+  const handleSocialLogin = async (provider) => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      // Store user info in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email,
+        name: user.displayName,
+        lastLogin: new Date()
+      }, { merge: true });
+      console.log("User logged in and data stored:", user);
+      onClose(); 
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
+  const handleGoogleLogin = () => handleSocialLogin(new GoogleAuthProvider());
+  const handleFacebookLogin = () => handleSocialLogin(new FacebookAuthProvider());
 
   return (
     <div className={styles.loginOverlay}>
@@ -17,12 +54,30 @@ function Login({ onClose }) {
           />
           <button onClick={onClose} className={styles.closeButton}>×</button>
         </div>
+
+        {error && <div className={styles.error}>{error}</div>}
+
+
         <form onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
-            <input type="email" placeholder="Email" required />
+            {/* <input type="email" placeholder="Email" required /> */}
+            <input 
+              type="email" 
+              placeholder="Email" 
+              required 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
           <div className={styles.inputGroup}>
-            <input type="password" placeholder="Password" required />
+            {/* <input type="password" placeholder="Password" required /> */}
+            <input 
+              type="password" 
+              placeholder="Password" 
+              required 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </div>
           <div className={styles.rememberForget}>
             <label>
@@ -36,17 +91,17 @@ function Login({ onClose }) {
           <span>or continue with</span>
         </div>
         <div className={styles.socialLogin}>
-          <button className={styles.googleButton}>
+          <button onClick={handleGoogleLogin} className={styles.googleButton}>
             <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/35f94a3bf969b7f054c8cac92a2d55712d80d797db0f64412832681b03c8a814?apiKey=58b165f68bc74f159c175e4d9cf0f581&" alt="Google" />
             Google
           </button>
-          <button className={styles.facebookButton}>
+          <button onClick={handleFacebookLogin} className={styles.facebookButton}>
             <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/57796a6c7a546ce39901e060fe3e3d975d8b67964881f4b04452e5fc2624df25?apiKey=58b165f68bc74f159c175e4d9cf0f581&" alt="Facebook" />
             Facebook
           </button>
         </div>
         <div className={styles.signupPrompt}>
-          <p>Don't have an account yet? <a href="#">Sign Up for Free</a></p>
+          <p>Don't have an account yet? <a href="#" onClick={() => navigate('/signup')}>Sign Up for Free</a></p>
         </div>
       </div>
     </div>
