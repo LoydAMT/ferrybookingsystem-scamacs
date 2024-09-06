@@ -13,7 +13,6 @@ function Login({ onClose }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Login attempt");
     setError(null);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -28,7 +27,6 @@ function Login({ onClose }) {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      // Store user info in Firestore
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         name: user.displayName,
@@ -47,20 +45,19 @@ function Login({ onClose }) {
   return (
     <div className={styles.loginOverlay}>
       <div className={styles.loginForm}>
+        <div className={styles.closeButton}>
+          <button onClick={onClose} className={styles.closeButton}>×</button>
+        </div>
         <div className={styles.header}>
           <img
             srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/862ba8ef16dcce19f4abbeb410002c45ecd86692ff43e21dea50b03224812831?apiKey=58b165f68bc74f159c175e4d9cf0f581&"
             alt="Swift Sail"
           />
-          <button onClick={onClose} className={styles.closeButton}>×</button>
         </div>
-
+        <h2 className={styles.loginTitle}>Log In</h2>
         {error && <div className={styles.error}>{error}</div>}
-
-
         <form onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
-            {/* <input type="email" placeholder="Email" required /> */}
             <input 
               type="email" 
               placeholder="Email" 
@@ -70,7 +67,6 @@ function Login({ onClose }) {
             />
           </div>
           <div className={styles.inputGroup}>
-            {/* <input type="password" placeholder="Password" required /> */}
             <input 
               type="password" 
               placeholder="Password" 
@@ -80,10 +76,10 @@ function Login({ onClose }) {
             />
           </div>
           <div className={styles.rememberForget}>
-            <label>
+            <label style={{ color: '#0366FC' }}>
               <input type="checkbox" /> Remember Me?
             </label>
-            <a href="#">Forget Password?</a>
+            <a href="#" style={{ color: '#F74E4E' }}>Forget Password?</a>
           </div>
           <button type="submit" className={styles.loginButton}>Log In</button>
         </form>
@@ -101,7 +97,7 @@ function Login({ onClose }) {
           </button>
         </div>
         <div className={styles.signupPrompt}>
-          <p>Don't have an account yet? <a href="#" onClick={() => navigate('/signup')}>Sign Up for Free</a></p>
+          <p>Don't have an account yet? <a href="#" className={styles.signupLink} onClick={() => navigate('/signup')}>Sign Up for Free</a></p>
         </div>
       </div>
     </div>
