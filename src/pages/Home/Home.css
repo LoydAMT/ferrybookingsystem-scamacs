@@ -1,0 +1,79 @@
+.HomeContainer {
+  background-image: url('/public/images/HomeBackground.png');
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  color: white;
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  justify-content: center; /* Center content vertically */
+  padding: 20px; /* Add padding if needed */
+}
+
+.TextWithSquare {
+  display: flex; /* Align square and text horizontally */
+  align-items: center; /* Center items vertically */
+  margin-bottom: 20px; /* Add margin to separate from the button */
+}
+
+#square {
+  background-color: #FFFFFF;
+  height: 200px;
+  width: 10px;
+  margin-right: 20px; /* Space between square and text */
+  margin-left: 5vw;
+  margin-bottom: 8vh;
+}
+
+.HomeText {
+  font-family: 'Open Sans', sans-serif;
+}
+
+#F1 {
+  color: #FFFCFC;
+  margin: 0;
+  font-size: 88px;
+  font-weight: 800;
+}
+
+#F2 {
+  color: #97D8F5;
+  margin: 0;
+  font-size: 88px;
+  font-weight: 800;
+}
+
+#F3 {
+  font-size: 20px;
+  font-weight: 200;
+  margin: 0;
+}
+
+.BookNow {
+  display: flex;
+  margin-left: 6.8vw;
+  font-family: 'Open sans', sans-serif;
+}
+
+#BookNowButton {
+  width: 37%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  font-size: 48px;
+  font-weight: bold;
+  background: linear-gradient(to right,#91F2FF 0%,#C8F8FF 50%, #91F2FF 100%);
+  color: #0866FF; /* Button text color */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+#arrow{
+  padding-left: 3%;
+}
+
+#BookNowButton:hover {
+  background-color: #ddd; /* Change color on hover */
+}
