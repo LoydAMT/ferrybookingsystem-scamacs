@@ -1,5 +1,9 @@
+//src/pages/Signup/Signup.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { auth, db } from '../../firebase'; // Ensure this path is correct
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
 import styles from './Signup.module.css';
 
 function Signup({ onClose }) {
@@ -21,6 +25,8 @@ function Signup({ onClose }) {
         agreeTerms: false
     });
 
+    const [error, setError] = useState('');
+
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
         setFormData(prevState => ({
@@ -29,14 +35,44 @@ function Signup({ onClose }) {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-        onClose(); 
-        // Here you would typically send the data to your backend or Firebase
+        setError('');
+
+        try {
+            // Create user with email and password
+            const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+            const user = userCredential.user;
+
+            // Prepare user data for Firestore (excluding sensitive information)
+            const userData = {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                username: formData.username,
+                contactNumber: formData.contactNumber,
+                email: formData.email,
+                birthMonth: formData.birthMonth,
+                birthDay: formData.birthDay,
+                birthYear: formData.birthYear,
+                gender: formData.gender,
+                municipality: formData.municipality,
+                district: formData.district,
+                region: formData.region,
+                createdAt: new Date()
+            };
+
+            // Store additional user data in Firestore
+            await setDoc(doc(db, "users", user.uid), userData);
+
+            console.log('User signed up successfully');
+            onClose();
+            navigate('/dashboard'); // Adjust this route as needed
+        } catch (error) {
+            console.error('Error signing up:', error);
+            setError(error.message);
+        }
     };
 
-    
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const days = Array.from({ length: 31 }, (_, i) => i + 1);
     const years = Array.from({ length: 100 }, (_, i) => 2024 - i);
@@ -51,6 +87,8 @@ function Signup({ onClose }) {
                     />
                     <button onClick={onClose} className={styles.closeButton}>×</button>
                 </div>
+
+                {error && <div className={styles.errorMessage}>{error}</div>}
 
                 <form onSubmit={handleSubmit}>
                     <div className={styles.inputGroup}>
@@ -168,7 +206,6 @@ function Signup({ onClose }) {
                     <div className={styles.addressGroup}>
                         <select name="municipality" value={formData.municipality} onChange={handleChange} required>
                             <option value="">Select Municipality</option>
-                            <option value="" disabled selected>Select Municipality</option>
                             <option value="Cebu City">Cebu City</option>
                             <option value="Mandaue City">Mandaue City</option>
                             <option value="Lapu-Lapu City">Lapu-Lapu City</option>
@@ -182,29 +219,27 @@ function Signup({ onClose }) {
                         </select>
                         <select name="district" value={formData.district} onChange={handleChange} required>
                             <option value="">Select District</option>
-                                <option value="" disabled selected>Select District</option>
-                                <option value="1st District of Cebu">1st District of Cebu</option>
-                                <option value="2nd District of Cebu">2nd District of Cebu</option>
-                                <option value="3rd District of Cebu">3rd District of Cebu</option>
-                                <option value="1st District of Negros Occidental">1st District of Negros Occidental</option>
-                                <option value="2nd District of Negros Occidental">2nd District of Negros Occidental</option>
-                                <option value="1st District of Iloilo">1st District of Iloilo</option>
-                                <option value="2nd District of Iloilo">2nd District of Iloilo</option>
-                                <option value="1st District of Bohol">1st District of Bohol</option>
-                                <option value="2nd District of Bohol">2nd District of Bohol</option>
-                                <option value="1st District of Misamis Oriental">1st District of Misamis Oriental</option>
+                            <option value="1st District of Cebu">1st District of Cebu</option>
+                            <option value="2nd District of Cebu">2nd District of Cebu</option>
+                            <option value="3rd District of Cebu">3rd District of Cebu</option>
+                            <option value="1st District of Negros Occidental">1st District of Negros Occidental</option>
+                            <option value="2nd District of Negros Occidental">2nd District of Negros Occidental</option>
+                            <option value="1st District of Iloilo">1st District of Iloilo</option>
+                            <option value="2nd District of Iloilo">2nd District of Iloilo</option>
+                            <option value="1st District of Bohol">1st District of Bohol</option>
+                            <option value="2nd District of Bohol">2nd District of Bohol</option>
+                            <option value="1st District of Misamis Oriental">1st District of Misamis Oriental</option>
                         </select>
                         <select name="region" value={formData.region} onChange={handleChange} required>
                             <option value="">Select Region</option>
-                                <option value="" disabled selected>Select Region</option>
-                                <option value="Region VII (Central Visayas)">Region VII (Central Visayas)</option>
-                                <option value="Region VI (Western Visayas)">Region VI (Western Visayas)</option>
-                                <option value="Region XI (Davao Region)">Region XI (Davao Region)</option>
-                                <option value="Region X (Northern Mindanao)">Region X (Northern Mindanao)</option>
-                                <option value="Region V (Bicol Region)">Region V (Bicol Region)</option>
-                                <option value="Region IX (Zamboanga Peninsula)">Region IX (Zamboanga Peninsula)</option>
-                                <option value="NCR (National Capital Region)">NCR (National Capital Region)</option>
-                                <option value="CAR (Cordillera Administrative Region)">CAR (Cordillera Administrative Region)</option>
+                            <option value="Region VII (Central Visayas)">Region VII (Central Visayas)</option>
+                            <option value="Region VI (Western Visayas)">Region VI (Western Visayas)</option>
+                            <option value="Region XI (Davao Region)">Region XI (Davao Region)</option>
+                            <option value="Region X (Northern Mindanao)">Region X (Northern Mindanao)</option>
+                            <option value="Region V (Bicol Region)">Region V (Bicol Region)</option>
+                            <option value="Region IX (Zamboanga Peninsula)">Region IX (Zamboanga Peninsula)</option>
+                            <option value="NCR (National Capital Region)">NCR (National Capital Region)</option>
+                            <option value="CAR (Cordillera Administrative Region)">CAR (Cordillera Administrative Region)</option>
                         </select>
                     </div>
 
