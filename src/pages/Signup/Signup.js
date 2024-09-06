@@ -80,37 +80,46 @@ function Signup({ onClose }) {
     return (
         <div className={styles.signupOverlay}>
             <div className={styles.signupForm}>
+            <div className={styles.closeButton}>
+                <button onClick={onClose} className={styles.closeButton}>×</button>
+            </div>
                 <div className={styles.header}>
+                <div className={styles.signupText}>
+                    <h1>Sign Up</h1>
+                    <p>It's ferry fast and easy!</p>
+                </div>
+
                     <img
                         src="https://cdn.builder.io/api/v1/image/assets/TEMP/862ba8ef16dcce19f4abbeb410002c45ecd86692ff43e21dea50b03224812831?apiKey=58b165f68bc74f159c175e4d9cf0f581&"
                         alt="Swift Sail"
                     />
-                    <button onClick={onClose} className={styles.closeButton}>×</button>
                 </div>
 
                 {error && <div className={styles.errorMessage}>{error}</div>}
 
                 <form onSubmit={handleSubmit}>
+                <div className={styles.nameGroup}>
                     <div className={styles.inputGroup}>
                         <input
-                            type="text"
-                            name="firstName"
-                            placeholder="First Name"
-                            required
-                            value={formData.firstName}
-                            onChange={handleChange}
+                        type="text"
+                        name="firstName"
+                        placeholder="First Name"
+                        required
+                        value={formData.firstName}
+                        onChange={handleChange}
                         />
                     </div>
                     <div className={styles.inputGroup}>
                         <input
-                            type="text"
-                            name="lastName"
-                            placeholder="Last Name"
-                            required
-                            value={formData.lastName}
-                            onChange={handleChange}
+                        type="text"
+                        name="lastName"
+                        placeholder="Last Name"
+                        required
+                        value={formData.lastName}
+                        onChange={handleChange}
                         />
                     </div>
+                </div>
                     <div className={styles.inputGroup}>
                         <input
                             type="text"
@@ -122,10 +131,14 @@ function Signup({ onClose }) {
                         />
                     </div>
                     <div className={styles.inputGroup}>
+                        <select name="countryCode" value={formData.countryCode} onChange={handleChange}>
+                            <option value="PH +63">PH +63</option>
+                            {/* Add other country codes as needed */}
+                        </select>
                         <input
                             type="tel"
                             name="contactNumber"
-                            placeholder="Contact Number"
+                            placeholder="XXX - XXXX - XXX"
                             required
                             value={formData.contactNumber}
                             onChange={handleChange}
@@ -174,33 +187,33 @@ function Signup({ onClose }) {
                     </div>
 
                     <div className={styles.genderGroup}>
-                        <label>
-                            <input
-                                type="radio"
-                                name="gender"
-                                value="female"
-                                checked={formData.gender === 'female'}
-                                onChange={handleChange}
-                            /> Female
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="gender"
-                                value="male"
-                                checked={formData.gender === 'male'}
-                                onChange={handleChange}
-                            /> Male
-                        </label>
-                        <label>
-                            <input
-                                type="radio"
-                                name="gender"
-                                value="prefer_not_to_say"
-                                checked={formData.gender === 'prefer_not_to_say'}
-                                onChange={handleChange}
-                            /> Prefer not to say
-                        </label>
+                        <input
+                            type="radio"
+                            id="female"
+                            name="gender"
+                            value="female"
+                            checked={formData.gender === 'female'}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="female">Female</label>
+                        <input
+                            type="radio"
+                            id="male"
+                            name="gender"
+                            value="male"
+                            checked={formData.gender === 'male'}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="male">Male</label>
+                        <input
+                            type="radio"
+                            id="prefer_not_to_say"
+                            name="gender"
+                            value="prefer_not_to_say"
+                            checked={formData.gender === 'prefer_not_to_say'}
+                            onChange={handleChange}
+                        />
+                        <label htmlFor="prefer_not_to_say">Prefer not to say</label>
                     </div>
 
                     <div className={styles.addressGroup}>
@@ -242,17 +255,26 @@ function Signup({ onClose }) {
                             <option value="CAR (Cordillera Administrative Region)">CAR (Cordillera Administrative Region)</option>
                         </select>
                     </div>
+                    <div className={styles.addressGroup}>
+                        <input
+                            type="text"
+                            name="addressSuggestion"
+                            placeholder="Enter address information to get suggestions"
+                            value={formData.addressSuggestion}
+                            onChange={handleChange}
+                        />
+                    </div>
 
                     <div className={styles.termsGroup}>
                         <label>
                             <input
-                                type="checkbox"
-                                name="agreeTerms"
-                                checked={formData.agreeTerms}
-                                onChange={handleChange}
-                                required
+                            type="checkbox"
+                            name="agreeTerms"
+                            checked={formData.agreeTerms}
+                            onChange={handleChange}
+                            required
                             />
-                            I agree to the terms and conditions
+                            I agree to the<a href="#">Terms and Conditions</a>
                         </label>
                     </div>
 
