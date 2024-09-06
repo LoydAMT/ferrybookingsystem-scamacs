@@ -10,7 +10,9 @@ import Companies from './pages/Companies/Companies';
 import Admin from './pages/Admin/Admin';
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
+import 'typeface-open-sans';
 import { onAuthStateChanged } from 'firebase/auth';
+
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
