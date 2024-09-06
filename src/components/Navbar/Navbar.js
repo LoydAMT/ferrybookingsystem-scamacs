@@ -9,7 +9,7 @@ const Navbar = ({ onLoginClick }) => {
       <div className={styles.navbarContent}>
         {/* Left side: Logo */}
         <div className={styles.logoContainer}>
-          <img src="/images/SWIFT_SAIL_9.png" alt="Logo" className={styles.logo} />
+        <img src="/images/SWIFT_SAIL_9.png" alt="Logo" className={styles.logo} />
         </div>
 
         {/* Center: Navigation Links */}
