@@ -4,7 +4,6 @@ import styles from './Login.module.css';
 function Login({ onClose }) {
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Add login logic here
     console.log("Login attempt");
   };
 
@@ -12,17 +11,18 @@ function Login({ onClose }) {
     <div className={styles.loginOverlay}>
       <div className={styles.loginForm}>
         <div className={styles.header}>
-          <h2>Log In</h2>
+          <img
+            srcSet="https://cdn.builder.io/api/v1/image/assets/TEMP/862ba8ef16dcce19f4abbeb410002c45ecd86692ff43e21dea50b03224812831?apiKey=58b165f68bc74f159c175e4d9cf0f581&"
+            alt="Swift Sail"
+          />
           <button onClick={onClose} className={styles.closeButton}>×</button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
-            <label htmlFor="email">Email</label>
-            <input type="email" id="email" required />
+            <input type="email" placeholder="Email" required />
           </div>
           <div className={styles.inputGroup}>
-            <label htmlFor="password">Password</label>
-            <input type="password" id="password" required />
+            <input type="password" placeholder="Password" required />
           </div>
           <div className={styles.rememberForget}>
             <label>
@@ -37,11 +37,11 @@ function Login({ onClose }) {
         </div>
         <div className={styles.socialLogin}>
           <button className={styles.googleButton}>
-            <img src="/google-icon.png" alt="Google" />
+            <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/35f94a3bf969b7f054c8cac92a2d55712d80d797db0f64412832681b03c8a814?apiKey=58b165f68bc74f159c175e4d9cf0f581&" alt="Google" />
             Google
           </button>
           <button className={styles.facebookButton}>
-            <img src="/facebook-icon.png" alt="Facebook" />
+            <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/57796a6c7a546ce39901e060fe3e3d975d8b67964881f4b04452e5fc2624df25?apiKey=58b165f68bc74f159c175e4d9cf0f581&" alt="Facebook" />
             Facebook
           </button>
         </div>
