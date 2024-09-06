@@ -1,8 +1,6 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDLTOiX6wQuDWPwnXa34XUQxKLegRzVwXQ",
   authDomain: "swiftsail-a35c3.firebaseapp.com",
@@ -13,7 +11,6 @@ const firebaseConfig = {
   measurementId: "G-1EHMC7PB9N"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
