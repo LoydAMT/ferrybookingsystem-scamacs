@@ -1,11 +1,11 @@
 /* Navbar styles */
 .navbar {
   background-color: #D5EEF9;
-  padding: 1rem 2rem; 
+  padding: 0.5rem 2rem; 
   display: flex;
   justify-content: space-between; 
   align-items: center;
-  width: 100%;
+  width: 100vw;
 }
 
 
@@ -94,4 +94,32 @@
   color: #0277bd;
   cursor: pointer;
   margin-right: 20px; 
+}
+/* Profile Icon and Logout */
+.profileContainer {
+  display: flex;
+  align-items: center;
+}
+
+.profilePicture {
+  width: 40px; /* Adjust size as needed */
+  height: 40px; /* Adjust size as needed */
+  border-radius: 50%; /* Make it circular */
+  object-fit: cover; /* Ensure the image covers the element */
+  cursor: pointer;
+  margin-right: 10px; /* Space between the profile picture and logout button */
+}
+
+.logoutButton {
+  background-color: transparent;
+  color: #0366FC;
+  font-weight: bold;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 10px; /* Space between the profile picture and logout button */
+}
+
+.logoutButton:hover {
+  text-decoration: underline;
 }
