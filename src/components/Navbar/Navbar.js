@@ -7,7 +7,7 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const Navbar = ({ onLoginClick }) => {
   const [user, setUser] = useState(null);
-  const [profilePic, setProfilePic] = useState('/images/HomeBackground.png');
+  const [profilePic, setProfilePic] = useState('/images/default-profile.jpg');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -19,7 +19,7 @@ const Navbar = ({ onLoginClick }) => {
         const userDoc = await getDoc(doc(getFirestore(), 'users', user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          setProfilePic(userData.profilePic || '/images/HomeBackground.png');
+          setProfilePic(userData.profilePic || '/images/default-profile.jpg');
         }
       } else {
         setUser(null);
