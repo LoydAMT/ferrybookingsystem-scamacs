@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from './Navbar.module.css';
-import { FaGlobe } from 'react-icons/fa'; // Import Font Awesome icons
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'; // Firebase auth to get user data
-import { getFirestore, doc, getDoc } from 'firebase/firestore'; // Firestore to fetch user details
+import { FaGlobe } from 'react-icons/fa';
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const Navbar = ({ onLoginClick }) => {
   const [user, setUser] = useState(null);
-  const [profilePic, setProfilePic] = useState('/images/HomeBackground.png'); // Default profile picture
+  const [profilePic, setProfilePic] = useState('/images/HomeBackground.png');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,11 +15,10 @@ const Navbar = ({ onLoginClick }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setUser(user);
-        // Fetch user data from Firestore
         const userDoc = await getDoc(doc(getFirestore(), 'users', user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          setProfilePic(userData.profilePic || '/images/HomeBackground.png'); // Use profilePic from database or default
+          setProfilePic(userData.profilePic || '/images/HomeBackground.png');
         }
       } else {
         setUser(null);
@@ -35,9 +34,9 @@ const Navbar = ({ onLoginClick }) => {
   const handleSignOut = async () => {
     const auth = getAuth();
     try {
-      await signOut(auth); // Call signOut to log the user out
+      await signOut(auth);
       console.log('User signed out');
-      navigate('/'); // Redirect to home or sign-in page after logout
+      navigate('/');
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -67,18 +66,15 @@ const Navbar = ({ onLoginClick }) => {
           </li>
         </ul>
 
-        {/* Right side: Profile icon or Sign In */}
+        {/* Right side: Login/Profile and Language */}
         <div className={styles.rightSection}>
-          <FaGlobe className={styles.languageIcon} />
           {user ? (
             <div className={styles.profileContainer}>
-              {/* Wrap the profile picture with a Link */}
               <img 
                 src={profilePic} 
                 alt="Profile" 
                 className={styles.profilePicture} 
                 onClick={handleProfileClick} 
-                style={{ cursor: 'pointer' }} 
               />
               <button className={styles.logoutButton} onClick={handleSignOut}>
                 Log Out
@@ -87,6 +83,7 @@ const Navbar = ({ onLoginClick }) => {
           ) : (
             <button onClick={onLoginClick} className={styles.signInButton}>SIGN IN</button>
           )}
+          <FaGlobe className={styles.languageIcon} />
         </div>
       </div>
     </nav>
