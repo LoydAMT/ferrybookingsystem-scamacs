@@ -2,9 +2,10 @@
 .navbar {
   background-color: #D5EEF9;
   padding: 0.5rem 2rem;
-  width: 100vw;
+  width: 100%;
+  overflow: hidden; 
+  box-sizing: border-box; 
 }
-
 .navbarContent {
   display: flex;
   justify-content: space-between;
