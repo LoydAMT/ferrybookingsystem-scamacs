@@ -41,7 +41,7 @@ const Companies = () => {
   return (
     <div className="ferry-selection">
       <div className="logo-container">
-        <img src='/images/selectferry.png' alt="Logo" className="logo" />
+        <img src='/images/select ferry.png' alt="Logo" className="logo" />
         <h2>Select Ferry</h2>
       </div>
       {ferries.map((ferry, index) => (
