@@ -58,6 +58,8 @@ function Signup({ onClose }) {
                 municipality: formData.municipality,
                 district: formData.district,
                 region: formData.region,
+                profilePic:'/images/default-profile.jpg',
+                coverPhoto:'/images/cover-default.png',
                 createdAt: new Date()
             };
 

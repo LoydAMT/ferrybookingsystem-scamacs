@@ -80,11 +80,15 @@ const fullName = () => {
     <div className={styles.container}>
     {/* cover photo */}
     <div className={styles.coverPhoto}>
-      {/* Add cover photo here */}
+        <img
+          src={userData && userData.coverPhoto ? userData.coverPhoto : '/images/cover-default.png'}
+          alt="Cover"
+          className={styles.coverPhotoImage}
+        />
       <div className={styles.profilePic}>
         {/* Add profile picture here */}
         <img
-            src={userData && userData.profilePic ? userData.profilePic : '/images/profile.jpg'}
+            src={userData && userData.profilePic ? userData.profilePic : '/images/default-profile.jpg'}
             alt="Profile"
             className={styles.profilePicture}
           />
