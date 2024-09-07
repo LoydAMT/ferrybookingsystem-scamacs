@@ -96,8 +96,10 @@ function Signup({ onClose }) {
                         alt="Swift Sail"
                     />
                 </div>
-
-                {error && <div className={styles.errorMessage}>{error}</div>}
+                {error && (
+                    <div className={styles.error}>
+                    <span>⚠️</span> {error}
+                    </div>)}
 
                 <form onSubmit={handleSubmit}>
                 <div className={styles.nameGroup}>
