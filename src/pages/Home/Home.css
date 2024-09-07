@@ -12,13 +12,15 @@
 .leftSide {
   background-color: rgba(0, 0, 0, 0); /* Distinguishing background */
   padding: 20px;
-  width: 65%;
+  width: 60%;
   border-radius: 10px; /* Optional: rounded corners */
 }
 
 .rightSide {
   background-color: rgba(255, 255, 255, 0); /* Distinguishing background */
-  padding: 20px;
+  padding: 0px;
+  margin-right: 100px;
+  width: 40%;
   border-radius: 10px; /* Optional: rounded corners */
   display: flex;
   align-items: center; /* Center carousel vertically */
@@ -94,8 +96,3 @@
   background-color: #ddd;
 }
 
-.carousel-container {
-  width: 25%; /* Ensure carousel fits within the container */
-  max-width: 600px; /* Adjust max-width as needed */
-  height: auto; /* Adjust height as needed */
-}
