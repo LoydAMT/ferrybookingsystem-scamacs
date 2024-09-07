@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from './Navbar.module.css';
-import { FaGlobe } from 'react-icons/fa';
+import { FaGlobe, FaSignOutAlt } from 'react-icons/fa'; // Import the log-out icon
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 const Navbar = ({ onLoginClick }) => {
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState('/images/HomeBackground.png');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,6 +69,7 @@ const Navbar = ({ onLoginClick }) => {
 
         {/* Right side: Login/Profile and Language */}
         <div className={styles.rightSection}>
+          <FaGlobe className={styles.languageIcon} />
           {user ? (
             <div className={styles.profileContainer}>
               <img 
@@ -76,14 +78,11 @@ const Navbar = ({ onLoginClick }) => {
                 className={styles.profilePicture} 
                 onClick={handleProfileClick} 
               />
-              <button className={styles.logoutButton} onClick={handleSignOut}>
-                Log Out
-              </button>
+              <FaSignOutAlt className={styles.logoutIcon} onClick={handleSignOut} />
             </div>
           ) : (
             <button onClick={onLoginClick} className={styles.signInButton}>SIGN IN</button>
           )}
-          <FaGlobe className={styles.languageIcon} />
         </div>
       </div>
     </nav>
