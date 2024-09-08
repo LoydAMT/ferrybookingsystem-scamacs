@@ -58,6 +58,8 @@ function Signup({ onClose }) {
                 municipality: formData.municipality,
                 district: formData.district,
                 region: formData.region,
+                profilePic:'/images/default-profile.jpg',
+                coverPhoto:'/images/cover-default.png',
                 createdAt: new Date()
             };
 
@@ -94,8 +96,10 @@ function Signup({ onClose }) {
                         alt="Swift Sail"
                     />
                 </div>
-
-                {error && <div className={styles.errorMessage}>{error}</div>}
+                {error && (
+                    <div className={styles.error}>
+                    <span>⚠️</span> {error}
+                    </div>)}
 
                 <form onSubmit={handleSubmit}>
                 <div className={styles.nameGroup}>

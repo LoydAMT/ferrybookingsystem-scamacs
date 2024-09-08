@@ -55,7 +55,11 @@ function Login({ onClose }) {
           />
         </div>
         <h2 className={styles.loginTitle}>Log In</h2>
-        {error && <div className={styles.error}>{error}</div>}
+        {error && (
+        <div className={styles.error}>
+          <span>⚠️</span> {error}
+        </div>
+      )}
         <form onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
             <input 

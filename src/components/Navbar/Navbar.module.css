@@ -1,45 +1,39 @@
 /* Navbar styles */
 .navbar {
   background-color: #D5EEF9;
-  padding: 1rem 2rem; 
-  display: flex;
-  justify-content: space-between; 
-  align-items: center;
+  padding: 0.5rem 2rem;
   width: 100%;
+  overflow: hidden; 
+  box-sizing: border-box; 
 }
-
-
 .navbarContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  max-width: 1400px; 
+  max-width: 1200px;
+  margin: 0 auto;
 }
-
 
 .logoContainer {
-  display: flex;
-  align-items: center;
-}
-
-.logo {
-  height: 80px; 
-  width: auto;
-  margin-right: 40px; 
-}
-
-.navbarList {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  justify-content: center;
   flex: 1;
 }
 
+.logo {
+  height: 80px;
+  width: auto;
+}
+
+.navbarList {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
 .navbarItem {
-  margin: 0 20px; 
+  margin: 0 20px;
 }
 
 .navbarItem a {
@@ -48,50 +42,74 @@
   font-size: 1.4rem;
   font-weight: 600;
   padding: 0 10px;
-  transition: color 0.3s ease, font-weight 0.3s ease; 
+  transition: color 0.3s ease, font-weight 0.3s ease;
 }
 
-.navbarItem a:active, .navbarItem a:focus {
-  color: #01255D; 
+.navbarItem a:hover,
+.navbarItem a:active,
+.navbarItem a:focus {
+  color: #01255D;
+  font-weight: 700;
 }
-
-.navbarItem a:hover {
-  text-decoration: none;
-  color: #01255D; 
-  font-weight: 700; 
-}
-
 
 .rightSection {
+  flex: 1;
   display: flex;
-  align-items: center;
   justify-content: flex-end;
+  align-items: center;
 }
 
 .signInButton {
-  background-color: #0d47a1; 
+  background-color: #0d47a1;
   color: white;
   border: none;
-  border-radius: 30px; 
+  border-radius: 30px;
   padding: 10px 30px;
   cursor: pointer;
   font-size: 1.4rem;
   font-weight: 600;
-  margin-left: 10px;
-  transition: background-color 0.3s ease, transform 0.3s ease; 
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-left: 20px; 
 }
-
 
 .signInButton:hover {
-  background-color: #003c8f; 
-  transform: scale(1.05); 
-  color: #e0f7fa; 
+  background-color: #003c8f;
+  transform: scale(1.05);
+  color: #e0f7fa;
 }
 
-
 .languageIcon {
+  font-size: 2.5rem;
+  color: #0277bd;
+  cursor: pointer;
+}
+
+.languageIcon:hover {
+  color: #003c8f; 
+}
+
+.profileContainer {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.profilePicture {
+  width: 50px;
+  height: 50px;
+  border-radius: 60%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.logoutIcon {
   font-size: 2rem;
   color: #0277bd;
   cursor: pointer;
-  margin-right: 20px; 
+  margin-left: 15px; 
+  transition: color 0.3s ease;
+}
+
+.logoutIcon:hover {
+  color: #003c8f;
 }
