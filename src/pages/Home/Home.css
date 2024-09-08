@@ -11,16 +11,16 @@
 
 .leftSide {
   background-color: rgba(0, 0, 0, 0); /* Distinguishing background */
-  padding: 20px;
-  width: 60%;
+
+  width: 55%;
   border-radius: 10px; /* Optional: rounded corners */
 }
 
 .rightSide {
   background-color: rgba(255, 255, 255, 0); /* Distinguishing background */
   padding: 0px;
-  margin-right: 100px;
-  width: 40%;
+  margin-right: 150px;
+  width: 45%;
   border-radius: 10px; /* Optional: rounded corners */
   display: flex;
   align-items: center; /* Center carousel vertically */
@@ -96,3 +96,44 @@
   background-color: #ddd;
 }
 
+/* POPULAR CONTAINER!!! */
+
+.PopularContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: #D5EEF9;
+  height: 200vh; /* Adjust based on your layout */
+  width: 100vw; /* Adjust based on your layout */
+}
+
+.HeaderText {
+  margin-left: 15vw;
+  margin-top: 15vh;
+}
+
+.HeaderText2{
+  margin-top: 10%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.PopularCarouselDiv{
+}
+
+#PopHead{
+  font-size: 40px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 800;
+  color: #002B6C;
+  margin-bottom: 0px;
+
+}
+
+#PopSub{
+  font-size: 20px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 550;
+  color: #001637;
+  opacity: 80%;
+  margin-top: 10px;
+}

@@ -1,6 +1,7 @@
 // src/pages/Home.js
 import React from 'react';
-import Carousel from '../../components/Carousel';
+import HomeCarousel from '../../components/HomeCarousel/HomeCarousel';
+import PopularCarousel from '../../components/PopularCarousel/PopularCarousel'; // Import the new carousel component
 import './Home.css';
 
 const Home = () => {
@@ -27,12 +28,25 @@ const Home = () => {
         </div>
       </div>
       <div className="rightSide">
-        <Carousel />
+        <HomeCarousel />
       </div>
     </div>
     <div className="PopularContainer">
-        <p>lorem ipsim</p>
+        <div className='HeaderText'>
+          <h1 id="PopHead">Popular Destination</h1>
+          <p id="PopSub">Unleash Your Wanderlust With FerryEeyyy</p>
+        </div>
+        <div className="PopularCarouselDiv">
+          <PopularCarousel /> {/* Add the new carousel here */}
+        </div>
+        
+        <div className='HeaderText2'>
+          <h1 id="PopHead">Journey To The Sea Made Simple!</h1>
+        </div>
+
+
       </div>
+
       <div className="BookNowContainer">
         <p>lorem ipsim</p>
       </div>

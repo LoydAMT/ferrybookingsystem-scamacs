@@ -1,11 +1,12 @@
-// src/components/Carousel.js
+
+// src/components/HomeCarousel/HomeCarousel.js
 import React from 'react';
 import Slider from 'react-slick';
-import './Carousel.css';
+import './HomeCarousel.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-const Carousel = () => {
+const HomeCarousel = () => {
   const settings = {
     dots: true,
     infinite: true,
@@ -15,6 +16,7 @@ const Carousel = () => {
     centerMode: true, // Enable center mode to highlight the center slide
     centerPadding: '0', // Remove extra padding
     focusOnSelect: true,
+    autoplay: true,
     afterChange: (current) => {
       console.log('Current slide:', current);
     }
@@ -24,17 +26,17 @@ const Carousel = () => {
     <div className="carousel-container">
       <Slider {...settings}>
         <div>
-          <img src="/images/CEBU.png" alt="Slide 1" />
+          <img className="HomeImages" src="/images/CEBU.png" alt="Slide 1" />
         </div>
         <div>
-          <img src="/images/Bohol.jpg" alt="Slide 2" />
+          <img className="HomeImages" src="/images/Bohol.jpg" alt="Slide 2" />
         </div>
         <div>
-          <img src="/images/Ilocos.jpg" alt="Slide 3" />
+          <img className="HomeImages" src="/images/Ilocos.jpg" alt="Slide 3" />
         </div>
       </Slider>
     </div>
   );
 };
 
-export default Carousel;
+export default HomeCarousel;
