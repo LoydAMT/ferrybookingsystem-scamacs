@@ -40,6 +40,11 @@ const Home = () => {
           <PopularCarousel /> {/* Add the new carousel here */}
         </div>
         
+        <div className='HeaderText2'>
+          <h1 id="PopHead">Journey To The Sea Made Simple!</h1>
+        </div>
+
+
       </div>
 
       <div className="BookNowContainer">
