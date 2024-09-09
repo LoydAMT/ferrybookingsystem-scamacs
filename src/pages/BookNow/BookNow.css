@@ -1,0 +1,123 @@
+/* General layout */
+.travel-booking {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex-grow: 1;
+  position: relative;
+}
+
+/* Background image */
+.background-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: opacity 1s;
+}
+
+/* Content container */
+.content-container {
+  position: relative;
+  z-index: 10;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+
+.main-title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 2rem;
+  text-align: center;
+  transition: opacity 1s;
+}
+
+/* Form styling */
+.booking-form {
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+/* Form inputs */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1.125rem; /* Larger text */
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+/* Form rows for multi-column layout */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* Passenger types layout */
+.passenger-types {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.5rem;
+}
+
+/* Search button */
+.search-button {
+  background-color: #2563eb;
+  color: white;
+  font-weight: bold;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.search-button:hover {
+  background-color: #1d4ed8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .form-row,
+  .passenger-types {
+    grid-template-columns: 1fr;
+  }
+  
+  .main-title {
+    font-size: 2rem;
+  }
+
+  .booking-form {
+    padding: 1.5rem;
+  }
+}
