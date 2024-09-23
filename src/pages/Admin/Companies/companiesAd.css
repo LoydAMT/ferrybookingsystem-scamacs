@@ -1,0 +1,158 @@
+.companies-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%; 
+    padding: 0;
+    margin: 0; 
+}
+
+.companies-header {
+    width: 100%; 
+    padding: 0; 
+    margin-bottom: 10px; 
+}
+
+.companies-header h1 {
+    margin: 0; 
+    padding: 10px 0; 
+    text-align: left; 
+    font-size: 24px;
+}
+
+.content-wrapper {
+    width: 100%;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 20px;
+    width: 100%; 
+}
+
+.search-bar input {
+    flex-grow: 1;
+    border: none;
+    background: transparent;
+    margin-left: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+.company-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 10px;
+    width: 100%;
+    margin-bottom: 30px; 
+}
+
+.company-logo {
+    display: flex;
+    align-items: center;
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    flex-direction: column;
+    justify-content: center;
+    height: 150px;
+    text-align: center;
+    overflow: hidden; 
+}
+
+.company-image {
+    max-width: 100%; 
+    max-height: 80%; 
+}
+
+.company-logo span { /* Prevent overflow of text */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end; 
+    margin-top: 20px;
+    width: 100%; 
+}
+
+.button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-delete {
+    background-color: #ff4d4f;
+    color: white;
+}
+.button-delete:hover {
+    background-color: #d9363e; 
+}
+
+.button-add {
+    background-color: #4caf50;
+    color: white;
+}
+.button-add:hover {
+    background-color: #388e3c; 
+}
+
+
+
+/* Add a company modal */
+.modal {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    margin-left: 10px;
+}
