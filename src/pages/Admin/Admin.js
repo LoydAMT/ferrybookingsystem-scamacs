@@ -39,6 +39,9 @@ const Dashboard = () => {
         <nav className="p-4">
           <ul className="space-y-2">
             <li>
+            <div className="logo-container">
+              <img src="/images/SWIFT_SAIL_9.png" alt="Logo" className="logo" />
+            </div>
               <button 
                 onClick={() => {
                   setSelectedTab('UserList');
@@ -46,7 +49,7 @@ const Dashboard = () => {
                 }} 
                 className={`w-full text-left p-2 rounded ${selectedTab === 'UserList' ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
               >
-                UserList
+                Users List
               </button>
             </li>
             <li>
@@ -112,13 +115,6 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      <header className="bg-blue-500 text-white p-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded flex items-center">
-          <LogOut size={18} className="mr-2" />
-          Log Out
-        </button>
-      </header>
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <main className="flex-1 p-8 overflow-y-auto">
