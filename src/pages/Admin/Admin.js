@@ -1,39 +1,35 @@
 import React, { useState } from 'react';
 import { LogOut } from 'lucide-react';
-import CameraDisplay from './SecurityPanel'; 
+import CameraDisplay from './Security/SecurityPanel'; 
 import './Admin.css'; 
 import UserList from './Userliit/Userlist';
 
 const Dashboard = () => {
-  const [selectedTab, setSelectedTab] = useState('Bookings');
-  const [isVerified, setIsVerified] = useState(false);
-
-  const SidebarButton = ({ label, isActive, onClick }) => (
-    <button
-      onClick={onClick} 
-      className={`w-full text-left p-2 rounded ${isActive ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-800'}`}
-    >
-      {label}
-    </button>
-  );
+  const [selectedTab, setSelectedTab] = useState('UserList');
+  const [isVerified, setIsVerified] = useState(true); // Set to true by default
 
   const handleVerificationSuccess = () => {
     setIsVerified(true);
   };
 
   const renderContent = () => {
-    if (!isVerified) {
-      return <CameraDisplay onSuccess={handleVerificationSuccess} />;
-    }
     switch (selectedTab) {
       case 'Security':
-        return <CameraDisplay onSuccess={handleVerificationSuccess} />;
+        return isVerified ? 
+          <h2 className="text-2xl font-bold">Security Panel</h2> : 
+          <CameraDisplay onSuccess={handleVerificationSuccess} />;
+      case 'UserList':
+        return <UserList />;
       case 'Bookings':
         return <h2 className="text-2xl font-bold">Bookings Panel</h2>;
-      case 'Users List':
-        return <h2 className="text-2xl font-bold">Users List Panel</h2>;
+      case 'Companies':
+        return <h2 className="text-2xl font-bold">Companies Panel</h2>;
+      case 'Verify Users':
+        return <h2 className="text-2xl font-bold">Verify Users Panel</h2>;
+      case 'Analytics':
+        return <h2 className="text-2xl font-bold">Analytics Panel</h2>;
       default:
-        return <h2 className="text-2xl font-bold">Select a Panel</h2>;
+        return <UserList />;
     }
   };
 
@@ -42,11 +38,72 @@ const Dashboard = () => {
       <div className="sidebar bg-white shadow-lg w-64 h-full overflow-y-auto">
         <nav className="p-4">
           <ul className="space-y-2">
-            <li><a href="/admin" className="block p-2 hover:bg-gray-100 rounded">UserList</a></li>
-            <li><a href="/bookingsad" className="block p-2 hover:bg-gray-100 rounded">Bookings</a></li>
-            <li><a href="/companiesad" className="block p-2 hover:bg-gray-100 rounded">Companies</a></li>
-            <li><a href="/verifyusersad" className="block p-2 hover:bg-gray-100 rounded">Verify Users</a></li>
-            <li><a href="/analyticsad" className="block p-2 hover:bg-gray-100 rounded">Analytics</a></li>
+            <li>
+              <button 
+                onClick={() => {
+                  setSelectedTab('UserList');
+                  setIsVerified(true);
+                }} 
+                className={`w-full text-left p-2 rounded ${selectedTab === 'UserList' ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
+              >
+                UserList
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => {
+                  setSelectedTab('Bookings');
+                  setIsVerified(true);
+                }} 
+                className={`w-full text-left p-2 rounded ${selectedTab === 'Bookings' ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
+              >
+                Bookings
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => {
+                  setSelectedTab('Companies');
+                  setIsVerified(true);
+                }} 
+                className={`w-full text-left p-2 rounded ${selectedTab === 'Companies' ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
+              >
+                Companies
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => {
+                  setSelectedTab('Verify Users');
+                  setIsVerified(true);
+                }} 
+                className={`w-full text-left p-2 rounded ${selectedTab === 'Verify Users' ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
+              >
+                Verify Users
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => {
+                  setSelectedTab('Analytics');
+                  setIsVerified(true);
+                }} 
+                className={`w-full text-left p-2 rounded ${selectedTab === 'Analytics' ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
+              >
+                Analytics
+              </button>
+            </li>
+            <li>
+              <button 
+                onClick={() => {
+                  setSelectedTab('Security');
+                  setIsVerified(false);
+                }} 
+                className={`w-full text-left p-2 rounded ${selectedTab === 'Security' ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}
+              >
+                Security
+              </button>
+            </li>
           </ul>
         </nav>
       </div>
@@ -55,7 +112,6 @@ const Dashboard = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100">
-      {/* Navbar */}
       <header className="bg-blue-500 text-white p-4 flex justify-between items-center">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <button className="bg-blue-600 text-white px-4 py-2 rounded flex items-center">
@@ -63,12 +119,9 @@ const Dashboard = () => {
           Log Out
         </button>
       </header>
-
-      {/* Main content area */}
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
         <main className="flex-1 p-8 overflow-y-auto">
-          <h2 className="text-2xl font-bold mb-6">{selectedTab} Panel</h2>
           {renderContent()}
         </main>
       </div>
