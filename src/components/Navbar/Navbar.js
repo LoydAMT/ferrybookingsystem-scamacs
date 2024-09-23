@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { FaGlobe, FaSignOutAlt } from 'react-icons/fa'; // Import the log-out icon
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+
 
 const Navbar = ({ onLoginClick }) => {
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState('/images/default-profile.jpg');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
-
+  const location = useLocation();
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -42,7 +43,9 @@ const Navbar = ({ onLoginClick }) => {
       console.error('Error signing out:', error);
     }
   };
-
+if(location.pathname==='/admin'){
+  return null;
+};
   return (
     <nav className={styles.navbar}>
       <div className={styles.navbarContent}>
