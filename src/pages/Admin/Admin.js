@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Globe, User, LogOut, Search } from 'lucide-react';
+import { Globe, User, LogOut } from 'lucide-react';
 import CameraDisplay from './SecurityPanel'; // Import Security Panel Component
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('Bookings'); // Default is 'Bookings'
+  const [isVerified, setIsVerified] = useState(false); // State to track verification
 
   // Sidebar Button Component with onClick Event
   const SidebarButton = ({ label, isActive, onClick }) => (
@@ -15,11 +16,20 @@ const Dashboard = () => {
     </button>
   );
 
+  // Handle successful face verification
+  const handleVerificationSuccess = () => {
+    setIsVerified(true);
+  };
+
   // Render content dynamically based on the selected tab
   const renderContent = () => {
+    if (!isVerified) {
+      return <CameraDisplay onSuccess={handleVerificationSuccess} />; // Show Security Panel until verified
+    }
+
     switch (selectedTab) {
       case 'Security':
-        return <CameraDisplay />; // Security Panel for Face Scan
+        return <CameraDisplay onSuccess={handleVerificationSuccess} />; // Security Panel for Face Scan
       case 'Bookings':
         return <h2 className="text-2xl font-bold">Bookings Panel</h2>;
       case 'Users List':

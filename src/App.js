@@ -1,5 +1,5 @@
-//src/App.js
-import { auth, db } from './firebase';
+// src/App.js
+import { auth } from './firebase';
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
@@ -7,12 +7,11 @@ import Home from './pages/Home/Home';
 import Profile from './pages/Profile/Profile';
 import BookNow from './pages/BookNow/BookNow';
 import Companies from './pages/Companies/Companies';
-import Admin from './pages/Admin/Admin';
+import Dashboard from './pages/Admin/Admin'; // Import the Dashboard component
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import 'typeface-open-sans';
 import { onAuthStateChanged } from 'firebase/auth';
-
 
 function App() {
   const [showLogin, setShowLogin] = useState(false);
@@ -56,7 +55,7 @@ function App() {
         <Route path="/profile" element={<Profile user={user} />} />
         <Route path="/book-now" element={<BookNow />} />
         <Route path="/companies" element={<Companies />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin" element={user ? <Dashboard /> : <Login />} /> {/* Route for Dashboard */}
         <Route path="/signup" element={<Signup onClose={handleCloseSignup} />} />
       </Routes>
     </Router>

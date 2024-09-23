@@ -1,14 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, addDoc, runTransaction } from 'firebase/firestore';
-import { db } from '../../firebase';  // Make sure you import Firestore from your firebase config
-import { auth } from '../../firebase'; // To get the current user ID (if needed for metadata)
+import { collection, addDoc, doc, getDocs } from 'firebase/firestore';
+import { db, auth } from '../../firebase';
 
-const SecurityPanel = () => {
+const SecurityPanel = ({ onSuccess }) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [capturedImage, setCapturedImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
     const startCamera = async () => {
@@ -60,6 +60,24 @@ const SecurityPanel = () => {
     });
   };
 
+  const verifyFace = async (compressedImage) => {
+    try {
+      const querySnapshot = await getDocs(collection(db, 'adminFaces'));
+      const faceUrls = querySnapshot.docs.map(doc => doc.data().faceURL);
+      // Compare the captured image with the stored face URLs
+      for (const faceURL of faceUrls) {
+        // You should replace this with actual comparison logic
+        if (compressedImage === faceURL) {
+          return true;
+        }
+      }
+      return false;
+    } catch (error) {
+      console.error('Error verifying face:', error);
+      return false;
+    }
+  };
+
   const uploadToFirebase = async () => {
     if (!capturedImage) {
       alert('Please capture an image first');
@@ -68,12 +86,6 @@ const SecurityPanel = () => {
 
     if (!auth.currentUser) {
       alert('You must be logged in to upload face data');
-      return;
-    }
-
-    if (!db) {
-      console.error('Firestore is not initialized');
-      alert('Database connection error. Please try again later.');
       return;
     }
 
@@ -93,22 +105,32 @@ const SecurityPanel = () => {
       await uploadBytes(storageRef, blob);
       const downloadURL = await getDownloadURL(storageRef);
 
-      // Use a transaction to ensure atomicity
-      await runTransaction(db, async (transaction) => {
-        const newFaceRef = collection(db, 'adminFaces');
-        await transaction.set(newFaceRef, {
-          adminId: auth.currentUser.uid,
-          faceURL: downloadURL,
-          timestamp: new Date(),
-        });
+      // Store face URL in Firestore
+      const docRef = await addDoc(collection(db, 'adminFaces'), {
+        adminId: auth.currentUser.uid,
+        faceURL: downloadURL,
+        timestamp: new Date(),
       });
 
+      console.log('Document written with ID: ', docRef.id);
       alert('Face data uploaded successfully!');
     } catch (error) {
-      console.error('Error uploading image: ', error);
+      console.error('Error uploading face data:', error);
       alert(`Failed to upload face data: ${error.message}`);
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const handleVerify = async () => {
+    setIsVerifying(true);
+    const compressedImage = await compressImage(capturedImage);
+    const isValid = await verifyFace(compressedImage);
+    setIsVerifying(false);
+    if (isValid) {
+      onSuccess(); // Call the success callback if verification passes
+    } else {
+      alert('Face verification failed. Please try again.');
     }
   };
 
@@ -131,6 +153,13 @@ const SecurityPanel = () => {
           disabled={isUploading}
         >
           {isUploading ? 'Uploading...' : 'Save Face'}
+        </button>
+        <button
+          className={`bg-red-500 text-white px-4 py-2 rounded ${isVerifying ? 'opacity-50 cursor-not-allowed' : ''}`}
+          onClick={handleVerify}
+          disabled={isVerifying}
+        >
+          {isVerifying ? 'Verifying...' : 'Verify Face'}
         </button>
       </div>
 
