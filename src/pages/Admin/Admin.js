@@ -3,7 +3,6 @@ import { LogOut } from 'lucide-react';
 import CameraDisplay from './Security/SecurityPanel'; 
 import './Admin.css'; 
 import UserList from './Userliit/Userlist';
-import Companies from './Companies/companies';
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('UserList');
@@ -24,7 +23,7 @@ const Dashboard = () => {
       case 'Bookings':
         return <h2 className="text-2xl font-bold">Bookings Panel</h2>;
       case 'Companies':
-        return<Companies />;
+        return <h2 className="text-2xl font-bold">Companies Panel</h2>;
       case 'Verify Users':
         return <h2 className="text-2xl font-bold">Verify Users Panel</h2>;
       case 'Analytics':
