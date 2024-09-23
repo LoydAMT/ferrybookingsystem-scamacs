@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc, doc, getDocs } from 'firebase/firestore';
-import { db, auth } from '../../firebase';
+import { db, auth } from '../../../firebase';
 
 const SecurityPanel = ({ onSuccess }) => {
   const videoRef = useRef(null);
