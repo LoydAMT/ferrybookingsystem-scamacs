@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Search } from 'lucide-react';
-import './UserList.css';
+import './Userlist.css';
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
