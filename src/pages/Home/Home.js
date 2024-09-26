@@ -2,6 +2,7 @@
 import React from 'react';
 import HomeCarousel from '../../components/HomeCarousel/HomeCarousel';
 import PopularCarousel from '../../components/PopularCarousel/PopularCarousel'; // Import the new carousel component
+import { Link } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
@@ -22,9 +23,11 @@ const Home = () => {
           </div>
         </div>
         <div className="BookNow">
-          <button id="BookNowButton">
-            BOOK NOW <img id="arrow" src="/images/Arrow.png" alt="Arrow" />
-          </button>
+        <Link to="/book-now">  {/* Wrap the button with Link */}
+              <button id="BookNowButton">
+                BOOK NOW <img id="arrow" src="/images/Arrow.png" alt="Arrow" />
+              </button>
+            </Link>
         </div>
       </div>
       <div className="rightSide">
