@@ -18,7 +18,7 @@
 
 .rightSide {
   background-color: rgba(255, 255, 255, 0); /* Distinguishing background */
-  padding: 0px;
+  padding-bottom: 20vh;
   margin-right: 150px;
   width: 45%;
   border-radius: 10px; /* Optional: rounded corners */
@@ -36,15 +36,17 @@
 
 #square {
   background-color: #FFFFFF;
-  height: 200px;
+  height: 160px;
   width: 10px;
   margin-right: 20px;
   margin-left: 5vw;
-  margin-bottom: 8vh;
+  margin-bottom: 13.5vh;
+  
 }
 
 .HomeText {
   font-family: 'Open Sans', sans-serif;
+
 }
 
 #F1 {
@@ -52,6 +54,7 @@
   margin: 0;
   font-size: 88px;
   font-weight: 800;
+  line-height: 75%;
 }
 
 #F2 {
@@ -64,20 +67,26 @@
 #F3 {
   font-size: 20px;
   font-weight: 200;
+  text-align: justify;
+  text-justify: inter-word;
+  line-height: 170%;
   margin: 0;
 }
 
 .BookNow {
+  
   display: flex;
   margin-left: 6.8vw;
   font-family: 'Open Sans', sans-serif;
 }
 
 #BookNowButton {
-  width: 60%;
+  width: 180%;
+  margin-top: 10px;
   padding-top: 20px;
   padding-bottom: 20px;
-  font-size: 48px;
+  padding-left: 20px;
+  font-size: 40px;
   font-weight: bold;
   background: linear-gradient(to right, #91F2FF 0%, #C8F8FF 50%, #91F2FF 100%);
   color: #0866FF;
@@ -89,7 +98,7 @@
 }
 
 #arrow {
-  padding-left: 3%;
+  padding-left: 0%;
 }
 
 #BookNowButton:hover {
@@ -136,4 +145,47 @@
   color: #001637;
   opacity: 80%;
   margin-top: 10px;
+}
+
+.CardsContainer {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 250px;
+  height: 350px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
+}
+
+.map-image {
+  width: 100%;
+  height: 70%;
+}
+
+.card-text {
+  padding: 10px;
+  font-size: 16px;
+  text-align: center;
+}
+
+.arrow {
+  margin-left: 5px;
 }
