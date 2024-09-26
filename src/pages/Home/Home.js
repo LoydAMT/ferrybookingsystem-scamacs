@@ -42,12 +42,47 @@ const Home = () => {
         <div className="PopularCarouselDiv">
           <PopularCarousel /> {/* Add the new carousel here */}
         </div>
-        
         <div className='HeaderText2'>
           <h1 id="PopHead">Journey To The Sea Made Simple!</h1>
         </div>
-
-
+        <div className='CardsContainer'>
+          <div className='Card'>
+            <div className='CardContent'>
+              <img 
+                src="/images/TRACKING.jpg" 
+                alt="Track Destination" 
+                className="map-image" 
+              />
+              <div className="card-text">
+                Track Your Destination <span className="arrow">→</span>
+              </div>
+            </div>
+          </div>
+          <div className='Card'>
+            <div className='CardContent'>
+              <img 
+                src="/images/TRACKING.jpg" 
+                alt="Get Started" 
+                className="map-image" 
+              />
+              <div className="card-text">
+                Get Started <span className="arrow">→</span>
+              </div>
+            </div>
+          </div>
+          <div className='Card'>
+            <div className='CardContent'>
+              <img 
+                src="/images/TRACKING.jpg" 
+                alt="Blank Card" 
+                className="map-image" 
+              />
+              <div className="card-text">
+                Blank Card <span className="arrow">→</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="BookNowContainer">
