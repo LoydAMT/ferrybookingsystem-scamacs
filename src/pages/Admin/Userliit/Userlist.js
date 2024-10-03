@@ -54,7 +54,7 @@ const UserList = () => {
               <th>First Name</th>
               <th>Last Name</th>
               <th>District</th>
-              <th>Birth Day</th>
+              <th>Birthday</th>
               <th>Gender</th>
               <th>Contact Number</th>
               <th>Email</th>
