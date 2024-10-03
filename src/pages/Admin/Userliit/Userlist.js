@@ -53,8 +53,8 @@ const UserList = () => {
             <tr>
               <th>First Name</th>
               <th>Last Name</th>
-              <th>Nationality</th>
-              <th>Birth Date</th>
+              <th>District</th>
+              <th>Birth Day</th>
               <th>Gender</th>
               <th>Contact Number</th>
               <th>Email</th>
@@ -65,8 +65,9 @@ const UserList = () => {
               <tr key={user.id}>
                 <td>{user.firstName}</td>
                 <td>{user.lastName}</td>
-                <td>{user.nationality}</td>
-                <td>{user.birthDate}</td>
+                <td>{user.district}</td>
+                <td>{`${user.birthMonth ? user.birthMonth : ''} ${user.birthDay ? user.birthDay : ''},
+                 ${user.birthdYear ? user.birthdYear : ''}`}</td>
                 <td>{user.gender}</td>
                 <td>{user.contactNumber}</td>
                 <td>{user.email}</td>
