@@ -150,7 +150,9 @@ const CompaniesAd = () => {
         <div className="companies-container">
             <div className="content-wrapper">
                 <h2 className="text-2xl font-bold mb-4">Partnered Companies</h2>
-
+                <div className="logo-container">
+                <img src='/images/select ferry.png' alt="Logo" className="logo" />
+       
                 <div className="search-bar">
                     <Search size={20} />
                     <input
@@ -160,7 +162,7 @@ const CompaniesAd = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-
+                </div>
                 <div className="company-grid">
                     {/* {companyLogos.map((company, index) => (
                         <div key={index} className="company-logo">
