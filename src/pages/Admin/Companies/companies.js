@@ -7,8 +7,6 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getFirestore, collection, addDoc, getDocs } from 'firebase/firestore';
 import { doc, updateDoc } from 'firebase/firestore';
 
-
-
 const CompaniesAd = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
@@ -26,9 +24,21 @@ const CompaniesAd = () => {
             otherLinks: ''
         }
     });
+    
     const [companies, setCompanies] = useState([]);
     const [selectedCompany, setSelectedCompany] = useState(null);
     const [showSelectedModal, setShowSelectedModal] = useState(false);
+
+    // For Adding a Vessel
+    const [showVesselModal, setShowVesselModal] = useState(false);
+    const [vesselDetails, setVesselDetails] = useState({
+        name: '',
+        size: { length: '', width: '', draft: '' },
+        capacity: { passengers: '', vehicles: '' },
+        deckLevels: '',
+        schedule: { S: false, M: false, T: false, W: false, Th: false, F: false, Sat: false },
+        image: null
+    });
 
     // Fetch companies from Firestore
     useEffect(() => {
@@ -68,6 +78,45 @@ const CompaniesAd = () => {
         setCompanyDetails((prevDetails) => ({
             ...prevDetails,
             logo: e.target.files[0]
+        }));
+    };
+
+    // For Vessel
+    const handleVesselInputChange = (e) => {
+        const { name, value } = e.target;
+        setVesselDetails(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleVesselSizeChange = (e) => {
+        const { name, value } = e.target;
+        setVesselDetails(prev => ({
+            ...prev,
+            size: { ...prev.size, [name]: value }
+        }));
+    };
+
+    const handleVesselCapacityChange = (e) => {
+        const { name, value } = e.target;
+        setVesselDetails(prev => ({
+            ...prev,
+            capacity: { ...prev.capacity, [name]: value }
+        }));
+    };
+
+    const handleVesselScheduleChange = (day) => {
+        setVesselDetails(prev => ({
+            ...prev,
+            schedule: { ...prev.schedule, [day]: !prev.schedule[day] }
+        }));
+    };
+
+    const handleVesselImageChange = (e) => {
+        setVesselDetails(prev => ({
+            ...prev,
+            image: e.target.files[0]
         }));
     };
 
@@ -132,7 +181,6 @@ const CompaniesAd = () => {
         }
     };
 
-
     const handleCompanyClick = (company) => {
         setSelectedCompany(company);
         setShowSelectedModal(true);
@@ -160,6 +208,24 @@ const CompaniesAd = () => {
             ...prevCompany,
             [name]: value
         }));
+    };
+
+    // For Vessel 
+    const handleAddVessel = async () => {
+        // Implement the logic to add the vessel to the company
+        // This would involve updating the Firestore document for the company
+        // and potentially uploading the vessel image to Firebase Storage
+        console.log("Adding vessel:", vesselDetails);
+        // Reset form and close modal after adding
+        setVesselDetails({
+            name: '',
+            size: { length: '', width: '', draft: '' },
+            capacity: { passengers: '', vehicles: '' },
+            deckLevels: '',
+            schedule: { S: false, M: false, T: false, W: false, Th: false, F: false, Sat: false },
+            image: null
+        });
+        setShowVesselModal(false);
     };
 
     return (
@@ -201,7 +267,6 @@ const CompaniesAd = () => {
                 <div className="action-buttons">
                     <button className="button button-delete">Delete A Company</button>
                     <button className="button button-add" onClick={() => setShowModal(true)}>Add A Company</button>
-
                 </div>
             </div>
 
@@ -280,13 +345,13 @@ const CompaniesAd = () => {
                             onChange={handleContactChange}
                         />
                         <div className="modal-buttons">
-                            <button onClick={handleAddCompany}>Add Company</button>
-                            <button onClick={() => setShowModal(false)}>Cancel</button>
+                            <button onClick={handleUpdateCompany}>Update Company</button>
+                            <button onClick={() => setShowVesselModal(true)}>Add a Vessel</button>
+                            <button onClick={() => setShowSelectedModal(false)}>Cancel</button>
                         </div>
                     </div>
                 </div>
             )}
-
 
             {/* Company Details Modal */}
             {showSelectedModal && selectedCompany && (
@@ -359,12 +424,122 @@ const CompaniesAd = () => {
                         />
                         <div className="modal-buttons">
                             <button onClick={handleUpdateCompany}>Update Company</button>
+                            <button onClick={() => setShowVesselModal(true)}>Add a Vessel</button>
                             <button onClick={() => setShowSelectedModal(false)}>Cancel</button>
                         </div>
                     </div>
                 </div>
             )}
 
+            {/* Add Vessel Modal */}
+            {showVesselModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <button className="close-button" onClick={() => setShowVesselModal(false)}>✖</button>
+                        <h3>Add a Vessel</h3>
+                        {/* 
+                        */}
+
+                            
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Ferry Name"
+                            value={vesselDetails.name}
+                            onChange={handleVesselInputChange}
+                            required
+                        />
+
+                        <div className="ferry-size">
+                            <h4>Ferry Size</h4>
+                            <input
+                                type="number"
+                                name="length"
+                                placeholder="Length"
+                                value={vesselDetails.size.length}
+                                onChange={handleVesselSizeChange}
+                                required
+                            />
+                            <input
+                                type="number"
+                                name="width"
+                                placeholder="Width"
+                                value={vesselDetails.size.width}
+                                onChange={handleVesselSizeChange}
+                                required
+                            />
+                            <input
+                                type="number"
+                                name="draft"
+                                placeholder="Draft"
+                                value={vesselDetails.size.draft}
+                                onChange={handleVesselSizeChange}
+                                required
+                            />
+                        </div>
+
+                        <div className="ferry-capacity">
+                            <h4>Capacity</h4>
+                            <input
+                                type="number"
+                                name="passengers"
+                                placeholder="Passengers"
+                                value={vesselDetails.capacity.passengers}
+                                onChange={handleVesselCapacityChange}
+                                required
+                            />
+                            <input
+                                type="number"
+                                name="vehicles"
+                                placeholder="Vehicles"
+                                value={vesselDetails.capacity.vehicles}
+                                onChange={handleVesselCapacityChange}
+                                required
+                            />
+                        </div>
+
+                        <select
+                            name="deckLevels"
+                            value={vesselDetails.deckLevels}
+                            onChange={handleVesselInputChange}
+                            required
+                        >
+                            <option value="">Select Deck Levels</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            {/* Add more options as needed */}
+                        </select>
+
+                        <div className="ferry-schedule">
+                            <h4>Schedule</h4>
+                            {Object.keys(vesselDetails.schedule).map(day => (
+                                <button
+                                    key={day}
+                                    className={vesselDetails.schedule[day] ? 'active' : ''}
+                                    onClick={() => handleVesselScheduleChange(day)}
+                                >
+                                    {day}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="ferry-image-upload">
+                            <h4>Ferry Picture</h4>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleVesselImageChange}
+                            />
+                        </div>
+
+                        <div className="modal-buttons">
+                            <button onClick={handleAddVessel}>Save Changes</button>
+                            <button onClick={() => setShowVesselModal(false)}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
