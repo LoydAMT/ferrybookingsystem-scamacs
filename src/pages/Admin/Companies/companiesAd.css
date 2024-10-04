@@ -234,4 +234,138 @@
     color: #888;
 }
 
+/* ADD A VESSEL CSS PORTION!!!
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+*/
+.vessel-modal-content{
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    font-family: "Open Sans", inter;
+}
 
+.vessel-close-button{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.ferry-header{
+    background-color: #0866FF;
+    color: white;
+}
+
+.vessel-headers{
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.vessel-tbox{
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: solid 1px black;
+    padding: 10px;
+    width: 75%;
+    height: 40%;
+    border-radius: 5px;
+}
+
+.vessel-tbox::placeholder{
+    font-family: "Open Sans", inter;
+}
+
+.vessel-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.vessel-modal-buttons button {
+    margin-left: 10px;
+}
+
+#vessel-save,
+#vessel-cancel
+{
+    font-weight: 600;
+    min-height: 20%;
+    min-width: 25%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    font-family: "Open Sans", inter;
+}
+
+.ferry-capacity{
+    /*display: flex;*/
+}
+
+#vessel-deckLevels{
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: solid 1px black;
+    padding: 10px;
+    width: 37.5%;
+    height: 40%;
+    border-radius: 5px;
+}
+
+#vessel-save{
+    border: solid 1px white;
+    color: white;
+    background-color: #0046AF;
+}
+
+#vessel-cancel{
+    border: solid 1px black;
+    background-color: #FFFFFF;
+}
+
+#vessel-schedule {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: solid 1px black;
+    cursor: pointer;
+    background-color: white;
+    transition: background-color 0.3s, border 0.3s, color 0.3s;
+    font-weight: bold;
+    min-width: 50px;
+    text-align: center;
+}
+
+.required {
+    color: red;
+    margin-left: 5px;
+}
+
+.days-container {
+    display: flex;
+    justify-content: left;
+    gap: 0.05rem;
+}
+
+#vessel-schedule:hover {
+    border-color: #666;
+}
+
+#vessel-schedule.active {
+    background-color: #97D8F5; /* Light blue */
+    border-color: black;
+    color: black;
+}
