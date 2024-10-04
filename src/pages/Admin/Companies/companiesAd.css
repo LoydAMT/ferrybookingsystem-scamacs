@@ -1,5 +1,5 @@
 .companies-container {
-    display: flex;
+   
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
@@ -76,6 +76,8 @@
     height: 150px;
     text-align: center;
     overflow: hidden; 
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), 
+    inset -2px -2px 5px rgba(255, 255, 255, 0.7);
 }
 
 .company-image {
@@ -122,31 +124,30 @@
 }
 
 
-
-/* Add a company modal */
+/* Modal styles */
 .modal {
-    display: flex;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
 }
 
 .modal-content {
-    background: white;
+    background: #ffffff;
     padding: 20px;
     border-radius: 8px;
-    width: 400px;
-    position: relative;
     width: 90%;
-    max-width: 500px;
+    max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
 }
 
 .close-button {
@@ -157,23 +158,169 @@
     border: none;
     font-size: 20px;
     cursor: pointer;
+    color: #e1e3e5;
+}
+
+h3 {
+    font-size: 18px;
+    color: #ffffff;
+    text-align: left;
+    background-color: #007bff;
+    padding: 10px 20px;
+    margin: -20px -20px 20px -20px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.form-container {
+    display: flex;
+    gap: 20px;
+}
+
+.logo-upload {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #007bff;
+    font-size: 12px;
+    text-align: center;
+    cursor: pointer;
+    margin-top:25px;
+}
+.logo-upload img {
+    width: 100%; 
+    height: 100%;
+    object-fit: cover; 
+    border-radius: 4px; 
+}
+.company-details {
+    flex: 1;
+}
+
+h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.contact-person-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.contact-input {
+    flex: 1;
+}
+
+.modal input[type="text"],
+.modal input[type="email"],
+.modal textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 2px;
+    margin-bottom: 10px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+label {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 2px;
+    display: block;
+    font-family:Helvetica;
+    font-weight:bold;
 }
 
 .modal-buttons {
     display: flex;
     justify-content: flex-end;
+    gap: 10px;
     margin-top: 20px;
 }
 
 .modal-buttons button {
-    margin-left: 10px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
 }
 
+.modal-buttons button:first-child {
+    background-color: #007bff;
+    color: white;
+}
 
+.modal-buttons button:nth-child(2) {
+    background-color: #28a745;
+    color: white;
+}
 
+.modal-buttons button:last-child {
+    background-color: #6c757d;
+    color: white;
+}
 
+.modal-buttons button:hover {
+    opacity: 0.9;
+}
+
+#file-upload {
+    display: none;
+}
+.form-container span{
+    color:#6c757d;
+}
 
 /* Company Details modal */
+.modaldetail{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modaldetail-content{
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+.modaldetail input[type="text"],
+.modaldetail input[type="email"],
+.modaldetail textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    gap: 10px;
+    margin-bottom: 10px; /* Space below each input */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow effect */
+}
 .ferry-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);

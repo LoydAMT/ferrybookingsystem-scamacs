@@ -54,7 +54,7 @@ const CompaniesAd = () => {
 
         fetchCompanies();
     }, []);
-
+    const [logoPreview, setLogoPreview] = useState(null); // State for logo preview
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCompanyDetails((prevDetails) => ({
@@ -75,10 +75,20 @@ const CompaniesAd = () => {
     };
 
     const handleLogoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
         setCompanyDetails((prevDetails) => ({
             ...prevDetails,
             logo: e.target.files[0]
         }));
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setLogoPreview(reader.result); // Set the logo preview URL
+        };
+        reader.readAsDataURL(file); // Read the file as a Data URL
+    } else {
+        setLogoPreview(null); // Reset if no file is selected
+    }
     };
 
     // For Vessel
@@ -276,96 +286,136 @@ const CompaniesAd = () => {
                     <div className="modal-content">
                         <button className="close-button" onClick={() => setShowModal(false)}>✖</button>
                         <h3>Add a Company</h3>
+                        
+                        <div className="form-container">
+                             <div className="logo-upload" onClick={() => document.getElementById('file-upload').click()}>
+                            {logoPreview ? (
+                                <img src={logoPreview} alt="Company Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            ) : (
+                                <span>Upload Company Logo</span>
+                            )}
+                                <input
+                                    id="file-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleLogoChange}
+                                />
+                            </div>
+
+                            <div className="company-details">
+                                <label htmlFor="company-name">Company Name</label>
+                                <input
+                                    type="text"
+                                    id="company-name"
+                                    name="name"
+                                    value={companyDetails.name}
+                                    onChange={handleInputChange}
+                                />
+                                
+                                <label htmlFor="company-description">Description</label>
+                                <textarea
+                                    id="company-description"
+                                    name="description"
+                                    value={companyDetails.description}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                        </div>
+
+                        <h4 style={{color:'skyblue'}}>Primary Contact Person</h4>
+                        <div className="contact-person-row">
+                            <div className="contact-input">
+                                <label htmlFor="first-name">First Name</label>
+                                <input
+                                    type="text"
+                                    id="first-name"
+                                    name="firstName"
+                                    value={companyDetails.contact.firstName}
+                                    onChange={handleContactChange}
+                                />
+                            </div>
+                            <div className="contact-input">
+                                <label htmlFor="last-name">Last Name</label>
+                                <input
+                                    type="text"
+                                    id="last-name"
+                                    name="lastName"
+                                    value={companyDetails.contact.lastName}
+                                    onChange={handleContactChange}
+                                />
+                            </div>
+                            <div className="contact-input">
+                                <label htmlFor="position">Position</label>
+                                <input
+                                    type="text"
+                                    id="position"
+                                    name="position"
+                                    value={companyDetails.contact.position}
+                                    onChange={handleContactChange}
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="contact-person-row">
+                            <div className="contact-input">
+                                <label htmlFor="phone-number">Phone Number</label>
+                                <input
+                                    type="text"
+                                    id="phone-number"
+                                    name="phoneNumber"
+                                    value={companyDetails.contact.phoneNumber}
+                                    onChange={handleContactChange}
+                                />
+                            </div>
+                            <div className="contact-input">
+                                <label htmlFor="email">Email</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    value={companyDetails.contact.email}
+                                    onChange={handleContactChange}
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="contact-input">
+                            <label htmlFor="website">Website URL</label>
+                            <input
+                                type="text"
+                                id="website"
+                                name="website"
+                                value={companyDetails.contact.website}
+                                onChange={handleContactChange}
+                            />
+                        </div>
+                        
+                        <label htmlFor="other-links">Other Links</label>
                         <input
                             type="text"
-                            name="name"
-                            placeholder="Company Name"
-                            value={companyDetails.name}
-                            onChange={handleInputChange}
-                        />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleLogoChange}
-                        />
-                        <textarea
-                            name="description"
-                            placeholder="Description"
-                            value={companyDetails.description}
-                            onChange={handleInputChange}
-                        />
-                        <h4>Contact Person</h4>
-                        <input
-                            type="text"
-                            name="firstName"
-                            placeholder="First Name"
-                            value={companyDetails.contact.firstName}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="text"
-                            name="lastName"
-                            placeholder="Last Name"
-                            value={companyDetails.contact.lastName}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="text"
-                            name="position"
-                            placeholder="Position"
-                            value={companyDetails.contact.position}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="text"
-                            name="phoneNumber"
-                            placeholder="Phone Number"
-                            value={companyDetails.contact.phoneNumber}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            value={companyDetails.contact.email}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="text"
-                            name="website"
-                            placeholder="Website URL"
-                            value={companyDetails.contact.website}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="text"
+                            id="other-links"
                             name="otherLinks"
-                            placeholder="Other Links"
                             value={companyDetails.contact.otherLinks}
                             onChange={handleContactChange}
                         />
+                        
                         <div className="modal-buttons">
-                            <button onClick={handleUpdateCompany}>Update Company</button>
+                            <button onClick={handleAddCompany}>Add Company</button>
                             <button onClick={() => setShowVesselModal(true)}>Add a Vessel</button>
-                            <button onClick={() => setShowSelectedModal(false)}>Cancel</button>
+                            <button onClick={() => setShowModal(false)}>Cancel</button>
                         </div>
                     </div>
                 </div>
-            )}
+)}
 
             {/* Company Details Modal */}
             {showSelectedModal && selectedCompany && (
-                <div className="modal">
-                    <div className="modal-content">
+                <div className="modaldetail">
+                    <div className="modaldetail-content">
                         <button className="close-button" onClick={() => setShowSelectedModal(false)}>✖</button>
                         <h3>{selectedCompany.name}</h3>  
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Company Name"
-                            value={selectedCompany.name}
-                            onChange={handleSelectedCompanyChange}
-                        />
+                      
+                        
                         <textarea
                             name="description"
                             placeholder="Description"
