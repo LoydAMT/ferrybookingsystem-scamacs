@@ -216,7 +216,8 @@ function Community() {
             className="image-upload-input"
           />
           <label htmlFor="image-upload" className="image-upload-label">
-            Upload Image
+            {/* Upload Image */}
+            <span role="img" aria-label="Add Image"></span>
           </label>
           {imagePreview && (
             <img src={imagePreview} alt="Preview" className="image-preview" />
