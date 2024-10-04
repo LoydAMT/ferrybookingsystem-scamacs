@@ -6,6 +6,7 @@ import Navbar from './components/Navbar/Navbar';
 import Home from './pages/Home/Home';
 import Profile from './pages/Profile/Profile';
 import BookNow from './pages/BookNow/BookNow';
+import Schedule from './pages/Schedule/Schedule';  
 import Companies from './pages/Companies/Companies';
 import Dashboard from './pages/Admin/Admin'; // Import the Dashboard component
 import Login from './pages/Login/Login';
@@ -55,6 +56,7 @@ function App() {
         <Route path="/profile" element={<Profile user={user} />} />
         <Route path="/book-now" element={<BookNow />} />
         <Route path="/companies" element={<Companies />} />
+        <Route path="/schedule" element={<Schedule />} />
         <Route path="/admin" element={user ? <Dashboard /> : <Login />} /> {/* Route for Dashboard */}
         <Route path="/signup" element={<Signup onClose={handleCloseSignup} />} />
       </Routes>

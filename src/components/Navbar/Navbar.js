@@ -5,13 +5,13 @@ import { FaGlobe, FaSignOutAlt } from 'react-icons/fa'; // Import the log-out ic
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
-
 const Navbar = ({ onLoginClick }) => {
   const [user, setUser] = useState(null);
   const [profilePic, setProfilePic] = useState('/images/default-profile.jpg');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -43,45 +43,66 @@ const Navbar = ({ onLoginClick }) => {
       console.error('Error signing out:', error);
     }
   };
-if(location.pathname==='/admin'){
-  return null;
-};
+
+  // Hide navbar for admin page
+  if (location.pathname === '/admin') {
+    return null;
+  }
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.navbarContent}>
         {/* Left side: Logo */}
         <div className={styles.logoContainer}>
-          <img src="/images/SWIFT_SAIL_9.png" alt="Logo" className={styles.logo} />
+          <Link to="/">
+            <img src="/images/SWIFT_SAIL_9.png" alt="Logo" className={styles.logo} />
+          </Link>
         </div>
 
         {/* Center: Navigation Links */}
         <ul className={styles.navbarList}>
           <li className={styles.navbarItem}>
-            <Link to="/">Home</Link>
+            <Link to="/" className={location.pathname === '/' ? styles.active : ''}>
+              Home
+            </Link>
           </li>
           <li className={styles.navbarItem}>
-            <Link to="/companies">Companies</Link>
+            <Link to="/companies" className={location.pathname === '/companies' ? styles.active : ''}>
+              Companies
+            </Link>
           </li>
           <li className={styles.navbarItem}>
-            <Link to="/schedule">Schedule</Link>
+            <Link to="/schedule" className={location.pathname === '/schedule' ? styles.active : ''}>
+              Schedule
+            </Link>
           </li>
           <li className={styles.navbarItem}>
-            <Link to="/community">Community</Link>
+            <Link to="/community" className={location.pathname === '/community' ? styles.active : ''}>
+              Community
+            </Link>
           </li>
         </ul>
 
         {/* Right side: Login/Profile and Language */}
         <div className={styles.rightSection}>
           <FaGlobe className={styles.languageIcon} />
+
           {user ? (
-            <div className={styles.profileContainer}>
+            <div className={styles.profileContainer} onClick={() => setDropdownOpen(!dropdownOpen)}>
               <img 
                 src={profilePic} 
                 alt="Profile" 
                 className={styles.profilePicture} 
                 onClick={handleProfileClick} 
               />
-              <FaSignOutAlt className={styles.logoutIcon} onClick={handleSignOut} />
+              {dropdownOpen && (
+                <div className={styles.dropdownMenu}>
+                  <button onClick={handleProfileClick} className={styles.profileButton}>Profile</button>
+                  <button onClick={handleSignOut} className={styles.signOutButton}>
+                    Sign Out <FaSignOutAlt className={styles.logoutIcon} />
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <button onClick={onLoginClick} className={styles.signInButton}>SIGN IN</button>
