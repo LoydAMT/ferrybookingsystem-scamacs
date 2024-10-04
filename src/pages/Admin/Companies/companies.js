@@ -434,71 +434,94 @@ const CompaniesAd = () => {
             {/* Add Vessel Modal */}
             {showVesselModal && (
                 <div className="modal">
-                    <div className="modal-content">
-                        <button className="close-button" onClick={() => setShowVesselModal(false)}>✖</button>
-                        <h3>Add a Vessel</h3>
+                    <div className="vessel-modal-content">
+                        <button className="vessel-close-button" onClick={() => setShowVesselModal(false)}>✖</button>
+                        <h3 className="ferry-header">Add a Vessel</h3>
                         {/* 
                         */}
 
-                            
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Ferry Name"
-                            value={vesselDetails.name}
-                            onChange={handleVesselInputChange}
-                            required
-                        />
+                        <div className="ferry-name">
+                            <h4 className="vessel-headers">Ferry Name<span className="required">*</span></h4>
+                            <input
+                                className="vessel-tbox"
+                                id="vessel-name"
+                                type="text"
+                                name="name"
+                                placeholder="Name"
+                                value={vesselDetails.name}
+                                onChange={handleVesselInputChange}
+                                min="0"
+                                required
+                            />
+
+                        </div>
+                        
 
                         <div className="ferry-size">
-                            <h4>Ferry Size</h4>
+                            <h4 className="vessel-headers">Ferry Size<span className="required">*</span></h4>
                             <input
+                                className="vessel-tbox"
+                                id="vessel-length"
                                 type="number"
                                 name="length"
                                 placeholder="Length"
                                 value={vesselDetails.size.length}
                                 onChange={handleVesselSizeChange}
+                                min="0"
                                 required
                             />
                             <input
+                                className="vessel-tbox"
+                                id="vessel-width"
                                 type="number"
                                 name="width"
                                 placeholder="Width"
                                 value={vesselDetails.size.width}
                                 onChange={handleVesselSizeChange}
+                                min="0"
                                 required
                             />
                             <input
+                                className="vessel-tbox"
+                                id="vessel-draft"
                                 type="number"
                                 name="draft"
                                 placeholder="Draft"
                                 value={vesselDetails.size.draft}
                                 onChange={handleVesselSizeChange}
+                                min="0"
                                 required
                             />
                         </div>
 
                         <div className="ferry-capacity">
-                            <h4>Capacity</h4>
+                            <h4 className="vessel-headers">Capacity<span className="required">*</span></h4>
                             <input
+                                className="vessel-tbox"
+                                id="vessel-passengers"
                                 type="number"
                                 name="passengers"
                                 placeholder="Passengers"
                                 value={vesselDetails.capacity.passengers}
                                 onChange={handleVesselCapacityChange}
+                                min="0"
                                 required
                             />
                             <input
+                                className="vessel-tbox"
+                                id="vessel-vehicles"
                                 type="number"
                                 name="vehicles"
                                 placeholder="Vehicles"
                                 value={vesselDetails.capacity.vehicles}
                                 onChange={handleVesselCapacityChange}
+                                min="0"
                                 required
                             />
                         </div>
 
                         <select
+                            id="vessel-deckLevels"
                             name="deckLevels"
                             value={vesselDetails.deckLevels}
                             onChange={handleVesselInputChange}
@@ -512,30 +535,34 @@ const CompaniesAd = () => {
                         </select>
 
                         <div className="ferry-schedule">
-                            <h4>Schedule</h4>
-                            {Object.keys(vesselDetails.schedule).map(day => (
+                            <h4 className="vessel-headers">Schedule<span className="required">*</span></h4>
+                                <div className="days-container">
+                                {Object.keys(vesselDetails.schedule).map(day => (
                                 <button
+                                    id="vessel-schedule"
                                     key={day}
                                     className={vesselDetails.schedule[day] ? 'active' : ''}
                                     onClick={() => handleVesselScheduleChange(day)}
                                 >
-                                    {day}
+                                {day}
                                 </button>
-                            ))}
+                                ))}
+                            </div>
                         </div>
 
                         <div className="ferry-image-upload">
-                            <h4>Ferry Picture</h4>
+                            <h4 className="vessel-headers">Ferry Picture<span className="required">*</span></h4>
                             <input
+                                id="vessel-fileupload"
                                 type="file"
                                 accept="image/*"
                                 onChange={handleVesselImageChange}
                             />
                         </div>
 
-                        <div className="modal-buttons">
-                            <button onClick={handleAddVessel}>Save Changes</button>
-                            <button onClick={() => setShowVesselModal(false)}>Cancel</button>
+                        <div className="vessel-modal-buttons">
+                            <button id="vessel-save" onClick={handleAddVessel}>Save Changes</button>
+                            <button id="vessel-cancel" onClick={() => setShowVesselModal(false)}>Cancel</button>
                         </div>
                     </div>
                 </div>
