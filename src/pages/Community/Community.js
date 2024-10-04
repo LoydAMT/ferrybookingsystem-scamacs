@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { collection, addDoc, updateDoc, doc, onSnapshot, getDoc, deleteDoc, Timestamp } from 'firebase/firestore';
-import { db, auth } from '../../firebase'; // Ensure correct path to Firebase configuration
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, auth, storage } from '../../firebase'; // Ensure correct path to Firebase configuration
 import { onAuthStateChanged } from 'firebase/auth';
 import { formatDistanceToNow } from 'date-fns';
 import './Community.css';
@@ -27,6 +28,8 @@ function Community() {
   const [error, setError] = useState('');
   const [visibleComments, setVisibleComments] = useState({});
   const [commentInputVisibility, setCommentInputVisibility] = useState({});
+  const [imageUpload, setImageUpload] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'posts'), (snapshot) => {
@@ -57,8 +60,22 @@ function Community() {
     };
   }, []);
 
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setImageUpload(e.target.files[0]);
+      setImagePreview(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
   const handleAddPost = async () => {
-    if (newPost.trim() && currentUser) {
+    if ((newPost.trim() || imageUpload) && currentUser) {
+      let imageUrl = null;
+      if (imageUpload) {
+        const imageRef = ref(storage, `images/${imageUpload.name + Date.now()}`);
+        await uploadBytes(imageRef, imageUpload);
+        imageUrl = await getDownloadURL(imageRef);
+      }
+
       const newPostData = {
         content: newPost,
         comments: [],
@@ -67,11 +84,14 @@ function Community() {
         userProfilePicture: currentUser.profilePicture,
         createdAt: Timestamp.fromDate(new Date()),
         userId: currentUser.uid,
+        imageUrl: imageUrl,
       };
 
       try {
         await addDoc(collection(db, 'posts'), newPostData);
         setNewPost('');
+        setImageUpload(null);
+        setImagePreview(null);
       } catch (error) {
         console.error('Error adding post:', error);
         setError('Failed to create post. Please try again.');
@@ -171,7 +191,7 @@ function Community() {
       case 'interactions':
         return posts.filter(post => post.likes?.includes(currentUser?.uid) || post.comments?.some(comment => comment.userId === currentUser?.uid));
       default:
-        return posts; // Return all posts without filtering
+        return posts;
     }
   }, [posts, filter, currentUser]);
 
@@ -187,6 +207,21 @@ function Community() {
           placeholder="What's on your mind?"
           className="new-post-input"
         />
+        <div className="image-upload-container">
+          <input
+            type="file"
+            onChange={handleImageChange}
+            accept="image/*"
+            id="image-upload"
+            className="image-upload-input"
+          />
+          <label htmlFor="image-upload" className="image-upload-label">
+            Upload Image
+          </label>
+          {imagePreview && (
+            <img src={imagePreview} alt="Preview" className="image-preview" />
+          )}
+        </div>
         <button onClick={handleAddPost} className="new-post-button">Post</button>
       </div>
 
@@ -202,8 +237,8 @@ function Community() {
             <div key={post.id} className="post-card">
               <div className="post-header">
                 <img src={post.userProfilePicture || defaultProfilePicture} alt="Profile" className="post-profile-picture" />
-                <div>
-                  <p className="post-user-name"><strong>{post.userName}</strong></p>
+                <div className="post-user-info">
+                  <p className="post-user-name">{post.userName}</p>
                   {post.createdAt && (
                     <p className="post-timestamp" title={new Date(post.createdAt.toDate()).toLocaleString()}>
                       {formatDistanceToNow(new Date(post.createdAt.toDate()))} ago
@@ -212,29 +247,27 @@ function Community() {
                 </div>
                 {post.userId === currentUser?.uid && (
                   <div className="post-options">
-                    <button className="options-button">⋮</button>
-                    <div className="options-menu">
-                      <button onClick={() => handleEditPost(post.id, prompt('Edit post:', post.content))}>Edit</button>
-                      <button onClick={() => handleDeletePost(post.id)}>Delete</button>
-                    </div>
+                    <button onClick={() => handleEditPost(post.id, prompt('Edit post:', post.content))}>Edit</button>
+                    <button onClick={() => handleDeletePost(post.id)}>Delete</button>
                   </div>
                 )}
               </div>
-              <p className="postCaption">{post.content}</p>
-              <div className="likes-comments-container">
-                <div className="like-comment-buttons">
-                  <button onClick={() => handleLike(post.id)} className="like-button">
-                    <img
-                      src={post.likes && post.likes.includes(currentUser?.uid) ? likedIcon : likeIcon}
-                      alt={post.likes && post.likes.includes(currentUser?.uid) ? 'Liked' : 'Like'}
-                      className="like-icon"
-                    />
-                  </button>
-                  <button onClick={() => toggleCommentInput(post.id)} className="comment-button">Comment</button>
-                </div>
-                <p className="likes-count">{post.likes.length} likes</p>
-                <p className="comments-count">{post.comments.length} comments</p>
+              <div className="post-content">
+                <p>{post.content}</p>
+                {post.imageUrl && <img src={post.imageUrl} alt="Post" className="post-image" />}
               </div>
+              <div className="like-comment-buttons">
+                <button onClick={() => handleLike(post.id)} className="like-button">
+                  <img
+                    src={post.likes && post.likes.includes(currentUser?.uid) ? likedIcon : likeIcon}
+                    alt={post.likes && post.likes.includes(currentUser?.uid) ? 'Liked' : 'Like'}
+                    className="like-icon"
+                  />
+                  Like
+                </button>
+                <button onClick={() => toggleCommentInput(post.id)} className="comment-button">Comment</button>
+              </div>
+              <p className="likes-comments-count">{post.likes.length} likes • {post.comments.length} comments</p>
               {commentInputVisibility[post.id] && (
                 <div className="comment-input-container">
                   <img src={currentUser?.profilePicture || defaultProfilePicture} alt="Profile" className="comment-profile-picture" />
@@ -252,11 +285,11 @@ function Community() {
                 </div>
               )}
               <div className="comments-section">
-                {sortComments(post.comments).map((comment, index) => (
+                {sortComments(post.comments).slice(0, visibleComments[post.id] ? undefined : 2).map((comment, index) => (
                   <div key={index} className="comment">
                     <img src={comment.userProfilePicture || defaultProfilePicture} alt="Profile" className="comment-profile-picture" />
                     <div className="comment-content">
-                      <p className="comment-user-name"><strong>{comment.userName}</strong></p>
+                      <p className="comment-user-name">{comment.userName}</p>
                       <p>{comment.content}</p>
                       <p className="comment-timestamp">{formatDistanceToNow(new Date(comment.createdAt.toDate()))} ago</p>
                       {comment.userId === currentUser?.uid && (

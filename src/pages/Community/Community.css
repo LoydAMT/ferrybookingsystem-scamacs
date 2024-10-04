@@ -42,6 +42,11 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.new-post-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
 }
 
 /* Filter buttons */
@@ -57,11 +62,16 @@
     padding: 10px 15px;
     margin-right: 10px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .filter-button.active {
     background-color: #007bff;
     color: white;
+}
+
+.filter-button:hover {
+    background-color: #0056b3; /* Darker shade on hover */
 }
 
 /* Main content area */
@@ -123,6 +133,21 @@
     border: none;
     cursor: pointer;
     margin-right: 10px;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px; /* Adjust padding for better size */
+    font-size: 14px; /* Font size for readability */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.like-button:hover {
+    background-color: #f0f0f0; /* Light gray background on hover */
+}
+
+/* Like icon styling */
+.like-icon {
+    width: 20px; /* Adjust icon size */
+    height: 20px; /* Adjust icon size */
 }
 
 /* Like count display */
@@ -181,6 +206,7 @@
     margin-right: 10px;
 }
 
+/* Comment post button */
 .post-comment-button {
     background-color: #007bff;
     color: white;
