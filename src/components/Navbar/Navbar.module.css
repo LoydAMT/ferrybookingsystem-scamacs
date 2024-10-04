@@ -6,6 +6,7 @@
   overflow: hidden; 
   box-sizing: border-box; 
 }
+
 .navbarContent {
   display: flex;
   justify-content: space-between;
@@ -50,6 +51,12 @@
 .navbarItem a:focus {
   color: #01255D;
   font-weight: 700;
+}
+
+
+.active {
+  color: #01255D; 
+  font-weight: 700; 
 }
 
 .rightSection {
