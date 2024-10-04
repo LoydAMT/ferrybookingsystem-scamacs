@@ -143,6 +143,10 @@
     border-radius: 8px;
     width: 400px;
     position: relative;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .close-button {
@@ -164,3 +168,70 @@
 .modal-buttons button {
     margin-left: 10px;
 }
+
+
+
+
+
+/* Company Details modal */
+.ferry-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ferry-item {
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+}
+
+.ferry-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.schedule-days {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.schedule-day {
+    flex: 1;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.schedule-day.active {
+    background-color: #4caf50;
+    color: white;
+}
+
+.ferry-image-upload {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.ferry-image-preview {
+    width: 100px;
+    height: 100px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #888;
+}
+
+
