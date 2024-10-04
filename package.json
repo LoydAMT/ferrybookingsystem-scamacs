@@ -10,7 +10,7 @@
     "@types/react-dom": "^18.3.0",
     "date-fns": "^4.1.0",
     "face-api.js": "^0.22.2",
-    "firebase": "^10.13.1",
+    "firebase": "^10.14.0",
     "install": "^0.13.0",
     "lucide-react": "^0.441.0",
     "npm": "^10.8.3",
