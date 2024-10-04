@@ -62,22 +62,34 @@ const Navbar = ({ onLoginClick }) => {
         {/* Center: Navigation Links */}
         <ul className={styles.navbarList}>
           <li className={styles.navbarItem}>
-            <Link to="/" className={location.pathname === '/' ? styles.active : ''}>
+            <Link 
+              to="/" 
+              className={location.pathname === '/' ? styles.active : ''}
+            >
               Home
             </Link>
           </li>
           <li className={styles.navbarItem}>
-            <Link to="/companies" className={location.pathname === '/companies' ? styles.active : ''}>
+            <Link 
+              to="/companies" 
+              className={location.pathname === '/companies' ? styles.active : ''}
+            >
               Companies
             </Link>
           </li>
           <li className={styles.navbarItem}>
-            <Link to="/schedule" className={location.pathname === '/schedule' ? styles.active : ''}>
+            <Link 
+              to="/schedule" 
+              className={location.pathname === '/schedule' ? styles.active : ''}
+            >
               Schedule
             </Link>
           </li>
           <li className={styles.navbarItem}>
-            <Link to="/community" className={location.pathname === '/community' ? styles.active : ''}>
+            <Link 
+              to="/community" 
+              className={location.pathname === '/community' ? styles.active : ''}
+            >
               Community
             </Link>
           </li>

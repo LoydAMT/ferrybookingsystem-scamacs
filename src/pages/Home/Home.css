@@ -5,26 +5,26 @@
   height: 100vh;
   color: white;
   display: flex;
-  flex-direction: row; /* Ensure left and right sides are side by side */
+  flex-direction: row; 
   padding: 20px;
 }
 
 .leftSide {
-  background-color: rgba(0, 0, 0, 0); /* Distinguishing background */
+  background-color: rgba(0, 0, 0, 0); 
 
   width: 55%;
-  border-radius: 10px; /* Optional: rounded corners */
+  border-radius: 10px; 
 }
 
 .rightSide {
-  background-color: rgba(255, 255, 255, 0); /* Distinguishing background */
+  background-color: rgba(255, 255, 255, 0); 
   padding-bottom: 20vh;
   margin-right: 150px;
   width: 45%;
-  border-radius: 10px; /* Optional: rounded corners */
+  border-radius: 10px; 
   display: flex;
-  align-items: center; /* Center carousel vertically */
-  justify-content: center; /* Center carousel horizontally */
+  align-items: center;
+  justify-content: center; 
 }
 
 .TextWithSquare {
@@ -111,8 +111,8 @@
   display: flex;
   flex-direction: column;
   background-color: #D5EEF9;
-  height: 200vh; /* Adjust based on your layout */
-  width: 100vw; /* Adjust based on your layout */
+  height: 200vh; 
+  width: 100vw; 
 }
 
 .HeaderText {
