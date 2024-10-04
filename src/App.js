@@ -11,6 +11,7 @@ import Companies from './pages/Companies/Companies';
 import Dashboard from './pages/Admin/Admin'; // Import the Dashboard component
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
+import Community from './pages/Community/Community'; // Import the Community component
 import 'typeface-open-sans';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -59,6 +60,7 @@ function App() {
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/admin" element={user ? <Dashboard /> : <Login />} /> {/* Route for Dashboard */}
         <Route path="/signup" element={<Signup onClose={handleCloseSignup} />} />
+        <Route path="/community" element={<Community userId={user?.uid} />} /> {/* Route for Community */}
       </Routes>
     </Router>
   );

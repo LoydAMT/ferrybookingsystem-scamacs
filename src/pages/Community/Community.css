@@ -1,0 +1,220 @@
+/* Community.css */
+
+/* Container for the entire community section */
+.community-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4; /* Light background color */
+}
+
+/* Input area for new posts */
+.post-input-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Profile picture in the input area */
+.community-profile-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* Input field for new posts */
+.new-post-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* Button for adding new posts */
+.new-post-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Filter buttons */
+.filter-buttons {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.filter-button {
+    background-color: #e7e7e7;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.filter-button.active {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Main content area */
+.main-content {
+    display: flex;
+    width: 100%;
+}
+
+/* Container for posts */
+.posts-container {
+    flex: 3;
+    margin-right: 20px;
+}
+
+/* Individual post card */
+.post-card {
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Post header */
+.post-header {
+    display: flex;
+    align-items: center;
+}
+
+/* Profile picture in the post */
+.post-profile-picture {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* Post user name */
+.post-user-name {
+    font-weight: bold;
+}
+
+/* Timestamp for the post */
+.post-timestamp {
+    font-size: 0.9em;
+    color: gray;
+}
+
+/* Like and comment buttons */
+.like-comment-buttons {
+    display: flex;
+    align-items: center;
+}
+
+/* Button for liking a post */
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+/* Like count display */
+.like-count {
+    margin-left: 10px;
+}
+
+/* Comments container */
+.comments-container {
+    margin-top: 10px;
+}
+
+/* Individual comment */
+.comment {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Profile picture in comment */
+.comment-profile-picture {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* Comment content */
+.commentContent {
+    flex: 1;
+}
+
+/* Comment timestamp */
+.comment-timestamp {
+    font-size: 0.8em;
+    color: gray;
+}
+
+/* Options button for comments */
+.comment-options {
+    margin-left: 10px;
+}
+
+/* Add comment input area */
+.add-comment-container {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.comment-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.post-comment-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Error message bar */
+.error-bar {
+    color: red;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    width: 100%;
+}
+
+/* Sidebar for search bar */
+.sidebar {
+    flex: 1;
+}
+
+/* Search bar container */
+.search-bar-container {
+    margin-bottom: 20px;
+}
+
+/* Search bar input */
+.search-bar {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+}
