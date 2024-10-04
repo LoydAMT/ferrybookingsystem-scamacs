@@ -173,3 +173,20 @@
     padding-right: 0;
   }
 }
+
+
+.uploadSection {
+  margin-top: 20px;
+}
+
+.uploadButton {
+  background-color: #4CAF50; /* Green */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.uploadButton:hover {
+  background-color: #45a049; /* Darker green */
+}
