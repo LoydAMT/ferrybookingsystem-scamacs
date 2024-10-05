@@ -31,12 +31,31 @@ function Community() {
   const [imageUpload, setImageUpload] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
 
+  const getProfilePicture = async (userId) => {
+    try {
+      const userDoc = await getDoc(doc(db, 'users', userId));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return userData.profilePic || defaultProfilePicture;
+      }
+      return defaultProfilePicture;
+    } catch (error) {
+      console.error("Error fetching profile picture:", error);
+      return defaultProfilePicture;
+    }
+  };
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'posts'), (snapshot) => {
-      const postsData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        likes: [],
-        ...doc.data(),
+    const unsubscribe = onSnapshot(collection(db, 'posts'), async (snapshot) => {
+      const postsData = await Promise.all(snapshot.docs.map(async (doc) => {
+        const data = doc.data();
+        const userProfilePicture = await getProfilePicture(data.userId);
+        return {
+          id: doc.id,
+          likes: [],
+          ...data,
+          userProfilePicture,
+        };
       }));
       const sortedPosts = sortPosts(postsData);
       setPosts(sortedPosts);
@@ -44,10 +63,11 @@ function Community() {
 
     const authUnsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
+        const profilePicture = await getProfilePicture(user.uid);
         setCurrentUser({
           uid: user.uid,
           name: user.email,
-          profilePicture: defaultProfilePicture,
+          profilePicture,
         });
       } else {
         setCurrentUser(null);
@@ -59,7 +79,6 @@ function Community() {
       authUnsubscribe();
     };
   }, []);
-
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
       setImageUpload(e.target.files[0]);
@@ -199,7 +218,7 @@ function Community() {
     <div className="community-container">
       {error && <div className="error-bar">{error}</div>}
       <div className="post-input-container">
-        <img src={currentUser?.profilePicture || defaultProfilePicture} alt="Profile" className="community-profile-picture" />
+        <img src={currentUser?.profilePicture} alt="Profile" className="community-profile-picture" />
         <input
           type="text"
           value={newPost}
@@ -216,7 +235,6 @@ function Community() {
             className="image-upload-input"
           />
           <label htmlFor="image-upload" className="image-upload-label">
-            {/* Upload Image */}
             <span role="img" aria-label="Add Image"></span>
           </label>
           {imagePreview && (
@@ -237,7 +255,7 @@ function Community() {
           {getFilteredPosts.map(post => (
             <div key={post.id} className="post-card">
               <div className="post-header">
-                <img src={post.userProfilePicture || defaultProfilePicture} alt="Profile" className="post-profile-picture" />
+                <img src={post.userProfilePicture} alt="Profile" className="post-profile-picture" />
                 <div className="post-user-info">
                   <p className="post-user-name">{post.userName}</p>
                   {post.createdAt && (
@@ -271,7 +289,7 @@ function Community() {
               <p className="likes-comments-count">{post.likes.length} likes • {post.comments.length} comments</p>
               {commentInputVisibility[post.id] && (
                 <div className="comment-input-container">
-                  <img src={currentUser?.profilePicture || defaultProfilePicture} alt="Profile" className="comment-profile-picture" />
+                  <img src={currentUser?.profilePicture} alt="Profile" className="comment-profile-picture" />
                   <input
                     type="text"
                     placeholder="Add a comment..."
@@ -288,7 +306,7 @@ function Community() {
               <div className="comments-section">
                 {sortComments(post.comments).slice(0, visibleComments[post.id] ? undefined : 2).map((comment, index) => (
                   <div key={index} className="comment">
-                    <img src={comment.userProfilePicture || defaultProfilePicture} alt="Profile" className="comment-profile-picture" />
+                    <img src={comment.userProfilePicture} alt="Profile" className="comment-profile-picture" />
                     <div className="comment-content">
                       <p className="comment-user-name">{comment.userName}</p>
                       <p>{comment.content}</p>
