@@ -490,6 +490,7 @@ const CompaniesAd = () => {
                         {/* 
                         */}
 
+                        <div className="ferry-nameandpicture">
                         <div className="ferry-name">
                             <h4 className="vessel-headers">Ferry Name<span className="required">*</span></h4>
                             <input
@@ -497,7 +498,6 @@ const CompaniesAd = () => {
                                 id="vessel-name"
                                 type="text"
                                 name="name"
-                                placeholder="Name"
                                 value={vesselDetails.name}
                                 onChange={handleVesselInputChange}
                                 min="0"
@@ -506,47 +506,93 @@ const CompaniesAd = () => {
 
                         </div>
                         
+                        <div className="ferry-image-upload">
+                            <div className="ferry-image-upload-inputs">
+                                <h4 className="vessel-headers">Ferry Picture<span className="required">*</span></h4>
+                                <div className="vessel-image-upload" onClick={() => document.getElementById('file-upload').click()}>
+                                {logoPreview ? (
+                                    <img src={logoPreview} alt="Vessel image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                ) : (
+                                    <span>Upload Image here</span>
+                                )}
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        
+                        <div className="ferry-price">
+                            <h4 className="vessel-headers">Ferry Price</h4>
+                                <div className="ferry-price-inputs">
+                                <div className="ferry-price-inputs2">
+                                    <label for="price" >Price<span className="required">*</span></label>
+                                <input
+                                className="vessel-tbox"
+                                id="vessel-price"
+                                type="number"
+                                name="price"
+                                value={vesselDetails.size.price}
+                                onChange={handleVesselSizeChange}
+                                min="0"
+                                required
+                                />
+                                    </div>
+                            </div>
+                        </div>
 
                         <div className="ferry-size">
-                            <h4 className="vessel-headers">Ferry Size<span className="required">*</span></h4>
-                            <input
+                            <h4 className="vessel-headers">Ferry Size</h4>
+                                <div className="ferry-size-inputs">
+                                    <div className="ferry-size-inputs2">
+                                    <label for="length" >Length<span className="required">*</span></label>
+                                <input
                                 className="vessel-tbox"
                                 id="vessel-length"
                                 type="number"
                                 name="length"
-                                placeholder="Length"
                                 value={vesselDetails.size.length}
                                 onChange={handleVesselSizeChange}
                                 min="0"
                                 required
                             />
-                            <input
+                                    </div>
+                                
+                                <div className="ferry-size-inputs2">
+                                <label for="width">Width<span className="required">*</span></label>
+                                <input
                                 className="vessel-tbox"
                                 id="vessel-width"
                                 type="number"
                                 name="width"
-                                placeholder="Width"
                                 value={vesselDetails.size.width}
                                 onChange={handleVesselSizeChange}
                                 min="0"
                                 required
                             />
-                            <input
+                                </div>
+                            
+                                <div className="ferry-size-inputs2">
+                                <label for="draft">Draft<span className="required">*</span></label>
+                                <input
                                 className="vessel-tbox"
                                 id="vessel-draft"
                                 type="number"
                                 name="draft"
-                                placeholder="Draft"
                                 value={vesselDetails.size.draft}
                                 onChange={handleVesselSizeChange}
                                 min="0"
                                 required
                             />
+                                </div>
+                            
+                                </div>
                         </div>
 
                         <div className="ferry-capacity">
-                            <h4 className="vessel-headers">Capacity<span className="required">*</span></h4>
-                            <input
+                            <h4 className="vessel-headers">Capacity</h4>
+                                <div className="ferry-capacity-inputs">
+                                    <div className="ferry-capacity-inputs2">
+                                    <label for="passenger">Passengers<span className="required">*</span></label>
+                                    <input
                                 className="vessel-tbox"
                                 id="vessel-passengers"
                                 type="number"
@@ -557,6 +603,10 @@ const CompaniesAd = () => {
                                 min="0"
                                 required
                             />
+                                    </div>
+                            
+                            <div className="ferry-capacity-inputs2">
+                            <label for="vehicles">Vehicles<span className="required">*</span></label>
                             <input
                                 className="vessel-tbox"
                                 id="vessel-vehicles"
@@ -567,9 +617,11 @@ const CompaniesAd = () => {
                                 onChange={handleVesselCapacityChange}
                                 min="0"
                                 required
-                            />
-                        </div>
-
+                            /> 
+                            </div>
+                            
+                        <div className="ferry-capacity-inputs2">
+                        <label for="deckLevels">Deck Levels<span className="required">*</span></label>
                         <select
                             id="vessel-deckLevels"
                             name="deckLevels"
@@ -577,13 +629,17 @@ const CompaniesAd = () => {
                             onChange={handleVesselInputChange}
                             required
                         >
-                            <option value="">Select Deck Levels</option>
+                            <option value=""> </option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
                             {/* Add more options as needed */}
                         </select>
-
+                            </div>
+                        </div>
+                    </div>
                         <div className="ferry-schedule">
                             <h4 className="vessel-headers">Schedule<span className="required">*</span></h4>
                                 <div className="days-container">
@@ -600,15 +656,6 @@ const CompaniesAd = () => {
                             </div>
                         </div>
 
-                        <div className="ferry-image-upload">
-                            <h4 className="vessel-headers">Ferry Picture<span className="required">*</span></h4>
-                            <input
-                                id="vessel-fileupload"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleVesselImageChange}
-                            />
-                        </div>
 
                         <div className="vessel-modal-buttons">
                             <button id="vessel-save" onClick={handleAddVessel}>Save Changes</button>
