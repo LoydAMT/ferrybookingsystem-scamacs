@@ -423,66 +423,89 @@ const CompaniesAd = () => {
             {showSelectedModal && selectedCompany && (
                 <div className="modaldetail">
                     <div className="modaldetail-content">
-                        <button className="close-button" onClick={() => setShowSelectedModal(false)}>✖</button>
-                        <h3>{selectedCompany.name}</h3>  
-                      
-                        
-                        <textarea
-                            name="description"
-                            placeholder="Description"
-                            value={selectedCompany.description}
-                            onChange={handleSelectedCompanyChange}
-                        />
+                    <div className="modal-detail">
+                            <img src='/images/SWIFT_SAIL_9.png' alt="Logo" className="logo" />
+                            <h3>{selectedCompany.name}</h3>  
+                            <button className="close-button" onClick={() => setShowSelectedModal(false)}>✖</button>
+                        </div>
+                     
+                        <div className="form-row">
+                                <div className="logo-detail" >
+                                    {logoPreview ? (
+                                    <img 
+                                        src={selectedCompany.logoPath} // Use the fetched Firebase URL for the image
+                                        alt="Company Logo" 
+                                    />
+                                    ) : (
+                                        <div className="logo-placeholder">
+                                            <p>Upload Logo</p> {/* Placeholder when no logo is available */}
+                                        </div>
+                                    )}
+                                </div>
+                           
+                            <textarea
+                                name="description"
+                                placeholder="Description"
+                                value={selectedCompany.description}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                         </div>
                         <h4 >Contact Person</h4>
-                        <input
-                            type="text"
-                            name="firstName"
-                            placeholder="First Name"
-                            value={selectedCompany.contact.firstName}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="text"
-                            name="lastName"
-                            placeholder="Last Name"
-                            value={selectedCompany.contact.lastName}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="text"
-                            name="position"
-                            placeholder="Position"
-                            value={selectedCompany.contact.position}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="text"
-                            name="phoneNumber"
-                            placeholder="Phone Number"
-                            value={selectedCompany.contact.phoneNumber}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            value={selectedCompany.contact.email}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="text"
-                            name="website"
-                            placeholder="Website"
-                            value={selectedCompany.contact.website}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="text"
-                            name="otherLinks"
-                            placeholder="Other Links"
-                            value={selectedCompany.contact.otherLinks}
-                            onChange={handleSelectedCompanyChange}
-                        />
+                        <div className='add-detail'>
+                            <input
+                                type="text"
+                                name="firstName"
+                                placeholder="First Name"
+                                value={selectedCompany.contact.firstName}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                            <input
+                                type="text"
+                                name="lastName"
+                                placeholder="Last Name"
+                                value={selectedCompany.contact.lastName}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                            <input
+                                type="text"
+                                name="position"
+                                placeholder="Position"
+                                value={selectedCompany.contact.position}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                         </div>
+                         <div className='add-detail2'>
+                            <input
+                                type="text"
+                                name="phoneNumber"
+                                placeholder="Phone Number"
+                                value={selectedCompany.contact.phoneNumber}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Email"
+                                value={selectedCompany.contact.email}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                            <input
+                                type="text"
+                                name="website"
+                                placeholder="Website"
+                                value={selectedCompany.contact.website}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                          </div>
+                          <div className='add-detail3'>
+                            <input
+                                type="text"
+                                name="otherLinks"
+                                placeholder="Other Links"
+                                value={selectedCompany.contact.otherLinks}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                            </div>
                         <div className="modal-buttons">
                             <button onClick={handleUpdateCompany}>Update Company</button>
                             <button onClick={() => setShowVesselModal(true)}>Add a Vessel</button>
