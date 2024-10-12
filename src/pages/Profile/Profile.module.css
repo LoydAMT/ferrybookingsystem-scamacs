@@ -136,7 +136,10 @@
   transition: background-color 0.3s, box-shadow 0.3s;
   font-family: 'Helvetica', sans-serif; 
 }
-
+.content h3{
+  background-color: #3375df;
+  border-radius: 10px 10px 0 0;
+}
 .tabs button:hover {
   background-color: #e0e0e0;
   padding: 1rem 1.5rem;
