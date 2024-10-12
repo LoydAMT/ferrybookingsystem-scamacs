@@ -78,11 +78,21 @@
     color: #000633;
   }
   
-  .content {
+.content {
     display: flex;
     padding: 2rem;
     margin-top: 50px;
+}
+.content h3{
+      margin: -20px;
+      margin-bottom:10px;
+      background-color: #3375df;
+      border-radius: 10px 10px 0 0;
+      padding:10px 10px;
+      color:white;
+      
   }
+  
   .personalInfo p {
     margin-bottom: 1rem;
     line-height: 1.6;
@@ -135,10 +145,6 @@
   outline: none;
   transition: background-color 0.3s, box-shadow 0.3s;
   font-family: 'Helvetica', sans-serif; 
-}
-.content h3{
-  background-color: #3375df;
-  border-radius: 10px 10px 0 0;
 }
 .tabs button:hover {
   background-color: #e0e0e0;
@@ -193,3 +199,37 @@
 .uploadButton:hover {
   background-color: #45a049; /* Darker green */
 }
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContent {
+  background: rgb(80, 185, 255);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  position: relative;
+  width: 300px; 
+  color:white;
+  font-weight:bold;
+}
+
+.closeButton {
+  position: absolute; 
+  top: 8px; 
+  right: 10px; 
+  background: white; 
+  border-radius: 60px; 
+  font-size: 10px; 
+  cursor: pointer; 
+  color: #3491f6;
+  
+ }
