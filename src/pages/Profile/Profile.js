@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import styles from './Profile.module.css';
+import styles from './Profile.module.css'; 
 
 const Profile = () => {
   // States for user data
@@ -13,6 +12,8 @@ const Profile = () => {
   const [profilePic, setProfilePic] = useState(null); // State for profile picture file
   const [imageUrl, setImageUrl] = useState(''); // State for uploaded image URL
   const [uploadStatus, setUploadStatus] = useState(''); // State for upload status message
+  const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
+  const [loadingModalVisible, setLoadingModalVisible] = useState(false); // State for loading modal
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -82,31 +83,37 @@ const Profile = () => {
   };
 
   // Handle file input change
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       setProfilePic(file);
-      setUploadStatus(''); // Clear any previous status
+      setUploadStatus(''); 
+
+      // Upload the file immediately after selection
+      await handleUpload(file);
     }
   };
 
   // Handle upload functionality
-  const handleUpload = async () => {
-    if (!profilePic) {
+  const handleUpload = async (file) => {
+    if (!file) {
       setUploadStatus('Please select a file to upload.');
       return;
     }
 
     const storage = getStorage();
-    const storageRef = ref(storage, `profile_pics/${profilePic.name}`);
+    const storageRef = ref(storage, `profile_pics/${file.name}`);
 
     try {
+      setLoadingModalVisible(true); // Show loading modal
+
       // Upload the file
-      await uploadBytes(storageRef, profilePic);
+      await uploadBytes(storageRef, file);
       // Get the download URL
       const url = await getDownloadURL(storageRef);
-      setImageUrl(url);
-      setUploadStatus('Upload successful!');
+      setImageUrl(url); // Update imageUrl with the new URL
+      setUploadStatus();
+      setModalVisible(true); // Show the success modal
 
       // Update Firestore with the new profile picture URL
       const auth = getAuth();
@@ -117,7 +124,13 @@ const Profile = () => {
     } catch (error) {
       console.error('Upload failed:', error);
       setUploadStatus('Upload failed. Please try again.');
+    } finally {
+      setLoadingModalVisible(false); // Hide loading modal after the process
     }
+  };
+
+  const closeModal = () => {
+    setModalVisible(false); // Close the success modal
   };
 
   return (
@@ -129,12 +142,20 @@ const Profile = () => {
           alt="Cover"
           className={styles.coverPhotoImage}
         />
-        <div className={styles.profilePic}>
+        <div className={styles.profilePic} onClick={() => document.getElementById('fileInput').click()}>
           {/* Display profile picture */}
           <img
             src={imageUrl ? imageUrl : '/images/default-profile.jpg'}
             alt="Profile"
             className={styles.profilePicture}
+          />
+          {/* Hidden file input */}
+          <input
+            id="fileInput"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            style={{ display: 'none' }} // Hide the file input
           />
         </div>
         <h2 className={styles.username}>{fullName()}</h2>
@@ -177,11 +198,29 @@ const Profile = () => {
         </div>
 
         <div className={styles.uploadSection}>
-          <input type="file" accept="image/*" onChange={handleFileChange} />
-          <button onClick={handleUpload} className={styles.uploadButton}>Upload Profile Picture</button>
           {uploadStatus && <p className={styles.uploadStatus}>{uploadStatus}</p>}
         </div>
       </div>
+
+      {/* Modal for upload success */}
+      {modalVisible && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            
+          <button className={styles.closeButton} onClick={closeModal}>✖</button>
+            <p>Uploaded successfully!</p>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for loading during upload */}
+      {loadingModalVisible && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+          <p>Uploading...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
