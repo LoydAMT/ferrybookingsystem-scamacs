@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import { db } from '../../firebase'; 
+import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import './Schedule.css';
 
@@ -20,6 +21,7 @@ const Schedule = () => {
   const [loadingTo, setLoadingTo] = useState(false);
   const [error, setError] = useState(null);
   const [searchCompleted, setSearchCompleted] = useState(false); // Manage the state to toggle views
+  const navigate = useNavigate();
 
   // Background rotation effect
   useEffect(() => {
@@ -80,9 +82,17 @@ const Schedule = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-
+    
     if (selectedFrom && selectedTo) {
-      setSearchCompleted(true); // Toggle to display the light blue background
+      setSearchCompleted(true);
+      navigate('/scheduleview', {
+        state: {
+          selectedFrom,
+          selectedTo,
+          departDate: document.getElementById('depart').value,
+          returnDate: document.getElementById('return').value
+        }
+      });
     } else {
       alert('Please select both "From" and "To" locations.');
     }
@@ -100,109 +110,109 @@ const Schedule = () => {
       }}
     >
       <main className="main-content">
-        {!searchCompleted ? (
-          <>
-            <div className="content-container">
-              <h1 className="main-title">{backgrounds[currentBackground].text}</h1>
+      {searchCompleted ? (
+  // Replace this with some valid JSX or an empty fragment
+  <div>
+    {/* You can add some placeholder text here */}
+    <p>Search Completed!</p>
+  </div>
+) : (
+  <>
+    <div className="content-container">
+      <h1 className="main-title">{backgrounds[currentBackground].text}</h1>
 
-              <form className="booking-form" onSubmit={handleSearch}>
-                {error && <p className="error-message">{error}</p>}
-                
-                <div className="form-group">
-                  <label className="form-label">Trip Type</label>
-                  <select
-                    className="form-input"
-                    value={tripType}
-                    onChange={(e) => setTripType(e.target.value)}
-                  >
-                    <option value="round-trip">Round-trip</option>
-                    <option value="one-way">One-way</option>
-                  </select>
-                </div>
+      <form className="booking-form" onSubmit={handleSearch}>
+        {error && <p className="error-message">{error}</p>}
+        
+        <div className="form-group">
+          <label className="form-label">Trip Type</label>
+          <select
+            className="form-input"
+            value={tripType}
+            onChange={(e) => setTripType(e.target.value)}
+          >
+            <option value="round-trip">Round-trip</option>
+            <option value="one-way">One-way</option>
+          </select>
+        </div>
 
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="from">From</label>
-                    <select
-                      className="form-input"
-                      id="from"
-                      value={selectedFrom}
-                      onChange={handleFromChange}
-                      disabled={loadingFrom || error}
-                    >
-                      <option value="">Select Origin</option>
-                      {fromLocations.map((location, index) => (
-                        <option key={index} value={location}>
-                          {location}
-                        </option>
-                      ))}
-                    </select>
-                 
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="to">To</label>
-                    <select
-                      className="form-input"
-                      id="to"
-                      value={selectedTo}
-                      onChange={(e) => setSelectedTo(e.target.value)}
-                      disabled={!selectedFrom || loadingTo || error}
-                    >
-                      <option value="">Select Destination</option>
-                      {toLocations.map((location, index) => (
-                        <option key={index} value={location}>
-                          {location}
-                        </option>
-                      ))}
-                    </select>
-                   
-                  </div>
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="depart">Depart</label>
-                    <input
-                      className="form-input"
-                      id="depart"
-                      type="date"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="return">Return</label>
-                    <input
-                      className="form-input"
-                      id="return"
-                      type="date"
-                      disabled={tripType === 'one-way'}
-                    />
-                  </div>
-                </div>
-
-                <div className="passenger-types">
-                  {['Adults', 'Children', 'Student', 'PWD', 'Senior'].map((type) => (
-                    <div key={type} className="form-group">
-                      <label className="form-label">{type}</label>
-                      <input
-                        className="form-input"
-                        type="number"
-                        min="0"
-                        defaultValue={type === 'Adults' ? 1 : 0}
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <button type="submit" className="search-button">Search Schedule</button>
-              </form>
-            </div>
-          </>
-        ) : (
-          // Light blue background with placeholder text for schedules
-          <div className="schedule-placeholder" style={{ height: '100vh', backgroundColor: 'lightblue', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <h2 style={{ color: 'darkblue' }}>Schedules ni here, but 2log na aq</h2>
+        <div className="form-row">
+          <div className="form-group">
+            <label className="form-label" htmlFor="from">From</label>
+            <select
+              className="form-input"
+              id="from"
+              value={selectedFrom}
+              onChange={handleFromChange}
+              disabled={loadingFrom || error}
+            >
+              <option value="">Select Origin</option>
+              {fromLocations.map((location, index) => (
+                <option key={index} value={location}>
+                  {location}
+                </option>
+              ))}
+            </select>
           </div>
-        )}
+          <div className="form-group">
+            <label className="form-label" htmlFor="to">To</label>
+            <select
+              className="form-input"
+              id="to"
+              value={selectedTo}
+              onChange={(e) => setSelectedTo(e.target.value)}
+              disabled={!selectedFrom || loadingTo || error}
+            >
+              <option value="">Select Destination</option>
+              {toLocations.map((location, index) => (
+                <option key={index} value={location}>
+                  {location}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label className="form-label" htmlFor="depart">Depart</label>
+            <input
+              className="form-input"
+              id="depart"
+              type="date"
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label" htmlFor="return">Return</label>
+            <input
+              className="form-input"
+              id="return"
+              type="date"
+              disabled={tripType === 'one-way'}
+            />
+          </div>
+        </div>
+
+        <div className="passenger-types">
+          {['Adults', 'Children', 'Student', 'PWD', 'Senior'].map((type) => (
+            <div key={type} className="form-group">
+              <label className="form-label">{type}</label>
+              <input
+                className="form-input"
+                type="number"
+                min="0"
+                defaultValue={type === 'Adults' ? 1 : 0}
+              />
+            </div>
+          ))}
+        </div>
+
+        <button type="submit" className="search-button">Search Schedule</button>
+      </form>
+    </div>
+  </>
+)}
+
       </main>
     </div>
   );
