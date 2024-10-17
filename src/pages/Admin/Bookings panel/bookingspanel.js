@@ -262,7 +262,7 @@ const BookingsPanel = () => {
               </button>
               <button
                 className="modal-view-list-button"
-                onClick={() => {/*View list funtcionnnnnnnnnnnnn*/ }}
+                onClick={() => {/*View list funtcionnnnnnnnnnnnnn*/ }}
               >
                 View List
               </button>
