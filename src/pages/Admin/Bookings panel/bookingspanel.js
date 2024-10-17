@@ -1,8 +1,8 @@
-// src/pages/Companies.js
-import React from 'react';
+import React from 'react'
 import './bookingspanel.css';
 
-const Companies = () => {
+
+const BookingsPanel = () => {
   const ferries = [
     {
       name: "MV 2GO Maligaya",
@@ -60,6 +60,7 @@ const Companies = () => {
       ))}
     </div>
   );
-};
 
-export default Companies;
+}
+
+export default BookingsPanel;

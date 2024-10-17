@@ -4,6 +4,7 @@ import CameraDisplay from './Security/SecurityPanel';
 import './Admin.css'; 
 import UserList from './Userliit/Userlist';
 import CompaniesAd from './Companies/companies';
+import BookingsPanel from "./Bookings panel/bookingspanel";
 
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('UserList');
@@ -22,7 +23,7 @@ const Dashboard = () => {
       case 'UserList':
         return <UserList />;
       case 'Bookings':
-        return <h2 className="text-2xl font-bold">Bookings Panel</h2>;
+        return <BookingsPanel />;
       case 'Companies':
         return <CompaniesAd />;
       case 'Verify Users':
