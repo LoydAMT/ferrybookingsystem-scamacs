@@ -1,83 +1,112 @@
 .ferry-selection {
-    font-family: Arial, sans-serif;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .logo-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .logo {
-    width: 30px; 
-    height: 30px; 
-    margin-right: 10px;
-    background-color: #0066cc;
-    border-radius: 50px;
-    padding:10px;
-  }
-  
-  
-  h2 {
-    color: #333;
-    margin-bottom: 15px;
-  }
-  
-  .ferry-card {
-    display: flex;
-    background-color: #CFE2FE;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .ferry-image {
-    width: 300px;
-    height: 200px;
-    object-fit: cover;
-    margin-top: 15px;
-    margin-left: 15px;
-  }
-  
-  .ferry-details {
-    padding: 15px;
-    flex-grow: 1;
-  }
-  
-  h3 {
-    color: #0066cc;
-    margin-top: 0;
-  }
-  
-  p {
-    margin: 5px 0;
-  }
-  
-  .ratings {
-    color: #ffa500;
-  }
-  
-  .price {
-    font-weight: bold;
-    color: #009900;
-  }
-  
-  .select-button {
-    background-color: #00bfff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    float: right;
-    transition: background-color 0.3s;
-  }
-  
-  .select-button:hover {
-    background-color: #0099cc;
-  }
-  
+  font-family: Arial, sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.logo {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  background-color: #0066cc;
+  border-radius: 50px;
+  padding: 10px;
+}
+
+
+h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.ferry-grid {
+  display: flex;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 10px;
+  width: 78%;
+  margin-bottom: 30px;
+
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ferry-grid::-webkit-scrollbar {
+  height: 8px;
+}
+
+.ferry-grid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.ferry-grid::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.ferry-card {
+  flex: 0 0 230px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  justify-content: space-between;
+  height: 250px;
+  position: relative;
+}
+
+.ferry-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.ferry-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 45px;
+  color: #333;
+  display: block;
+}
+
+.ferry-details {
+  padding: 15px;
+  flex-grow: 1;
+}
+
+
+.view-details-button {
+  background-color: #00bfff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 200px;
+  position: absolute;
+  margin-top: auto;
+  bottom: 15px;
+}
+
+.view-details-button:hover {
+  background-color: #0099cc;
+}
