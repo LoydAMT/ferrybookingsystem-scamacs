@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
+import { Search } from 'lucide-react';
 import './bookingspanel.css';
 
 const BookingsPanel = () => {
   const [selectedFerry, setSelectedFerry] = useState(null);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showToday, setShowToday] = useState(true);
+  const [showUpcoming, setShowUpcoming] = useState(true);
+
 
   const ferries = [
     {
@@ -15,7 +21,7 @@ const BookingsPanel = () => {
       price: 2999.00
     },
     {
-      name: "MV LITE Ferry 1",
+      name: "Mitch Lauren",
       image: "/images/HomeBackground.png",
       travelTime: "40 mins",
       capacity: 200,
@@ -64,7 +70,7 @@ const BookingsPanel = () => {
 
   const departures = [
     {
-      name: "djksahdjkaslhdasjkdhlaslkhjk ghjkg",
+      name: "lauren ghjkg",
       image: "/images/ferry.jpg",
       travelTime: "30 mins",
       capacity: 250,
@@ -120,6 +126,16 @@ const BookingsPanel = () => {
 
   ];
 
+  // Function to filter ferries based on search term
+  const filterByFerryName = (items) => {
+    return items.filter(item =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  };
+
+  // Filtered lists for ferries and departures
+  const filteredDepToday = showToday ? filterByFerryName(ferries) : [];
+  const filteredDepUpcoming = showUpcoming ? filterByFerryName(departures) : [];
 
   const handleViewDetails = (ferry) => {
     setSelectedFerry(ferry);
@@ -127,24 +143,57 @@ const BookingsPanel = () => {
 
   return (
     <div className="bookingspanel-container">
+
+      {/* search bar */}
+      <div className="search-bar">
+        <Search size={20} />
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      {/* Filter buttons */}
+      <div className="filter-buttons">
+        <button
+          onClick={() => setShowUpcoming(prev => !prev)}
+          className={showUpcoming ? 'active' : ''}>
+            
+            Upcoming Departures
+
+        </button>
+        <button
+          onClick={() => setShowToday(prev => !prev)}
+          className={showToday ? 'active' : ''}>
+            Departures Today
+          
+        </button>
+      </div>
+
       <div className="logo-container">
         <img src='/images/select ferry.png' alt="Logo" className="logo" />
         <h2>Departures Today</h2>
       </div>
 
       <div className="ferry-grid">
-        {ferries.map((ferry, index) => (
-          <div key={index} className="ferry-card">
-            <img src={ferry.image} alt={ferry.name} className="ferry-image" />
-            <span className="ferry-name">{ferry.name || 'Unnamed Ferry'}</span>
-            <button
-              className="view-details-button"
-              onClick={() => handleViewDetails(ferry)}
-            >
-              View Details
-            </button>
-          </div>
-        ))}
+        {filteredDepToday.length > 0 ? (
+          filteredDepToday.map((ferry, index) => (
+            <div key={index} className="ferry-card">
+              <img src={ferry.image} alt={ferry.name} className="ferry-image" />
+              <span className="ferry-name">{ferry.name || 'Unnamed Ferry'}</span>
+              <button
+                className="view-details-button"
+                onClick={() => handleViewDetails(ferry)}
+              >
+                View Details
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>No ferries found for today.</p>
+        )}
       </div>
 
 
@@ -154,18 +203,22 @@ const BookingsPanel = () => {
       </div>
 
       <div className="ferry-grid">
-        {departures.map((departure, index) => (
-          <div key={index} className="ferry-card">
-            <img src={departure.image} alt={departure.name} className="ferry-image" />
-            <span className="ferry-name">{departure.name}</span>
-            <button
-              className="view-details-button"
-              onClick={() => handleViewDetails(departure)}
-            >
-              View Details
-            </button>
-          </div>
-        ))}
+        {filteredDepUpcoming.length > 0 ? (
+          filteredDepUpcoming.map((departure, index) => (
+            <div key={index} className="ferry-card">
+              <img src={departure.image} alt={departure.name} className="ferry-image" />
+              <span className="ferry-name">{departure.name}</span>
+              <button
+                className="view-details-button"
+                onClick={() => handleViewDetails(departure)}
+              >
+                View Details
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>No upcoming departures found.</p>
+        )}
       </div>
 
 
