@@ -545,7 +545,6 @@ label {
 }
 
 .ferry-header{
-    background-color: #0866FF;
     color: white;
 }
 
@@ -590,6 +589,11 @@ label {
     border-radius: 5px;
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     font-family: "Open Sans", inter;
+}
+
+#vessel-save,
+#vessel-cancel:hover{
+    cursor: pointer;
 }
 
 .ferry-size-inputs{

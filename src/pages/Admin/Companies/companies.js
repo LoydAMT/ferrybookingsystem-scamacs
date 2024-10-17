@@ -519,11 +519,14 @@ const CompaniesAd = () => {
             {showVesselModal && (
                 <div className="modal">
                     <div className="vessel-modal-content">
+
+                    <div className="modal-header">
+                    <img src='/images/SWIFT_SAIL_9.png' alt="Logo" className="logo" />
                         <button className="vessel-close-button" onClick={() => setShowVesselModal(false)}>✖</button>
                         <h3 className="ferry-header">Add a Vessel</h3>
                         {/* 
                         */}
-
+                    </div>
                         <div className="ferry-nameandpicture">
                         <div className="ferry-name">
                             <h4 className="vessel-headers">Ferry Name<span className="required">*</span></h4>
