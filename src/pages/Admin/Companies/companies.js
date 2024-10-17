@@ -54,7 +54,7 @@ const CompaniesAd = () => {
 
         fetchCompanies();
     }, []);
-
+    const [logoPreview, setLogoPreview] = useState(null); // State for logo preview
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setCompanyDetails((prevDetails) => ({
@@ -75,10 +75,20 @@ const CompaniesAd = () => {
     };
 
     const handleLogoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
         setCompanyDetails((prevDetails) => ({
             ...prevDetails,
             logo: e.target.files[0]
         }));
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setLogoPreview(reader.result); // Set the logo preview URL
+        };
+        reader.readAsDataURL(file); // Read the file as a Data URL
+    } else {
+        setLogoPreview(null); // Reset if no file is selected
+    }
     };
 
     // For Vessel
@@ -274,154 +284,228 @@ const CompaniesAd = () => {
             {showModal && (
                 <div className="modal">
                     <div className="modal-content">
-                        <button className="close-button" onClick={() => setShowModal(false)}>✖</button>
-                        <h3>Add a Company</h3>
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Company Name"
-                            value={companyDetails.name}
-                            onChange={handleInputChange}
-                        />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleLogoChange}
-                        />
-                        <textarea
-                            name="description"
-                            placeholder="Description"
-                            value={companyDetails.description}
-                            onChange={handleInputChange}
-                        />
-                        <h4>Contact Person</h4>
-                        <input
-                            type="text"
-                            name="firstName"
-                            placeholder="First Name"
-                            value={companyDetails.contact.firstName}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="text"
-                            name="lastName"
-                            placeholder="Last Name"
-                            value={companyDetails.contact.lastName}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="text"
-                            name="position"
-                            placeholder="Position"
-                            value={companyDetails.contact.position}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="text"
-                            name="phoneNumber"
-                            placeholder="Phone Number"
-                            value={companyDetails.contact.phoneNumber}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            value={companyDetails.contact.email}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="text"
-                            name="website"
-                            placeholder="Website URL"
-                            value={companyDetails.contact.website}
-                            onChange={handleContactChange}
-                        />
-                        <input
-                            type="text"
-                            name="otherLinks"
-                            placeholder="Other Links"
-                            value={companyDetails.contact.otherLinks}
-                            onChange={handleContactChange}
-                        />
+                       
+                        <div className="modal-header">
+                            <img src='/images/SWIFT_SAIL_9.png' alt="Logo" className="logo" />
+                            <h3>Add a Company</h3>
+                            <button className="close-button" onClick={() => setShowModal(false)}>✖</button>
+                        </div>
+                        <div className="form-container">
+                             <div className="logo-upload" onClick={() => document.getElementById('file-upload').click()}>
+                            {logoPreview ? (
+                                <img src={logoPreview} alt="Company Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            ) : (
+                                <span>Upload Company Logo</span>
+                            )}
+                                <input
+                                    id="file-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleLogoChange}
+                                />
+                            </div>
+
+                            <div className="company-details">
+                                <label htmlFor="company-name">Company Name</label>
+                                <input
+                                    type="text"
+                                    id="company-name"
+                                    name="name"
+                                    required
+                                    value={companyDetails.name}
+                                    onChange={handleInputChange}
+                                />
+                                
+                                <label htmlFor="company-description">Description</label>
+                                <textarea
+                                    id="company-description"
+                                    name="description"
+                                    required
+                                    value={companyDetails.description}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                        </div>
+
+                        <h4 style={{color:'skyblue'}}>Primary Contact Person</h4>
+                        <div className="contact-person-row">
+                            <div className="contact-input1">
+                                <label htmlFor="first-name">First Name</label>
+                                <input
+                                    type="text"
+                                    id="first-name"
+                                    name="firstName"
+                                    required
+                                    value={companyDetails.contact.firstName}
+                                    onChange={handleContactChange}
+                                />
+                            </div>
+                            <div className="contact-input1">
+                                <label htmlFor="last-name">Last Name</label>
+                                <input
+                                    type="text"
+                                    id="last-name"
+                                    name="lastName"
+                                    required
+                                    value={companyDetails.contact.lastName}
+                                    onChange={handleContactChange}
+                                />
+                            </div>
+                            <div className="contact-input1">
+                                <label htmlFor="position">Position</label>
+                                <input
+                                    type="text"
+                                    id="position"
+                                    name="position"
+                                    required
+                                    value={companyDetails.contact.position}
+                                    onChange={handleContactChange}
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="contact-person-row2">
+                            <div className="contact-input2">
+                                <label htmlFor="phone-number">Phone Number</label>
+                                <input
+                                    type="text"
+                                    id="phone-number"
+                                    name="phoneNumber"
+                                    required
+                                    value={companyDetails.contact.phoneNumber}
+                                    onChange={handleContactChange}
+                                />
+                            </div>
+                            <div className="contact-input2">
+                                <label htmlFor="email">Email</label>
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    required
+                                    value={companyDetails.contact.email}
+                                    onChange={handleContactChange}
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="contact-input">
+                            <label htmlFor="website">Website URL</label>
+                            <input
+                                type="text"
+                                id="website"
+                                name="website"
+                                    required
+                                value={companyDetails.contact.website}
+                                onChange={handleContactChange}
+                            />
+                        </div>
+                        <div className="contact-input">
+                            <label htmlFor="other-links">Other Links</label>
+                            <input
+                                type="text"
+                                id="other-links"
+                                name="otherLinks"
+                                value={companyDetails.contact.otherLinks}
+                                onChange={handleContactChange}
+                            />
+                        </div>
                         <div className="modal-buttons">
-                            <button onClick={handleUpdateCompany}>Update Company</button>
+                            <button onClick={handleAddCompany}>Add Company</button>
                             <button onClick={() => setShowVesselModal(true)}>Add a Vessel</button>
-                            <button onClick={() => setShowSelectedModal(false)}>Cancel</button>
+                            <button onClick={() => setShowModal(false)}>Cancel</button>
                         </div>
                     </div>
                 </div>
-            )}
+)}
 
             {/* Company Details Modal */}
             {showSelectedModal && selectedCompany && (
-                <div className="modal">
-                    <div className="modal-content">
-                        <button className="close-button" onClick={() => setShowSelectedModal(false)}>✖</button>
-                        <h3>{selectedCompany.name}</h3>  
-                        <input
-                            type="text"
-                            name="name"
-                            placeholder="Company Name"
-                            value={selectedCompany.name}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <textarea
-                            name="description"
-                            placeholder="Description"
-                            value={selectedCompany.description}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <h4>Contact Person</h4>
-                        <input
-                            type="text"
-                            name="firstName"
-                            placeholder="First Name"
-                            value={selectedCompany.contact.firstName}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="text"
-                            name="lastName"
-                            placeholder="Last Name"
-                            value={selectedCompany.contact.lastName}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="text"
-                            name="position"
-                            placeholder="Position"
-                            value={selectedCompany.contact.position}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="text"
-                            name="phoneNumber"
-                            placeholder="Phone Number"
-                            value={selectedCompany.contact.phoneNumber}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="Email"
-                            value={selectedCompany.contact.email}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="text"
-                            name="website"
-                            placeholder="Website"
-                            value={selectedCompany.contact.website}
-                            onChange={handleSelectedCompanyChange}
-                        />
-                        <input
-                            type="text"
-                            name="otherLinks"
-                            placeholder="Other Links"
-                            value={selectedCompany.contact.otherLinks}
-                            onChange={handleSelectedCompanyChange}
-                        />
+                <div className="modaldetail">
+                    <div className="modaldetail-content">
+                    <div className="modal-detail">
+                            <img src='/images/SWIFT_SAIL_9.png' alt="Logo" className="logo" />
+                            <h3>{selectedCompany.name}</h3>  
+                            <button className="close-button" onClick={() => setShowSelectedModal(false)}>✖</button>
+                        </div>
+                     
+                        <div className="form-row">
+                                <div className="logo-detail" >
+                                    {logoPreview ? (
+                                    <img 
+                                        src={selectedCompany.logoPath} // Use the fetched Firebase URL for the image
+                                        alt="Company Logo" 
+                                    />
+                                    ) : (
+                                        <div className="logo-placeholder">
+                                            <p>Upload Logo</p> {/* Placeholder when no logo is available */}
+                                        </div>
+                                    )}
+                                </div>
+                           
+                            <textarea
+                                name="description"
+                                placeholder="Description"
+                                value={selectedCompany.description}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                         </div>
+                        <h4 >Contact Person</h4>
+                        <div className='add-detail'>
+                            <input
+                                type="text"
+                                name="firstName"
+                                placeholder="First Name"
+                                value={selectedCompany.contact.firstName}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                            <input
+                                type="text"
+                                name="lastName"
+                                placeholder="Last Name"
+                                value={selectedCompany.contact.lastName}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                            <input
+                                type="text"
+                                name="position"
+                                placeholder="Position"
+                                value={selectedCompany.contact.position}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                         </div>
+                         <div className='add-detail2'>
+                            <input
+                                type="text"
+                                name="phoneNumber"
+                                placeholder="Phone Number"
+                                value={selectedCompany.contact.phoneNumber}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="Email"
+                                value={selectedCompany.contact.email}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                            <input
+                                type="text"
+                                name="website"
+                                placeholder="Website"
+                                value={selectedCompany.contact.website}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                          </div>
+                          <div className='add-detail3'>
+                            <input
+                                type="text"
+                                name="otherLinks"
+                                placeholder="Other Links"
+                                value={selectedCompany.contact.otherLinks}
+                                onChange={handleSelectedCompanyChange}
+                            />
+                            </div>
                         <div className="modal-buttons">
                             <button onClick={handleUpdateCompany}>Update Company</button>
                             <button onClick={() => setShowVesselModal(true)}>Add a Vessel</button>
@@ -435,11 +519,15 @@ const CompaniesAd = () => {
             {showVesselModal && (
                 <div className="modal">
                     <div className="vessel-modal-content">
+
+                    <div className="modal-header">
+                    <img src='/images/SWIFT_SAIL_9.png' alt="Logo" className="logo" />
                         <button className="vessel-close-button" onClick={() => setShowVesselModal(false)}>✖</button>
                         <h3 className="ferry-header">Add a Vessel</h3>
                         {/* 
                         */}
-
+                    </div>
+                        <div className="ferry-nameandpicture">
                         <div className="ferry-name">
                             <h4 className="vessel-headers">Ferry Name<span className="required">*</span></h4>
                             <input
@@ -447,7 +535,6 @@ const CompaniesAd = () => {
                                 id="vessel-name"
                                 type="text"
                                 name="name"
-                                placeholder="Name"
                                 value={vesselDetails.name}
                                 onChange={handleVesselInputChange}
                                 min="0"
@@ -456,47 +543,93 @@ const CompaniesAd = () => {
 
                         </div>
                         
+                        <div className="ferry-image-upload">
+                            <div className="ferry-image-upload-inputs">
+                                <h4 className="vessel-headers">Ferry Picture<span className="required">*</span></h4>
+                                <div className="vessel-image-upload" onClick={() => document.getElementById('file-upload').click()}>
+                                {logoPreview ? (
+                                    <img src={logoPreview} alt="Vessel image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                ) : (
+                                    <span>Upload Image here</span>
+                                )}
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        
+                        <div className="ferry-price">
+                            <h4 className="vessel-headers">Ferry Price</h4>
+                                <div className="ferry-price-inputs">
+                                <div className="ferry-price-inputs2">
+                                    <label for="price" >Price<span className="required">*</span></label>
+                                <input
+                                className="vessel-tbox"
+                                id="vessel-price"
+                                type="number"
+                                name="price"
+                                value={vesselDetails.size.price}
+                                onChange={handleVesselSizeChange}
+                                min="0"
+                                required
+                                />
+                                    </div>
+                            </div>
+                        </div>
 
                         <div className="ferry-size">
-                            <h4 className="vessel-headers">Ferry Size<span className="required">*</span></h4>
-                            <input
+                            <h4 className="vessel-headers">Ferry Size</h4>
+                                <div className="ferry-size-inputs">
+                                    <div className="ferry-size-inputs2">
+                                    <label for="length" >Length<span className="required">*</span></label>
+                                <input
                                 className="vessel-tbox"
                                 id="vessel-length"
                                 type="number"
                                 name="length"
-                                placeholder="Length"
                                 value={vesselDetails.size.length}
                                 onChange={handleVesselSizeChange}
                                 min="0"
                                 required
                             />
-                            <input
+                                    </div>
+                                
+                                <div className="ferry-size-inputs2">
+                                <label for="width">Width<span className="required">*</span></label>
+                                <input
                                 className="vessel-tbox"
                                 id="vessel-width"
                                 type="number"
                                 name="width"
-                                placeholder="Width"
                                 value={vesselDetails.size.width}
                                 onChange={handleVesselSizeChange}
                                 min="0"
                                 required
                             />
-                            <input
+                                </div>
+                            
+                                <div className="ferry-size-inputs2">
+                                <label for="draft">Draft<span className="required">*</span></label>
+                                <input
                                 className="vessel-tbox"
                                 id="vessel-draft"
                                 type="number"
                                 name="draft"
-                                placeholder="Draft"
                                 value={vesselDetails.size.draft}
                                 onChange={handleVesselSizeChange}
                                 min="0"
                                 required
                             />
+                                </div>
+                            
+                                </div>
                         </div>
 
                         <div className="ferry-capacity">
-                            <h4 className="vessel-headers">Capacity<span className="required">*</span></h4>
-                            <input
+                            <h4 className="vessel-headers">Capacity</h4>
+                                <div className="ferry-capacity-inputs">
+                                    <div className="ferry-capacity-inputs2">
+                                    <label for="passenger">Passengers<span className="required">*</span></label>
+                                    <input
                                 className="vessel-tbox"
                                 id="vessel-passengers"
                                 type="number"
@@ -507,6 +640,10 @@ const CompaniesAd = () => {
                                 min="0"
                                 required
                             />
+                                    </div>
+                            
+                            <div className="ferry-capacity-inputs2">
+                            <label for="vehicles">Vehicles<span className="required">*</span></label>
                             <input
                                 className="vessel-tbox"
                                 id="vessel-vehicles"
@@ -517,9 +654,11 @@ const CompaniesAd = () => {
                                 onChange={handleVesselCapacityChange}
                                 min="0"
                                 required
-                            />
-                        </div>
-
+                            /> 
+                            </div>
+                            
+                        <div className="ferry-capacity-inputs2">
+                        <label for="deckLevels">Deck Levels<span className="required">*</span></label>
                         <select
                             id="vessel-deckLevels"
                             name="deckLevels"
@@ -527,13 +666,17 @@ const CompaniesAd = () => {
                             onChange={handleVesselInputChange}
                             required
                         >
-                            <option value="">Select Deck Levels</option>
+                            <option value=""> </option>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
                             {/* Add more options as needed */}
                         </select>
-
+                            </div>
+                        </div>
+                    </div>
                         <div className="ferry-schedule">
                             <h4 className="vessel-headers">Schedule<span className="required">*</span></h4>
                                 <div className="days-container">
@@ -550,15 +693,6 @@ const CompaniesAd = () => {
                             </div>
                         </div>
 
-                        <div className="ferry-image-upload">
-                            <h4 className="vessel-headers">Ferry Picture<span className="required">*</span></h4>
-                            <input
-                                id="vessel-fileupload"
-                                type="file"
-                                accept="image/*"
-                                onChange={handleVesselImageChange}
-                            />
-                        </div>
 
                         <div className="vessel-modal-buttons">
                             <button id="vessel-save" onClick={handleAddVessel}>Save Changes</button>
