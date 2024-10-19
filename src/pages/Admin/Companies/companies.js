@@ -44,7 +44,11 @@ const CompaniesAd = () => {
         time: '',
         times: [],
         image: null,
-        status: 'Active'
+        status: 'Active',
+        travelTime: {
+            hours: '',
+            minutes: ''
+        }
     });
 
     // const [vesselDetails, setVesselDetails] = useState({
@@ -250,14 +254,36 @@ const CompaniesAd = () => {
 
         const companyUid = selectedCompany.uid; // Get the selected company's UID
 
-        
+
         const vesselData = {
-            ...vesselDetails, 
-            status: 'Active' //default status, in case naay maintenance?
+            name: vesselDetails.name,
+            status: 'Active', 
+            price: {
+                economy: vesselDetails.price.economy,
+                business: vesselDetails.price.business
+            },
+            from: vesselDetails.from,
+            to: vesselDetails.to,
+            travelTime: {
+                hours: vesselDetails.travelTime.hours,
+                minutes: vesselDetails.travelTime.minutes
+            },
+            capacity: {
+                passengers: vesselDetails.capacity.passengers
+            },
+            vehicle: vesselDetails.vehicle,
+            vehicleDetails: vesselDetails.vehicleDetails,
+            vehicleDetail: {
+                type: vesselDetails.vehicleDetail.type,
+                rate: vesselDetails.vehicleDetail.rate
+            },
+            time: vesselDetails.time,
+            times: vesselDetails.times,
+            image: vesselDetails.image,
         };
 
         try {
-            const db = getFirestore(); 
+            const db = getFirestore();
 
             // Add the vessel to Firestore inside the Vessels/{companyUid}/VesselList
             const newVesselRef = await addDoc(
@@ -274,9 +300,14 @@ const CompaniesAd = () => {
         // Reset the form and close the modal
         setVesselDetails({
             name: '',
+            status: 'Active', 
             price: { economy: '', business: '' },
             from: '',
             to: '',
+            travelTime: {
+                hours: '',
+                minutes: ''
+            },
             capacity: { passengers: '' },
             vehicle: '',
             vehicleDetails: [],
@@ -284,7 +315,6 @@ const CompaniesAd = () => {
             time: '',
             times: [],
             image: null,
-            status: 'Active' 
         });
         setShowVesselModal(false);
     };
@@ -728,6 +758,46 @@ const CompaniesAd = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Travel Time Inputs */}
+                        <div className="travel-time-container">
+                            <h4 className="vessel-headers">Travel Time</h4>
+                            <div className="travel-time-inputs">
+                                <div className="travel-time-input-group">
+                                    <label className="label">Hour/s<span className="required">*</span></label>
+                                    <input
+                                        className="travel-time-input"
+                                        type="number"
+                                        placeholder="Hours"
+                                        value={vesselDetails.travelTime.hours}
+                                        onChange={(e) => setVesselDetails(prev => ({
+                                            ...prev,
+                                            travelTime: {
+                                                ...prev.travelTime,
+                                                hours: e.target.value
+                                            }
+                                        }))}
+                                    />
+                                </div>
+                                <div className="travel-time-input-group">
+                                    <label className="label">Minute/s<span className="required">*</span></label>
+                                    <input
+                                        className="travel-time-input"
+                                        type="number"
+                                        placeholder="Minutes"
+                                        value={vesselDetails.travelTime.minutes}
+                                        onChange={(e) => setVesselDetails(prev => ({
+                                            ...prev,
+                                            travelTime: {
+                                                ...prev.travelTime,
+                                                minutes: e.target.value
+                                            }
+                                        }))}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
 
                         {/* Ferry Prices */}
                         <div className="ferry-price">
