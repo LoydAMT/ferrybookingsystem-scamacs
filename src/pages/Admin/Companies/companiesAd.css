@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    width: 100%; 
+    width: 1500px; 
     padding: 0;
     margin:0; 
 }
@@ -748,3 +748,92 @@ label {
     font-size: 14px;
     color: #888;
 }
+
+/* New Styles */
+.ferry-destination, .ferry-time {
+    margin-bottom: 20px;
+}
+
+.vehicle-details {
+    margin-top: 10px;
+}
+
+#vehicle-type, #vehicle-rate {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.time-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.time-list li {
+    padding: 5px 10px;
+    background-color: #eee;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.time-list li:hover {
+    background-color: #ddd;
+}
+
+.vehicle-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.vehicle-list li {
+    padding: 5px 10px;
+    background-color: #eee;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.vehicle-list li:hover {
+    background-color: #ddd;
+}
+
+/* travel time */
+.travel-time-input-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Allow inputs to grow equally */
+}
+
+.travel-time-input {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+    margin-bottom: 30px; /* Space below the input field */
+    border: solid 1px black;
+    padding: 5px;
+    height: 15px; /* Set a fixed height for better appearance */
+    border-radius: 5px;
+    font-family: "Open Sans", sans-serif; 
+}
+
+.travel-time-input::placeholder {
+    font-family: "Open Sans", sans-serif; 
+    color: #999; 
+}
+
+.travel-time-label {
+    font-size: 14px;
+    margin-bottom: 0.5rem; /* Space between label and input */
+}
+
+.travel-time-container {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem 0;
+}
+
+.travel-time-inputs {
+    display: flex;
+    gap: 1rem; /* Space between input groups */
+}
+
+
