@@ -6,8 +6,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getFirestore, collection, addDoc, getDocs } from 'firebase/firestore';
 import { doc, updateDoc } from 'firebase/firestore';
+// import { firestore } from '../../../firebase';
 
 const CompaniesAd = () => {
+    const newVesselUid = uuidv4();
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [companyDetails, setCompanyDetails] = useState({
@@ -41,7 +43,8 @@ const CompaniesAd = () => {
         vehicleDetail: { type: '', rate: '' },
         time: '',
         times: [],
-        image: null // For storing the uploaded image
+        image: null,
+        status: 'Active'
     });
 
     // const [vesselDetails, setVesselDetails] = useState({
@@ -60,7 +63,7 @@ const CompaniesAd = () => {
             const db = getFirestore();
             const querySnapshot = await getDocs(collection(db, 'companies'));
             const companyData = querySnapshot.docs.map(doc => ({
-                id: doc.id,
+                uid: doc.id,
                 ...doc.data()
             }));
             setCompanies(companyData);
@@ -177,7 +180,7 @@ const CompaniesAd = () => {
 
         try {
             const db = getFirestore();
-            const companyRef = doc(db, 'companies', selectedCompany.id);
+            const companyRef = doc(db, 'companies', selectedCompany.uid);
             await updateDoc(companyRef, selectedCompany);
 
             alert('Company updated successfully!');
@@ -240,11 +243,35 @@ const CompaniesAd = () => {
 
     // For Vessel 
     const handleAddVessel = async () => {
-        // Implement the logic to add the vessel to the company
-        // This would involve updating the Firestore document for the company
-        // and potentially uploading the vessel image to Firebase Storage
-        console.log("Adding vessel:", vesselDetails);
-        // Reset form and close modal after adding
+        if (!selectedCompany) {
+            console.error("No company selected.");
+            return;
+        }
+
+        const companyUid = selectedCompany.uid; // Get the selected company's UID
+
+        
+        const vesselData = {
+            ...vesselDetails, 
+            status: 'Active' //default status, in case naay maintenance?
+        };
+
+        try {
+            const db = getFirestore(); 
+
+            // Add the vessel to Firestore inside the Vessels/{companyUid}/VesselList
+            const newVesselRef = await addDoc(
+                collection(db, `Vessels/${companyUid}/VesselList`),
+                vesselData // auto-ID
+            );
+
+            const newVesselUid = newVesselRef.id; // Get the auto-generated ID
+            console.log(`Vessel added with ID: ${newVesselUid} to company ${companyUid}`);
+        } catch (error) {
+            console.error("Error adding vessel:", error);
+        }
+
+        // Reset the form and close the modal
         setVesselDetails({
             name: '',
             price: { economy: '', business: '' },
@@ -256,10 +283,12 @@ const CompaniesAd = () => {
             vehicleDetail: { type: '', rate: '' },
             time: '',
             times: [],
-            image: null
+            image: null,
+            status: 'Active' 
         });
         setShowVesselModal(false);
     };
+
 
     const handleVesselPriceChange = (e) => {
         const { name, value } = e.target;
@@ -548,7 +577,7 @@ const CompaniesAd = () => {
                         </div>
                         <div className="modal-buttons">
                             <button onClick={handleAddCompany}>Add Company</button>
-                            <button onClick={() => setShowVesselModal(true)}>Add a Vessel</button>
+                            {/* <button onClick={() => setShowVesselModal(true)}>Add a Vessel</button> */}
                             <button onClick={() => setShowModal(false)}>Cancel</button>
                         </div>
                     </div>
@@ -848,7 +877,7 @@ const CompaniesAd = () => {
                         </div>
 
                         <div className="vessel-modal-buttons">
-                            <button id="vessel-save" onClick={handleAddVessel}>Save Changes</button>
+                            <button id="vessel-save" onClick={handleAddVessel}>Add Vessel</button>
                             <button id="vessel-cancel" onClick={() => setShowVesselModal(false)}>Cancel</button>
                         </div>
                     </div>
