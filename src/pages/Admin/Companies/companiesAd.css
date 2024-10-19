@@ -3,7 +3,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
-    width: 100%; 
+    width: 1500px; 
     padding: 0;
     margin:0; 
 }
@@ -748,3 +748,52 @@ label {
     font-size: 14px;
     color: #888;
 }
+
+/* New Styles */
+.ferry-destination, .ferry-time {
+    margin-bottom: 20px;
+}
+
+.vehicle-details {
+    margin-top: 10px;
+}
+
+#vehicle-type, #vehicle-rate {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.time-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.time-list li {
+    padding: 5px 10px;
+    background-color: #eee;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.time-list li:hover {
+    background-color: #ddd;
+}
+
+.vehicle-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.vehicle-list li {
+    padding: 5px 10px;
+    background-color: #eee;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.vehicle-list li:hover {
+    background-color: #ddd;
+}
+
