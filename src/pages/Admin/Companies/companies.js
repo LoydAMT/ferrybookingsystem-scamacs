@@ -257,7 +257,7 @@ const CompaniesAd = () => {
 
         const vesselData = {
             name: vesselDetails.name,
-            status: 'Active', 
+            status: 'Active',
             price: {
                 economy: vesselDetails.price.economy,
                 business: vesselDetails.price.business
@@ -300,7 +300,7 @@ const CompaniesAd = () => {
         // Reset the form and close the modal
         setVesselDetails({
             name: '',
-            status: 'Active', 
+            status: 'Active',
             price: { economy: '', business: '' },
             from: '',
             to: '',
@@ -802,33 +802,44 @@ const CompaniesAd = () => {
                         {/* Ferry Prices */}
                         <div className="ferry-price">
                             <h4 className="vessel-headers">Ferry Price</h4>
+
                             <div className="ferry-price-inputs2">
-                                <label for="economyPrice">Economy Class<span className="required">*</span></label>
-                                <input
-                                    className="vessel-tbox"
-                                    id="economy-price"
-                                    type="number"
-                                    name="economy"
-                                    value={vesselDetails.price.economy}
-                                    onChange={handleVesselPriceChange}
-                                    min="0"
-                                    required
-                                />
-                            </div>
-                            <div className="ferry-price-inputs2">
-                                <label for="businessPrice">Business Class<span className="required">*</span></label>
-                                <input
-                                    className="vessel-tbox"
-                                    id="business-price"
-                                    type="number"
-                                    name="business"
-                                    value={vesselDetails.price.business}
-                                    onChange={handleVesselPriceChange}
-                                    min="0"
-                                    required
-                                />
+                                {/* Economy Class */}
+                                <div className="ferry-price-input-group">
+                                    <label className="ferry-price-label" htmlFor="economyPrice">
+                                        Economy Class <span className="required">*</span>
+                                    </label>
+                                    <input
+                                        className="ferry-price-input"
+                                        id="economy-price"
+                                        type="number"
+                                        name="economy"
+                                        value={vesselDetails.price.economy}
+                                        onChange={handleVesselPriceChange}
+                                        min="0"
+                                        required
+                                    />
+                                </div>
+
+                                {/* Business Class */}
+                                <div className="ferry-price-input-group">
+                                    <label className="ferry-price-label" htmlFor="businessPrice">
+                                        Business Class <span className="required">*</span>
+                                    </label>
+                                    <input
+                                        className="ferry-price-input"
+                                        id="business-price"
+                                        type="number"
+                                        name="business"
+                                        value={vesselDetails.price.business}
+                                        onChange={handleVesselPriceChange}
+                                        min="0"
+                                        required
+                                    />
+                                </div>
                             </div>
                         </div>
+
 
                         {/* From and To Destination */}
                         <div className="ferry-destination">
@@ -873,41 +884,51 @@ const CompaniesAd = () => {
                         {/* Vehicle Capacity */}
                         <div className="ferry-vehicle">
                             <h4 className="vessel-headers">Vehicle<span className="required">*</span></h4>
-                            <select id="vessel-vehicle" name="vehicle" value={vesselDetails.vehicle} onChange={handleVehicleChange} required>
-                                <option value="">Select</option>
-                                <option value="yes">Yes</option>
-                                <option value="no">No</option>
-                            </select>
+                            <div className="select-container">
+                                <select className="vessel-tbox" id="vessel-vehicle" name="vehicle" value={vesselDetails.vehicle} onChange={handleVehicleChange} required>
+                                    <option value="">Select</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+                                <span className="select-arrow">▼</span> 
+                            </div>
+
 
                             {vesselDetails.vehicle === 'yes' && (
                                 <div className="vehicle-details">
                                     <div className="vehicle-inputs">
-                                        <label>Vehicle Type<span className="required">*</span></label>
-                                        <input
-                                            className="vessel-tbox"
-                                            type="text"
-                                            name="type"
-                                            value={vesselDetails.vehicleDetail.type}
-                                            onChange={handleVehicleDetailsChange}
-                                            required
-                                        />
+                                        {/* Vehicle Type Input */}
+                                        <div className="vehicle-input-group vehicle-type">
+                                            <label>Vehicle Type<span className="required">*</span></label>
+                                            <input
+                                                className="vessel-tbox"
+                                                type="text"
+                                                name="type"
+                                                value={vesselDetails.vehicleDetail.type}
+                                                onChange={handleVehicleDetailsChange}
+                                                required
+                                            />
+                                        </div>
 
-                                        <label>Vehicle Rate<span className="required">*</span></label>
-                                        <input
-                                            className="vessel-tbox"
-                                            type="number"
-                                            name="rate"
-                                            value={vesselDetails.vehicleDetail.rate}
-                                            onChange={handleVehicleDetailsChange}
-                                            min="0"
-                                            required
-                                        />
+                                        {/* Vehicle Rate Input */}
+                                        <div className="vehicle-input-group vehicle-rate">
+                                            <label>Vehicle Rate<span className="required">*</span></label>
+                                            <input
+                                                className="vessel-tbox"
+                                                type="number"
+                                                name="rate"
+                                                value={vesselDetails.vehicleDetail.rate}
+                                                onChange={handleVehicleDetailsChange}
+                                                min="0"
+                                                required
+                                            />
+                                        </div>
+
+                                        {/* Add Vehicle Button */}
+                                        <button type="button" className="add-vehicle-btn" onClick={handleAddVehicle}>
+                                            Add Vehicle
+                                        </button>
                                     </div>
-
-                                    {/* Button to add a vehicle to the list */}
-                                    <button type="button" className="add-vehicle-btn" onClick={handleAddVehicle}>
-                                        Add Vehicle
-                                    </button>
 
                                     {/* List of added vehicles */}
                                     {vesselDetails.vehicleDetails.length > 0 && (
@@ -923,19 +944,22 @@ const CompaniesAd = () => {
                             )}
                         </div>
 
+
                         {/* Time Input */}
                         <div className="ferry-time">
                             <h4 className="vessel-headers">Departure Time<span className="required">*</span></h4>
-                            <input
-                                className="vessel-tbox"
-                                id="vessel-time"
-                                type="time"
-                                name="time"
-                                value={vesselDetails.time}
-                                onChange={handleTimeInputChange}
-                                required
-                            />
-                            <button id="add-time" onClick={handleAddTime}>Add Time</button>
+                            <div className="ferry-time-inputs">
+                                <input
+                                    className="vessel-tbox"
+                                    id="vessel-time"
+                                    type="time"
+                                    name="time"
+                                    value={vesselDetails.time}
+                                    onChange={handleTimeInputChange}
+                                    required
+                                />
+                                <button id="add-time" onClick={handleAddTime}>Add Time</button>
+                            </div>
 
                             {vesselDetails.times.length > 0 && (
                                 <ul className="time-list">
@@ -945,6 +969,7 @@ const CompaniesAd = () => {
                                 </ul>
                             )}
                         </div>
+
 
                         <div className="vessel-modal-buttons">
                             <button id="vessel-save" onClick={handleAddVessel}>Add Vessel</button>
