@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';  
 import { db } from '../../firebase'; 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
 import './Schedule.css';
 
@@ -12,18 +12,27 @@ const backgrounds = [
 
 const Schedule = () => {
   const [currentBackground, setCurrentBackground] = useState(0);
-  const [tripType, setTripType] = useState('round-trip'); // One-way or round-trip
+  const [tripType, setTripType] = useState('round-trip');
   const [fromLocations, setFromLocations] = useState([]);
   const [toLocations, setToLocations] = useState([]);
   const [selectedFrom, setSelectedFrom] = useState('');
   const [selectedTo, setSelectedTo] = useState('');
+  const [departDate, setDepartDate] = useState('');
+  const [returnDate, setReturnDate] = useState('');
+  const [adults, setAdults] = useState(1);
+  const [children, setChildren] = useState(0);
+  const [students, setStudents] = useState(0);
+  const [pwd, setPwd] = useState(0);
+  const [seniors, setSeniors] = useState(0);
   const [loadingFrom, setLoadingFrom] = useState(true);
   const [loadingTo, setLoadingTo] = useState(false);
   const [error, setError] = useState(null);  
   const [dateError, setDateError] = useState('');  
   const [searchCompleted, setSearchCompleted] = useState(false); 
   const navigate = useNavigate();
+  const location = useLocation(); 
 
+  // Cycle through background images
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBackground((prev) => (prev + 1) % backgrounds.length);
@@ -31,6 +40,7 @@ const Schedule = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Fetch "From" locations
   useEffect(() => {
     const fetchFromLocations = async () => {
       setLoadingFrom(true);
@@ -47,6 +57,7 @@ const Schedule = () => {
     fetchFromLocations();
   }, []);
 
+  // Fetch "To" locations based on selected "From"
   useEffect(() => {
     const fetchToLocations = async () => {
       if (selectedFrom) {
@@ -73,6 +84,23 @@ const Schedule = () => {
     fetchToLocations();
   }, [selectedFrom]);
 
+  // Restore inputs if user navigates back from ScheduleView
+  useEffect(() => {
+    if (location.state?.previousInputs) {
+      const { tripType, selectedFrom, selectedTo, departDate, returnDate, adults, children, students, pwd, seniors } = location.state.previousInputs;
+      setTripType(tripType || 'round-trip');
+      setSelectedFrom(selectedFrom || '');
+      setSelectedTo(selectedTo || '');
+      setDepartDate(departDate || '');
+      setReturnDate(returnDate || '');
+      setAdults(adults || 1);
+      setChildren(children || 0);
+      setStudents(students || 0);
+      setPwd(pwd || 0);
+      setSeniors(seniors || 0);
+    }
+  }, [location.state]);
+
   const handleFromChange = (e) => {
     setSelectedFrom(e.target.value);
     setSelectedTo('');
@@ -85,8 +113,6 @@ const Schedule = () => {
   };
 
   const validateDates = () => {
-    const departDate = document.getElementById('depart').value;
-    const returnDate = document.getElementById('return').value;
     const today = new Date().toISOString().split('T')[0]; 
     if (!departDate || (tripType === 'round-trip' && !returnDate)) {
       setDateError('Please fill in the required dates.');
@@ -110,11 +136,6 @@ const Schedule = () => {
   const handleSearch = (e) => {
     e.preventDefault();
 
-    const adults = parseInt(document.getElementById('adults').value) || 0;
-    const children = parseInt(document.getElementById('children').value) || 0;
-    const students = parseInt(document.getElementById('students').value) || 0;
-    const pwd = parseInt(document.getElementById('pwd').value) || 0;
-    const seniors = parseInt(document.getElementById('seniors').value) || 0;
     const totalPassengers = adults + children + students + pwd + seniors;
 
     if (!selectedFrom || !selectedTo) {
@@ -126,14 +147,14 @@ const Schedule = () => {
       return;
     }
 
-    // Pass form data to ScheduleView
+    // Pass form data to ScheduleView and save inputs for back navigation
     setSearchCompleted(true);
     navigate('/scheduleview', {
       state: {
         selectedFrom,
         selectedTo,
-        departDate: document.getElementById('depart').value,
-        returnDate: tripType === 'round-trip' ? document.getElementById('return').value : null, // Only pass return date for round-trip
+        departDate,
+        returnDate: tripType === 'round-trip' ? returnDate : null,
         passengers: {
           adults,
           children,
@@ -142,7 +163,19 @@ const Schedule = () => {
           seniors,
           total: totalPassengers
         },
-        tripType // Pass the tripType to indicate if it's one-way or round-trip
+        tripType,
+        previousInputs: {
+          tripType,
+          selectedFrom,
+          selectedTo,
+          departDate,
+          returnDate,
+          adults,
+          children,
+          students,
+          pwd,
+          seniors,
+        }
       }
     });
   };
@@ -228,6 +261,8 @@ const Schedule = () => {
                     className="form-input"
                     id="depart"
                     type="date"
+                    value={departDate}
+                    onChange={(e) => setDepartDate(e.target.value)}
                   />
                 </div>
                 <div className="form-group">
@@ -236,7 +271,9 @@ const Schedule = () => {
                     className="form-input"
                     id="return"
                     type="date"
-                    disabled={tripType === 'one-way'} // Disable return date input for one-way trip
+                    value={returnDate}
+                    onChange={(e) => setReturnDate(e.target.value)}
+                    disabled={tripType === 'one-way'} 
                   />
                 </div>
               </div>
@@ -249,7 +286,8 @@ const Schedule = () => {
                     id="adults"
                     type="number"
                     min="1"
-                    defaultValue={1}
+                    value={adults}
+                    onChange={(e) => setAdults(parseInt(e.target.value) || 1)}
                   />
                 </div>
                 <div className="form-group">
@@ -259,7 +297,8 @@ const Schedule = () => {
                     id="children"
                     type="number"
                     min="0"
-                    defaultValue={0}
+                    value={children}
+                    onChange={(e) => setChildren(parseInt(e.target.value) || 0)}
                   />
                 </div>
                 <div className="form-group">
@@ -269,7 +308,8 @@ const Schedule = () => {
                     id="students"
                     type="number"
                     min="0"
-                    defaultValue={0}
+                    value={students}
+                    onChange={(e) => setStudents(parseInt(e.target.value) || 0)}
                   />
                 </div>
                 <div className="form-group">
@@ -279,7 +319,8 @@ const Schedule = () => {
                     id="pwd"
                     type="number"
                     min="0"
-                    defaultValue={0}
+                    value={pwd}
+                    onChange={(e) => setPwd(parseInt(e.target.value) || 0)}
                   />
                 </div>
                 <div className="form-group">
@@ -289,7 +330,8 @@ const Schedule = () => {
                     id="seniors"
                     type="number"
                     min="0"
-                    defaultValue={0}
+                    value={seniors}
+                    onChange={(e) => setSeniors(parseInt(e.target.value) || 0)}
                   />
                 </div>
               </div>
@@ -299,7 +341,6 @@ const Schedule = () => {
           </div>
         </>
       )}
-
       </main>
     </div>
   );

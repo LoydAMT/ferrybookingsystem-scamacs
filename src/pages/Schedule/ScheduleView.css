@@ -16,8 +16,9 @@
   top: 14rem; 
   right: 10rem; 
   width: 300px;
-  background-color: #97D8F5;
-  padding: 1rem;
+  background-color: #d2e9f3;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
