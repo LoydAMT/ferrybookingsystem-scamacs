@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { format, parseISO, addDays } from 'date-fns'; // Import addDays to adjust date
+import { format, parseISO, addDays, subDays } from 'date-fns';
 import './ScheduleView.css';
 
 const ScheduleView = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { selectedFrom, selectedTo, departDate, returnDate, passengers } = location.state || {};
+  const { selectedFrom, selectedTo, departDate, returnDate, passengers, tripType } = location.state || {};
 
   const [selectedDepartureTrip, setSelectedDepartureTrip] = useState(null);
   const [selectedReturnTrip, setSelectedReturnTrip] = useState(null);
   const [selectedDate, setSelectedDate] = useState(departDate); // Track the selected departure date
   const [currentReturnDate, setCurrentReturnDate] = useState(returnDate); // Track the selected return date
+  const [startDate, setStartDate] = useState(parseISO(departDate)); // Track the start date for departure range
+  const [startReturnDate, setStartReturnDate] = useState(parseISO(returnDate)); // Track the start date for return range
 
   const trips = [
     { time: '4:00 AM', price: 349.00 },
@@ -21,23 +23,32 @@ const ScheduleView = () => {
     { time: '6:00 PM', price: 349.00 },
   ];
 
-  // Dynamically generate the next 6 days based on the given date
-  const generateDates = (startDate) => {
+  const generateDates = (start) => {
     const dates = [];
-    for (let i = 0; i < 6; i++) {
-      dates.push(addDays(parseISO(startDate), i));
+    for (let i = 0; i < 7; i++) {
+      dates.push(addDays(start, i));
     }
     return dates;
   };
 
-  // Function to handle selecting a departure date
   const handleDepartureDateChange = (date) => {
     setSelectedDate(date); // Set the selected departure date
   };
 
-  // Function to handle selecting a return date
-  const handleReturnDateChange = (date) => {
-    setCurrentReturnDate(date); // Set the selected return date
+  const handleNextDateRange = () => {
+    setStartDate(addDays(startDate, 7)); // Move the start date for departure forward by 7 days
+  };
+
+  const handlePreviousDateRange = () => {
+    setStartDate(subDays(startDate, 7)); // Move the start date for departure backward by 7 days
+  };
+
+  const handleNextReturnDateRange = () => {
+    setStartReturnDate(addDays(startReturnDate, 7)); // Move the start date for return forward by 7 days
+  };
+
+  const handlePreviousReturnDateRange = () => {
+    setStartReturnDate(subDays(startReturnDate, 7)); // Move the start date for return backward by 7 days
   };
 
   const handleTripSelection = (trip, isReturn) => {
@@ -56,10 +67,10 @@ const ScheduleView = () => {
     navigate(-1);
   };
 
-  const formattedSelectedDate = format(parseISO(selectedDate), 'MMMM d, yyyy'); 
-  const formattedCurrentReturnDate = format(parseISO(currentReturnDate), 'MMMM d, yyyy'); 
-  const dynamicDepartureDates = generateDates(departDate); 
-  const dynamicReturnDates = generateDates(returnDate); 
+  const formattedSelectedDate = format(parseISO(selectedDate), 'MMMM d, yyyy');
+  const formattedCurrentReturnDate = currentReturnDate ? format(parseISO(currentReturnDate), 'MMMM d, yyyy') : null;
+  const dynamicDepartureDates = generateDates(startDate);
+  const dynamicReturnDates = generateDates(startReturnDate);
 
   return (
     <div className="schedule-view">
@@ -77,10 +88,12 @@ const ScheduleView = () => {
           <div className="format">{formattedSelectedDate}</div> {/* Show selected departure date */}
           <div>Departure</div>
         </div>
-        <div className="dateReturn">
-          <div className="format">{formattedCurrentReturnDate}</div> {/* Show selected return date */}
-          <div>Return</div>
-        </div>
+        {tripType === 'round-trip' && (
+          <div className="dateReturn">
+            <div className="format">{formattedCurrentReturnDate}</div> {/* Show selected return date */}
+            <div>Return</div>
+          </div>
+        )}
       </header>
 
       <main className="main-content">
@@ -94,50 +107,64 @@ const ScheduleView = () => {
         <section className="schedule-section">
           <h2>{selectedFrom} → {selectedTo}</h2>
           <div className="date-selector">
+            <button onClick={handlePreviousDateRange}>&lt;</button>
             {dynamicDepartureDates.map((date, index) => (
               <div
                 key={index}
                 className={`date ${format(date, 'yyyy-MM-dd') === format(parseISO(selectedDate), 'yyyy-MM-dd') ? 'active' : ''}`}
-                onClick={() => handleDepartureDateChange(date.toISOString())} 
+                onClick={() => handleDepartureDateChange(date.toISOString())}
               >
                 {format(date, 'dd')} {/* Show day number */}
               </div>
             ))}
+            <button onClick={handleNextDateRange}>&gt;</button>
           </div>
           <div className="trips">
             {trips.map((trip, index) => (
-              <div key={index} className="trip-card">
+              <div
+                key={index}
+                className={`trip-card ${selectedDepartureTrip === trip ? 'selected' : ''}`} // Apply 'selected' class if trip is selected
+                onClick={() => handleTripSelection(trip, false)} // Handle trip selection for departure
+              >
                 <div className="time">{trip.time}</div>
                 <div className="price">₱{trip.price.toFixed(2)}</div>
-                <button onClick={() => handleTripSelection(trip, false)}>Select</button>
+                <button>Select</button>
               </div>
             ))}
           </div>
         </section>
 
-        <section className="schedule-section">
-          <h2>{selectedTo} → {selectedFrom}</h2>
-          <div className="date-selector">
-            {dynamicReturnDates.map((date, index) => (
-              <div
-                key={index}
-                className={`date ${format(date, 'yyyy-MM-dd') === format(parseISO(currentReturnDate), 'yyyy-MM-dd') ? 'active' : ''}`}
-                onClick={() => handleReturnDateChange(date.toISOString())} 
-              >
-                {format(date, 'dd')} {/* Show day number */}
-              </div>
-            ))}
-          </div>
-          <div className="trips">
-            {trips.map((trip, index) => (
-              <div key={index} className="trip-card">
-                <div className="time">{trip.time}</div>
-                <div className="price">₱{trip.price.toFixed(2)}</div>
-                <button onClick={() => handleTripSelection(trip, true)}>Select</button>
-              </div>
-            ))}
-          </div>
-        </section>
+        {tripType === 'round-trip' && (
+          <section className="schedule-section">
+            <h2>{selectedTo} → {selectedFrom}</h2>
+            <div className="date-selector">
+              <button onClick={handlePreviousReturnDateRange}>&lt;</button>
+              {dynamicReturnDates.map((date, index) => (
+                <div
+                  key={index}
+                  className={`date ${format(date, 'yyyy-MM-dd') === format(parseISO(currentReturnDate), 'yyyy-MM-dd') ? 'active' : ''}`}
+                  onClick={() => setCurrentReturnDate(date.toISOString())} // Handle return date click
+                >
+                  {format(date, 'dd')}
+                </div>
+              ))}
+              <button onClick={handleNextReturnDateRange}>&gt;</button>
+            </div>
+            <div className="trips">
+              {trips.map((trip, index) => (
+                <div
+                  key={index}
+                  className={`trip-card ${selectedReturnTrip === trip ? 'selected' : ''}`} // Apply 'selected' class if return trip is selected
+                  onClick={() => handleTripSelection(trip, true)} // Handle return trip selection
+                >
+                  <div className="time">{trip.time}</div>
+                  <div className="price">₱{trip.price.toFixed(2)}</div>
+                  <button>Select</button>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       <aside className="summary">
@@ -152,16 +179,14 @@ const ScheduleView = () => {
             </>
           )}
         </div>
-        <div className="summary-section">
-          <h4>Return</h4>
-          {selectedReturnTrip && (
-            <>
-              <div>{selectedTo} → {selectedFrom}</div>
-              <div>{formattedCurrentReturnDate} | {selectedReturnTrip.time}</div>
-              <div>₱{selectedReturnTrip.price.toFixed(2)} x {passengers.total}</div> {/* Price breakdown */}
-            </>
-          )}
-        </div>
+        {tripType === 'round-trip' && selectedReturnTrip && (
+          <div className="summary-section">
+            <h4>Return</h4>
+            <div>{selectedTo} → {selectedFrom}</div>
+            <div>{formattedCurrentReturnDate} | {selectedReturnTrip.time}</div>
+            <div>₱{selectedReturnTrip.price.toFixed(2)} x {passengers.total}</div>
+          </div>
+        )}
         <div className="total">
           <span>Total</span>
           <span>
@@ -171,19 +196,13 @@ const ScheduleView = () => {
           </span>
         </div>
         <button className="continue-btn" onClick={handleContinue}>Continue</button>
+        <button className="back-btn" onClick={handleBack}>Back</button>
       </aside>
 
       <footer className="footer">
-        <button className="back-btn" onClick={handleBack}>Back</button>
-        <div>
-          <a href="#">About</a>
-          <a href="#">Privacy Policy</a>
-          <a href="#">Contact Us</a>
-        </div>
+        <div></div>
       </footer>
     </div>
-
-
   );
 };
 

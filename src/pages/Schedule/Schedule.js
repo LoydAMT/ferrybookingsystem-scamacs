@@ -12,7 +12,7 @@ const backgrounds = [
 
 const Schedule = () => {
   const [currentBackground, setCurrentBackground] = useState(0);
-  const [tripType, setTripType] = useState('round-trip');
+  const [tripType, setTripType] = useState('round-trip'); // One-way or round-trip
   const [fromLocations, setFromLocations] = useState([]);
   const [toLocations, setToLocations] = useState([]);
   const [selectedFrom, setSelectedFrom] = useState('');
@@ -24,7 +24,6 @@ const Schedule = () => {
   const [searchCompleted, setSearchCompleted] = useState(false); 
   const navigate = useNavigate();
 
-  // Background rotation effect
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBackground((prev) => (prev + 1) % backgrounds.length);
@@ -32,7 +31,6 @@ const Schedule = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch all "From" locations when the component mounts
   useEffect(() => {
     const fetchFromLocations = async () => {
       setLoadingFrom(true);
@@ -49,7 +47,6 @@ const Schedule = () => {
     fetchFromLocations();
   }, []);
 
-  // Fetch "To" locations when a "From" location is selected
   useEffect(() => {
     const fetchToLocations = async () => {
       if (selectedFrom) {
@@ -92,7 +89,7 @@ const Schedule = () => {
     const returnDate = document.getElementById('return').value;
     const today = new Date().toISOString().split('T')[0]; 
     if (!departDate || (tripType === 'round-trip' && !returnDate)) {
-      setDateError('Please fill in both depart and return dates.');
+      setDateError('Please fill in the required dates.');
       return false;
     }
 
@@ -113,7 +110,6 @@ const Schedule = () => {
   const handleSearch = (e) => {
     e.preventDefault();
 
-    // Get passenger counts
     const adults = parseInt(document.getElementById('adults').value) || 0;
     const children = parseInt(document.getElementById('children').value) || 0;
     const students = parseInt(document.getElementById('students').value) || 0;
@@ -130,14 +126,14 @@ const Schedule = () => {
       return;
     }
 
-    // Pass all form data, including passenger count, to the ScheduleView
+    // Pass form data to ScheduleView
     setSearchCompleted(true);
     navigate('/scheduleview', {
       state: {
         selectedFrom,
         selectedTo,
         departDate: document.getElementById('depart').value,
-        returnDate: document.getElementById('return').value,
+        returnDate: tripType === 'round-trip' ? document.getElementById('return').value : null, // Only pass return date for round-trip
         passengers: {
           adults,
           children,
@@ -145,7 +141,8 @@ const Schedule = () => {
           pwd,
           seniors,
           total: totalPassengers
-        }
+        },
+        tripType // Pass the tripType to indicate if it's one-way or round-trip
       }
     });
   };
@@ -172,8 +169,8 @@ const Schedule = () => {
             <h1 className="main-title">{backgrounds[currentBackground].text}</h1>
 
             <form className="booking-form" onSubmit={handleSearch}>
-              {error && <p className="error-message">{error}</p>}    {/* Error message for locations */}
-              {dateError && <p className="error-message">{dateError}</p>}  {/* Error message for dates */}
+              {error && <p className="error-message">{error}</p>}
+              {dateError && <p className="error-message">{dateError}</p>}
 
               <div className="form-group">
                 <label className="form-label">Trip Type</label>
@@ -239,7 +236,7 @@ const Schedule = () => {
                     className="form-input"
                     id="return"
                     type="date"
-                    disabled={tripType === 'one-way'}
+                    disabled={tripType === 'one-way'} // Disable return date input for one-way trip
                   />
                 </div>
               </div>
