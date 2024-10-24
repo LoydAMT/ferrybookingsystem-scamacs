@@ -1,0 +1,94 @@
+
+  /* Analytics container */
+  .analytics-container {
+    background-color: white;
+    padding: 30px;  /* Increased padding */
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex-grow: 1;
+    min-height: 600px;  /* Added minimum height */
+    min-width: 1400px; 
+    margin-top: 20px;  /* Added space after header */
+}
+  
+  .analytics-container h2 {
+    margin-bottom: 20px;
+  }
+  
+  .chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+  }
+  
+  .chart {
+    position: relative;
+    width: 80%;
+    height: 100%;
+  }
+  
+  .chart-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #4a73f1;
+    border-radius: 15px 15px 0 0;
+  }
+  
+  
+  .chart::before {
+    content: 'Sales';
+    position: absolute;
+    top: 20px;
+    left: -50px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .chart::after {
+    content: 'Time';
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 14px;
+    color: #333;
+  }
+  .logo-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .logo1 {
+    width: 50px; 
+    height: 50px; 
+    margin-right: 10px; 
+    background-color: #0066cc; 
+    border-radius: 50px; 
+    padding: 10px;
+  }
+  
+  .search-bar1 {
+    display: flex;
+    align-items: center;
+    padding:15px;
+    background-color: #f0f0f0;
+    border-radius: 30px;
+    flex-grow: 1;
+    max-width: 1330px; 
+    width: 100%; 
+    margin-left: 10px;
+    margin-top:10px;
+  }
+  
+  .search-bar1 input {
+    flex-grow: 1;
+    border: none;
+    background: transparent;
+    margin-left: 10px;
+    font-size: 16px;
+    outline: none;
+  }
+

@@ -34,40 +34,40 @@
 }
 .logo-container {
     display: flex;
-    align-items: center; 
-    margin-bottom: 15px; 
+    align-items: center; /* Center logo and search bar vertically */
+    margin-bottom: 15px; /* Space below the logo and search bar */
   }
-
-.logo {
-    width: 30px; 
-    height: 30px; 
-    margin-right: 10px; 
-    background-color: #0066cc; 
-    border-radius: 50px; 
-    padding: 10px; 
-    margin-top:0px;
+  
+  .logo1 {
+    width: 50px; 
+    height: 50px; 
+    margin-right: 10px; /* Space between logo and search bar */
+    background-color: #0066cc; /* Optional */
+    border-radius: 50px; /* Optional */
+    padding: 10px; /* Optional */
   }
-  .search-bar {
+  
+  .search-bar1 {
     display: flex;
     align-items: center;
-    padding: 15px 10px; /* Adjust top/bottom padding for height */
+    padding:15px;
     background-color: #f0f0f0;
-    border-radius: 20px;
-    flex-grow: 1;
-    max-width: 7000px; 
-    width: 00%; 
-    margin-left: 8px; 
-    margin-top: 10px;
-}
-
-.search-bar input {
+    border-radius: 30px;
+    flex-grow: 1; /* Allow search bar to grow */
+    max-width: 1330px; /* Set maximum width */
+    width: 100%; /* Make search bar full width of the container */
+    margin-left: 10px; /* Optional: space between logo and search bar */
+    margin-top:10px;
+  }
+  
+  .search-bar1 input {
     flex-grow: 1;
     border: none;
     background: transparent;
     margin-left: 10px;
     font-size: 16px;
     outline: none;
-}
+  }
 
 .company-grid {
     display: grid;
@@ -198,8 +198,8 @@
     margin: -20px -20px 20px -20px;
 }
 .modal-header img {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     margin-right: 10px;
     background-color: white;
     border-radius: 50%;
@@ -397,8 +397,8 @@ label {
     margin: -20px -20px 20px -20px;
 }
 .modal-detail img {
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     margin-right: 10px;
     background-color: white;
     border-radius: 50%;

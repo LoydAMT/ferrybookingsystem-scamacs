@@ -438,10 +438,10 @@ const CompaniesAd = () => {
             <div className="content-wrapper">
                 <h2 className="text-2xl font-bold mb-4">Partnered Companies</h2>
                 <div className="logo-container">
-                    <img src='/images/select ferry.png' alt="Logo" className="logo" />
+                    <img src='/images/select ferry.png' alt="Logo" className="logo1" />
 
                     {/* search bar */}
-                    <div className="search-bar">
+                    <div className="search-bar1">
                         <Search size={20} />
                         <input
                             type="text"
