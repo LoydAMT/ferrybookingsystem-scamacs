@@ -44,8 +44,8 @@ const PaymentTab = () => {
               attributes: {
                 amount: totalPrice * 100, // Convert to cents
                 redirect: {
-                  success: 'https://https://swiftsail-ferries.vercel.app///payment-success',
-                  failed: 'https://https://swiftsail-ferries.vercel.app///payment-failure',
+                  success: 'https://swiftsail-ferries.vercel.app///payment-success',
+                  failed: 'https://swiftsail-ferries.vercel.app///payment-failure',
                 },
                 type: 'gcash', // Change this if needed
                 currency: 'PHP',
