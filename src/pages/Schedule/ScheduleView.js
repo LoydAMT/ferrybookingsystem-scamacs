@@ -60,7 +60,23 @@ const ScheduleView = () => {
   };
 
   const handleContinue = () => {
-    console.log('Continuing with selected trips');
+    const totalPrice = (
+      349 * passengers.total
+    ).toFixed(2);
+  
+    navigate('/PassengerDetails', {
+      state: {
+        tripType,
+        selectedFrom,
+        selectedTo,
+        departDate: formattedSelectedDate,
+        returnDate: formattedCurrentReturnDate,
+        selectedDepartureTrip,
+        selectedReturnTrip,
+        passengers,
+        totalPrice,
+      }
+    });
   };
 
   const handleBack = () => {

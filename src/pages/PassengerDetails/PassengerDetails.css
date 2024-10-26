@@ -1,0 +1,291 @@
+
+.Passenger-Details{
+    font-family: 'open-sans', 'sans-serif', inter;
+}
+
+.PDHeaders{
+   
+   color: black;
+   margin-left: 5%;
+   margin-top: 2%;
+   text-align: justify;
+}
+
+.PicandHead{
+    Display: flex;
+}
+
+.subhead{
+    margin-top: 10px;
+}
+
+.SUBHEADS{
+    margin-left: 2.5%;
+}
+
+.subhead1{
+    margin-top: 20px;
+}
+
+.subhead2{
+    margin-top: 10px;
+}
+
+.ProfilePhoto{
+    width: 50px;
+    height: 50px;
+}
+
+.Forms{
+    display: flex;
+    margin-top: 2%;
+    margin-left: 5%;
+    margin-right: 5%;
+    border: 1px solid #A1A1A1;
+    border-radius: 15px;
+}
+
+.PassengerType{
+    width: 15%;
+    margin-top: 1%;
+    margin-left: 1%;
+    display: flex;            /* Enable flex layout */
+    flex-direction: column;   /* Stack items vertically */
+    align-items: center;      /* Center items horizontally */
+    justify-content: center;  /* Center items vertically */
+    font-size: 35px;
+}
+
+.InputHeaders{
+    display: flex;
+    gap: 5%;
+}
+
+.FirstRow{
+    display:flex;
+    width: 100%;
+}
+
+
+
+.TboxInputs2{
+    margin-left: 1%;
+}
+
+.TboxInputs3{
+    margin-left: 15%;
+    width: 50%;
+    display: flex;
+    gap: 2.5%;
+    margin-right: 1%;
+}
+
+.TboxInputs4{
+    display: flex;
+    gap: 2.5%;
+}
+
+.Headers{
+    font-size: 21px;
+    line-height: 20px;
+}
+
+.CIHeaders{
+
+}
+
+.subtext{
+    font-size: 15px;
+    font-weight: 400;
+    color: #8C8C8C;
+}
+
+.subtext2{
+    font-size: 15px;
+    font-weight: 400;
+    color: #8C8C8C;
+    margin-left: 4.5%;
+}
+
+
+.PassengerInputs{
+    margin-top: 1%;
+    margin-left: 7.5%;
+    width: 95%;
+}
+
+.Tbox{
+    width: 100%;
+    padding: 8px;
+    font-size: medium;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 50px; 
+    box-sizing: border-box; 
+}
+
+.TboxDate{
+    width: 100%;
+    padding: 8px;
+    font-size: medium;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 50px; 
+    box-sizing: border-box; 
+    gap: 20%;
+}
+
+.day, .month, .year{
+    width: 100%;
+}
+
+.Tbox2{
+    width: 16.5%;
+    padding: 8px;
+    font-size: medium;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 35px; 
+    box-sizing: border-box; 
+
+}
+
+
+.Checkbox{
+    width: 25px;
+    height: 25px;
+    border-color: #007BFF
+}
+
+.upload-button {
+    margin-top: 13%;
+    border: 2px solid #007BFF; /* Remove border */
+    padding: 7px 14px; /* Padding for size */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+.upload-button:hover {
+    background-color: #0277bd; /* Darker color on hover */
+}
+
+.id-preview{
+    width: 100px;
+    height: 100px;
+}
+
+.CISubtext{
+    margin-top: 0px;
+    font-size: 20px;
+}
+
+.CIHeader{
+    margin-bottom: 0px;
+    font-size: 36px;
+}
+
+.required{
+    color: red;
+}
+
+.ContactInformationForm{
+    margin-top: 2%;
+    margin-left: 5%;
+    margin-right: 5%;
+    border: 1px solid #A1A1A1;
+    border-radius: 15px;
+    display: flex;            /* Enable flex layout */
+    flex-direction: column;   /* Stack items vertically */
+    align-items: center;      /* Center items horizontally */
+    justify-content: center;  /* Center items vertically */
+}
+
+.CIFirstRow{
+    display: flex;
+    width: 90%;
+    align-content: space-evenly;
+    justify-content: space-between;
+    gap: 5%;
+}
+
+.CISecondRow{
+    display: flex;
+    width: 90%;
+    gap: 5%;
+    padding-bottom: 30px;
+}
+
+.ContactNumber{
+    display: flex;
+    width: 100%;
+    gap: 2%;
+}
+
+.subtext3{
+    font-size: 20px;
+    font-weight: 400;
+    color: #3C3C3C;
+    margin-left: 20px;
+    text-align: left;
+    line-height: normal;
+}
+.ConfCheckBox{
+    margin-left: 5%;
+}
+
+.privacy-policy {
+    text-decoration: none;
+}
+
+.CIInputs1, .CIInputs2, .CIInputs3, .CIInputs4, .CIInputs5{
+    width: 100%;
+}
+
+.Buttons{
+    display: flex;
+    gap: 4%;
+    justify-content: right;
+    margin-top: 1.5%;
+    margin-right: 5%;
+    padding-bottom: 2%;
+}
+
+.BackButton{
+    width: 450px;
+    height: 100px;
+    border-radius: 10px;
+    border-color: #0366FC;
+    background-color: white;
+    color: #0366FC;
+    font-size: 24px;
+    font-family: 'open-sans', 'sans-serif', inter;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.BackButton:hover{
+    background-color: #0366FC;
+    color: white;
+    cursor: pointer;
+}
+
+.ProceedButton{
+    font-size: 24px;
+    font-family: 'open-sans', 'sans-serif', inter;
+    font-weight: bold;
+    width: 450px;
+    border: none;
+    height: 100px;
+    border-radius: 10px;
+    color: white;
+    background: linear-gradient(to bottom, #97D8F5 0%, #6FBADC 100%);
+    transition: background-color 1s ease, color 1s ease;
+}
+
+.ProceedButton:hover {
+    background: #0366FC;
+    color: #ffffff; /* Change text color if needed */
+    cursor: pointer;
+}

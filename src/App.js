@@ -13,6 +13,7 @@ import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
 import Community from './pages/Community/Community'; // Import the Community component
 import ScheduleView from './pages/Schedule/ScheduleView';
+import PassengerDetails from './pages/PassengerDetails/PassengerDetails';
 import 'typeface-open-sans';
 import { onAuthStateChanged } from 'firebase/auth';
 
@@ -60,6 +61,7 @@ function App() {
         <Route path="/companies" element={<Companies />} />
         <Route path="/schedule" element={<Schedule />} />
         <Route path="/scheduleview" element={<ScheduleView />} />
+        <Route path="/passengerdetails" element={<PassengerDetails />} />
         <Route path="/admin" element={user ? <Dashboard /> : <Login />} /> {/* Route for Dashboard */}
         <Route path="/signup" element={<Signup onClose={handleCloseSignup} />} />
         <Route path="/community" element={<Community userId={user?.uid} />} /> {/* Route for Community */}
