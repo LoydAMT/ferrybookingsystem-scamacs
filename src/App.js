@@ -9,6 +9,8 @@ import BookNow from './pages/BookNow/BookNow';
 import Schedule from './pages/Schedule/Schedule';  
 import Companies from './pages/Companies/Companies';
 import PaymentTab from './pages/PaymentTab/Paymenttab';
+import PaymentSuccess from './pages/PaymentTab/PaymentSuccess';
+import PaymentFailure from './pages/PaymentTab/PaymentFailure';
 import Dashboard from './pages/Admin/Admin'; // Import the Dashboard component
 import Login from './pages/Login/Login';
 import Signup from './pages/Signup/Signup';
@@ -64,6 +66,8 @@ function App() {
         <Route path="/scheduleview" element={<ScheduleView />} />
         <Route path="/passengerdetails" element={<PassengerDetails />} />
         <Route path="/payment" element={<PaymentTab />} />
+        <Route path="/paymentsuccess" element={<PaymentSuccess />} />
+        <Route path="/paymentfailure" element={<PaymentFailure />} />
         <Route path="/admin" element={user ? <Dashboard /> : <Login />} /> {/* Route for Dashboard */}
         <Route path="/signup" element={<Signup onClose={handleCloseSignup} />} />
         <Route path="/community" element={<Community userId={user?.uid} />} /> {/* Route for Community */}
