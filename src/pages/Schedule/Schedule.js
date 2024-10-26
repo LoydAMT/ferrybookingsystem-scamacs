@@ -57,32 +57,49 @@ const Schedule = () => {
     fetchFromLocations();
   }, []);
 
-  // Fetch "To" locations based on selected "From"
+  // // Fetch "To" locations based on selected "From"
+  // useEffect(() => {
+  //   const fetchToLocations = async () => {
+  //     if (selectedFrom) {
+  //       setLoadingTo(true);
+  //       try {
+  //         const docRef = doc(db, 'Location', selectedFrom);
+  //         const docSnap = await getDoc(docRef);
+
+  //         if (docSnap.exists()) {
+  //           const data = docSnap.data();
+  //           const destinations = data.to || [];
+  //           setToLocations(destinations);
+  //         } else {
+  //           setToLocations([]);
+  //         }
+  //         setLoadingTo(false);
+  //       } catch (err) {
+  //         setError('Failed to load "To" locations.');
+  //         setLoadingTo(false);
+  //       }
+  //     }
+  //   };
+
+  //   fetchToLocations();
+  // }, [selectedFrom]);
+
+  // Fetch "From" locations
   useEffect(() => {
     const fetchToLocations = async () => {
-      if (selectedFrom) {
-        setLoadingTo(true);
-        try {
-          const docRef = doc(db, 'Location', selectedFrom);
-          const docSnap = await getDoc(docRef);
-
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            const destinations = data.to || [];
-            setToLocations(destinations);
-          } else {
-            setToLocations([]);
-          }
-          setLoadingTo(false);
-        } catch (err) {
-          setError('Failed to load "To" locations.');
-          setLoadingTo(false);
-        }
+      setLoadingFrom(true);
+      try {
+        const querySnapshot = await getDocs(collection(db, 'Location'));
+        const locations = querySnapshot.docs.map((doc) => doc.id);
+        setToLocations(locations);
+        setLoadingFrom(false);
+      } catch (err) {
+        setError('Failed to load "To" locations.');
+        setLoadingFrom(false);
       }
     };
-
     fetchToLocations();
-  }, [selectedFrom]);
+  }, []);
 
   // Restore inputs if user navigates back from ScheduleView
   useEffect(() => {
@@ -103,7 +120,6 @@ const Schedule = () => {
 
   const handleFromChange = (e) => {
     setSelectedFrom(e.target.value);
-    setSelectedTo('');
     setError(null);  
   };
 
@@ -242,7 +258,7 @@ const Schedule = () => {
                     id="to"
                     value={selectedTo}
                     onChange={handleToChange}
-                    disabled={!selectedFrom || loadingTo}
+                    disabled={loadingFrom}
                   >
                     <option value="">Select Destination</option>
                     {toLocations.map((location, index) => (
