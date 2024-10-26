@@ -626,16 +626,12 @@ const CompaniesAd = () => {
 
                         <div className="form-row">
                             <div className="logo-detail" >
-                                {logoPreview ? (
+                                
                                     <img
                                         src={selectedCompany.logoPath} // Use the fetched Firebase URL for the image
                                         alt="Company Logo"
                                     />
-                                ) : (
-                                    <div className="logo-placeholder">
-                                        <p>Upload Logo</p> {/* Placeholder when no logo is available */}
-                                    </div>
-                                )}
+                                
                             </div>
 
                             <textarea

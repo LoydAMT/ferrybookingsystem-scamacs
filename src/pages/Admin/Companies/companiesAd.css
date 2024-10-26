@@ -410,7 +410,7 @@ label {
     color: #ffffff;
     flex-grow: 1;
 }
-.logo-detail {
+.logo-detail img {
     width: 100px;
     height: 100px;
     border: 1px solid #ccc;
