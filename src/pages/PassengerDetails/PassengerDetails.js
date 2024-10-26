@@ -2,7 +2,6 @@ import './PassengerDetails.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import React, { useState } from 'react';
 
-
 const PassengerDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,6 +32,24 @@ const PassengerDetails = () => {
           totalPrice,
         },
       },
+    });
+  };
+
+  const handleProceedToPayment = () => {
+    // You can add form validation here before proceeding
+    navigate('/payment', {
+      state: {
+        tripType,
+        selectedFrom,
+        selectedTo,
+        departDate,
+        returnDate,
+        selectedDepartureTrip,
+        selectedReturnTrip,
+        passengers,
+        totalPrice,
+        // Add any additional passenger details collected from the form
+      }
     });
   };
 
@@ -302,7 +319,7 @@ const PassengerDetails = () => {
           <button className="BackButton" onClick={handleBack}>Back</button>
           </div>
           <div className="Proceed">
-          <button className="ProceedButton">Proceed to Payment</button>
+          <button className="ProceedButton" onClick={handleProceedToPayment}>Proceed to Payment</button>
           </div>
         </div>
         
