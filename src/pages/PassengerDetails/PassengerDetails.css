@@ -1,0 +1,36 @@
+.Passenger-Details{
+    
+}
+
+.PDHeaders{
+   font-family: 'sans-serif', inter;
+   color: black;
+   margin-left: 5%;
+   margin-top: 2%;
+   text-align: justify;
+}
+
+.PicandHead{
+    Display: flex;
+}
+
+.subhead{
+    margin-top: 10px;
+}
+
+.SUBHEADS{
+    margin-left: 2.5%;
+}
+
+.subhead1{
+    margin-top: 20px;
+}
+
+.subhead2{
+    margin-top: 10px;
+}
+
+.ProfilePhoto{
+    width: 50px;
+    height: 50px;
+}

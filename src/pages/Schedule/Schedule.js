@@ -245,7 +245,7 @@ const Schedule = () => {
                     disabled={!selectedFrom || loadingTo}
                   >
                     <option value="">Select Destination</option>
-                    {toLocations.map((location, index) => (
+                    {fromLocations.map((location, index) => (  /* TEMPORARY CHANGE toLOCATIONS INTO fromLOCATIONS */
                       <option key={index} value={location}>
                         {location}
                       </option>
