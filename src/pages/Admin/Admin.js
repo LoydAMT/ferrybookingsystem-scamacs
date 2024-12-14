@@ -4,7 +4,8 @@ import CameraDisplay from './Security/SecurityPanel';
 import './Admin.css'; 
 import UserList from './Userliit/Userlist';
 import CompaniesAd from './Companies/companies';
-
+import BookingsPanel from "./Bookings panel/bookingspanel";
+import Analytics from "./Analytics/analytics";
 const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState('UserList');
   const [isVerified, setIsVerified] = useState(true); // Set to true by default
@@ -22,13 +23,13 @@ const Dashboard = () => {
       case 'UserList':
         return <UserList />;
       case 'Bookings':
-        return <h2 className="text-2xl font-bold">Bookings Panel</h2>;
+        return <BookingsPanel />;
       case 'Companies':
         return <CompaniesAd />;
       case 'Verify Users':
         return <h2 className="text-2xl font-bold">Verify Users Panel</h2>;
       case 'Analytics':
-        return <h2 className="text-2xl font-bold">Analytics Panel</h2>;
+        return <Analytics/>;
       default:
         return <UserList />;
     }

@@ -1,59 +1,60 @@
 // src/pages/Companies.js
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getFirestore, collection, addDoc, getDocs} from 'firebase/firestore';
 import './Companies.css';
 
+
 const Companies = () => {
-  const ferries = [
-    {
-      name: "MV 2GO Maligaya",
-      image: "/images/ferry.jpg",
-      travelTime: "30 mins",
-      capacity: 250,
-      seatsAvailable: 2,
-      ratings: 5,
-      price: 2999.00
-    },
-    {
-      name: "MV LITE Ferry 1",
-      image:  "/images/HomeBackground.png",
-      travelTime: "40 mins",
-      capacity: 200,
-      seatsAvailable: 20,
-      ratings: 4,
-      price: 1599.00
-    },
-    {
-      name: "MV LITE Ferry 1",
-      image:  "/images/ferry.jpg",
-      travelTime: "40 mins",
-      capacity: 200,
-      seatsAvailable: 20,
-      ratings: 4,
-      price: 1599.00
-    }
-  ];
+  const [company, setcompany] = useState([]);
+  const [ratings, setRatings] = useState({});
 
+  useEffect(() => {
+    // Fetch data from Firestore
+    const fetchData = async () => {
+      try {
+        const db = getFirestore();
+        const companyData = collection(db, 'companies'); 
+        const companySnapshot = await getDocs(companyData);
+        const companiesd = companySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        console.log(companiesd);
+        setcompany(companiesd);
+      } catch (error) {
+        console.error("Error fetching company data: ", error);
+      }
+    };
+    fetchData();
+  }, []);
 
-  const renderStars = (count) => {
-    return "★".repeat(count) + "☆".repeat(5 - count);
+  const renderStars = () => {
+    return (
+      <span>
+        {[...Array(5)].map((_, i) => (
+          <span key={i} className="star-filled">
+            ★
+          </span>
+        ))}
+      </span>
+    );
   };
-
   return (
     <div className="ferry-selection">
-      <div className="logo-container">
+      <div className="l-container">
         <img src='/images/select ferry.png' alt="Logo" className="logo" />
         <h2>Select Ferry</h2>
       </div>
-      {ferries.map((ferry, index) => (
-        <div key={index} className="ferry-card">
-          <img src={ferry.image} alt={ferry.name} className="ferry-image" />
-          <div className="ferry-details">
-            <h3>{ferry.name}</h3>
-            <p>Travel Time: {ferry.travelTime}</p>
-            <p>Capacity: {ferry.capacity} Passengers</p>
-            <p>Seats Available: {ferry.seatsAvailable}</p>
-            <p className="ratings">Ratings: {renderStars(ferry.ratings)}</p>
-            <p className="price">Price: Php {ferry.price.toFixed(2)}</p>
+      {company.map((c) => (
+        <div key={c.id} className="ferry">
+          <img src={c.logoPath} alt={c.name} className="ferry-image" />
+          <div className="f-details">
+            <h3>{c.name}</h3>
+            <p>Description: {c.description}</p>
+            <p>Website: {c.contact.website} </p>
+            <p>Phone Number: {c.contact.phoneNumber}</p>
+            <p>Email: {c.email}</p>
+            <p className="ratings">Ratings: {renderStars()}</p>
             <button className="select-button">Select Ferry</button>
           </div>
         </div>
@@ -61,5 +62,6 @@ const Companies = () => {
     </div>
   );
 };
+
 
 export default Companies;
