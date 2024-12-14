@@ -85,14 +85,7 @@ const Navbar = ({ onLoginClick }) => {
               Schedule
             </Link>
           </li>
-          <li className={styles.navbarItem}>
-            <Link 
-              to="/community" 
-              className={location.pathname === '/community' ? styles.active : ''}
-            >
-              Community
-            </Link>
-          </li>
+
         </ul>
 
         {/* Right side: Login/Profile and Language */}
