@@ -11,13 +11,23 @@ function Login({ onClose }) {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  const handleAdminRedirect = (email) => {
+    if (email === 'swiftsail.ferries@gmail.com') {
+      navigate('/admin'); // Redirect to admin route
+    } else {
+      navigate('/'); // Redirect to home or user dashboard
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log("User logged in:", userCredential.user);
-      onClose(); 
+      console.log('User logged in:', userCredential.user);
+
+      handleAdminRedirect(userCredential.user.email);
+      onClose();
     } catch (error) {
       setError(error.message);
     }
@@ -27,13 +37,20 @@ function Login({ onClose }) {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      await setDoc(doc(db, "users", user.uid), {
-        email: user.email,
-        name: user.displayName,
-        lastLogin: new Date()
-      }, { merge: true });
-      console.log("User logged in and data stored:", user);
-      onClose(); 
+
+      await setDoc(
+        doc(db, 'users', user.uid),
+        {
+          email: user.email,
+          name: user.displayName,
+          lastLogin: new Date(),
+        },
+        { merge: true }
+      );
+      console.log('User logged in and data stored:', user);
+
+      handleAdminRedirect(user.email);
+      onClose();
     } catch (error) {
       setError(error.message);
     }
@@ -56,25 +73,25 @@ function Login({ onClose }) {
         </div>
         <h2 className={styles.loginTitle}>Log In</h2>
         {error && (
-        <div className={styles.error}>
-          <span>⚠️</span> {error}
-        </div>
-      )}
+          <div className={styles.error}>
+            <span>⚠️</span> {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
-            <input 
-              type="email" 
-              placeholder="Email" 
-              required 
+            <input
+              type="email"
+              placeholder="Email"
+              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className={styles.inputGroup}>
-            <input 
-              type="password" 
-              placeholder="Password" 
-              required 
+            <input
+              type="password"
+              placeholder="Password"
+              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
