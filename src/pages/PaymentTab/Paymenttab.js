@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getDatabase, ref, set } from 'firebase/database';
 import './Paymenttab.css';
 
 const PaymentTab = () => {
@@ -26,6 +27,13 @@ const PaymentTab = () => {
   const handlePaymentMethodSelect = (method) => {
     setSelectedPaymentMethod(method);
   };
+
+  const db = getDatabase(); // Initialize Firebase Database
+
+  const {
+    passengerDetails = {}, // Retrieve passenger details from state
+    // Add other details as needed
+  } = location.state || {};
 
   const handleConfirmPayment = async () => {
     if (selectedPaymentMethod === 'e-wallet') {
@@ -63,6 +71,12 @@ const PaymentTab = () => {
           const isPaymentSuccessful = true; // Mock variable; replace with real status if using actual integration
           if (isPaymentSuccessful) {
             alert('Payment Successful');
+            const passengerRef = ref(db, `passengerInfo/${passengerDetails.firstName}_${passengerDetails.lastName}_${passengerDetails.nationality}
+              _${passengerDetails.birthDate}_${passengerDetails.idUpload}_${passengerDetails.passType}`);
+            await set(passengerRef, {
+              ...passengerDetails,
+            });
+            
           } else {
             alert('Payment Failed');
           }

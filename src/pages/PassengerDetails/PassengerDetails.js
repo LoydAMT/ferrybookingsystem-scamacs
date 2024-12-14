@@ -15,6 +15,8 @@ const PassengerDetails = () => {
     selectedReturnTrip = { time: '', price: 0 },
     passengers = { total: 0 },
     totalPrice = 0,
+
+    
   } = location.state || {};
 
   const handleBack = () => {
@@ -35,10 +37,30 @@ const PassengerDetails = () => {
     });
   };
 
+  
   const handleProceedToPayment = () => {
-    // You can add form validation here before proceeding
+    const passengerDetails = passengerIds.map((idInfo, index) => {
+      const firstName = document.querySelectorAll(".TboxInputs1 input")[index].value;
+      const lastName = document.querySelectorAll(".TboxInputs2 input")[index].value;
+      const nationality = document.querySelectorAll(".Tbox2")[index].value;
+      const day = document.querySelectorAll(".day select")[index].value;
+      const month = document.querySelectorAll(".month select")[index].value;
+      const year = document.querySelectorAll(".year select")[index].value;
+      const birthDate = `${year}-${month}-${day}`;
+  
+      return {
+        passType: getPassengerType(index),
+        firstName,
+        lastName,
+        nationality,
+        birthDate,
+        idUpload: idInfo.preview,
+      };
+    });
+  
     navigate('/payment', {
       state: {
+        passengerDetails,
         tripType,
         selectedFrom,
         selectedTo,
@@ -48,29 +70,46 @@ const PassengerDetails = () => {
         selectedReturnTrip,
         passengers,
         totalPrice,
-        // Add any additional passenger details collected from the form
-      }
+      },
     });
   };
-
-  const [isStudentOrSenior, setIsStudentOrSenior] = useState(false);
+  
+  // Helper function to determine passenger type based on index
+  const getPassengerType = (index) => {
+    if (index < passengers.adults) return 'Adult';
+    if (index < passengers.adults + passengers.children) return 'Child';
+    if (index < passengers.adults + passengers.children + passengers.students) return 'Student';
+    if (index < passengers.adults + passengers.children + passengers.students + passengers.pwd) return 'PWD';
+    return 'Senior Citizen';
+  };
+  
   const [idFile, setIdFile] = useState(null); // To store the selected ID file
   const [idPreview, setIdPreview] = useState(null); // To store the preview URL
+  const [passengerIds, setPassengerIds] = useState(
+    Array.from({ length: passengers.total }, () => ({ file: null, preview: null }))
+  );
 
-  const handleIdChange = (e) => {
-    const file = e.target.files[0]; // Get the first file selected by the user
+  const handleIdChange = (index) => (e) => {
+    const file = e.target.files[0];
     if (file) {
-        setIdFile(file); // Store the file in the state
-
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setIdPreview(reader.result); // Set the preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // Create a new array with updated state for the specific passenger
+        const updatedIds = [...passengerIds];
+        updatedIds[index] = {
+          file: file,
+          preview: reader.result
         };
-        reader.readAsDataURL(file); // Read the file as a Data URL
+        setPassengerIds(updatedIds);
+      };
+      reader.readAsDataURL(file);
     } else {
-        setIdPreview(null); // Reset the preview if no file is selected
+      // Reset the specific passenger's ID if no file is selected
+      const updatedIds = [...passengerIds];
+      updatedIds[index] = { file: null, preview: null };
+      setPassengerIds(updatedIds);
     }
-};
+  };
 
   return (
     <div className="Passenger-Details">
@@ -109,11 +148,31 @@ const PassengerDetails = () => {
         </div>
         <div className="PassengerInformation">
         <div className="PassengerForms">
-        {Array.from({ length: passengers.total }).map((_, index) => (
-              <div key={index} className="Forms">
+        {Array.from({ length: passengers.total }).map((_, index) => {
+          let passengerType = 'Adult'; // Default to Adult
+          let typeIndex = 0;
 
+          if (index < passengers.adults) {
+            passengerType = 'Adult';
+            typeIndex = index + 1;
+          } else if (index < passengers.adults + passengers.children) {
+            passengerType = 'Child';
+            typeIndex = index - passengers.adults + 1;
+          } else if (index < passengers.adults + passengers.children + passengers.students) {
+            passengerType = 'Student';
+            typeIndex = index - (passengers.adults + passengers.children) + 1;
+          } else if (index < passengers.adults + passengers.children + passengers.students + passengers.pwd) {
+            passengerType = 'PWD';
+            typeIndex = index - (passengers.adults + passengers.children + passengers.students) + 1;
+          } else {
+            passengerType = 'Senior Citizen';
+            typeIndex = index - (passengers.adults + passengers.children + passengers.students + passengers.pwd) + 1;
+          }
+
+          return (
+              <div key={index} className="Forms">
                 <div className="PassengerType">
-                  <h3>Adult {index + 1}</h3>
+                  <h3>{passengerType} {typeIndex}</h3>
                 </div>
 
                 <div className="PassengerInputs">
@@ -204,41 +263,40 @@ const PassengerDetails = () => {
               </div>
                 
               <div className="TboxInputs4">
-      <h4 className="Headers">
-        <input
-          type="checkbox"
-          className="Checkbox"
-          onChange={(e) => setIsStudentOrSenior(e.target.checked)} // Update state on change
-        />{' '}
-        <span> </span>
-        I am a Student/Senior Citizen/Person with Disability.
-      </h4>
-
-      {isStudentOrSenior && ( // Show upload section only if checked
-        <div className="id-upload">
-          <input
-            id="file-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleIdChange}
-            style={{ display: 'none' }}
-          />
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              document.getElementById('file-upload').click();
-            }}
-            className="upload-button"
-          >
-            Upload File Here
-          </button>
-          {idPreview && <img src={idPreview} alt="ID Preview" className="id-preview" />}
-        </div>
-      )}
+      {(passengerType === 'Student' || passengerType === 'Senior Citizen' || passengerType === 'PWD') && (
+          <div className="TboxInputs4">
+            <div className="id-upload">
+            <input
+              id={`file-upload-${index}`}
+              type="file"
+              accept="image/*"
+              onChange={handleIdChange(index)}
+              style={{ display: 'none' }}
+            />
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                document.getElementById(`file-upload-${index}`).click();
+              }}
+              className="upload-button"
+            >
+              Upload File Here
+            </button>
+            <div>
+            {passengerIds[index].preview && (
+              <img 
+                src={passengerIds[index].preview} 
+                alt={`ID Preview for Passenger ${index + 1}`} 
+                className="id-preview" 
+              />
+        )}</div>
+            </div>
+          </div>
+        )}
     </div>
                 </div>
               </div>
-            ))}
+            )})}
         </div>
 
         </div>
@@ -256,14 +314,14 @@ const PassengerDetails = () => {
             <h4 className="CIHeaders">
             Guest Name<span className="required">*</span>
             </h4>
-            <input className="Tbox" type="text" placeholder="scamacs@gmail.com" required />
+            <input className="Tbox" type="text" placeholder="First Name, Middle Name, Last Name" required />
           </div>
         
           <div className="CIInputs2">
             <h4 className="CIHeaders">
             Email<span className="required">*</span>
             </h4>
-            <input className="Tbox" type="text" placeholder="Enter Email" required />
+            <input className="Tbox" type="text" placeholder="scamacs@gmail.com" required />
           </div>
         </div>
           <div className="CISecondRow">
@@ -327,5 +385,6 @@ const PassengerDetails = () => {
     </div>
   );
 };
+
 
 export default PassengerDetails;

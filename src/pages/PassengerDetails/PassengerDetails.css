@@ -1,8 +1,4 @@
 
-.Passenger-Details{
-    font-family: 'open-sans', 'sans-serif', inter;
-}
-
 .PDHeaders{
    
    color: black;
@@ -70,6 +66,7 @@
 
 .TboxInputs2{
     margin-left: 1%;
+    margin-bottom: 1%;
 }
 
 .TboxInputs3{
@@ -82,7 +79,8 @@
 
 .TboxInputs4{
     display: flex;
-    gap: 2.5%;
+    margin-bottom: 1%;
+    margin-top: 0%;
 }
 
 .Headers{
@@ -147,7 +145,7 @@
     border-radius: 4px;
     height: 35px; 
     box-sizing: border-box; 
-
+    margin-bottom: 1%;
 }
 
 
@@ -172,7 +170,7 @@
 }
 
 .id-preview{
-    width: 100px;
+    width: 150px;
     height: 100px;
 }
 
