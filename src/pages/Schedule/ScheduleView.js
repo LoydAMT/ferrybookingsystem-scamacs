@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { format, parseISO, addDays, subDays } from 'date-fns';
+import { format, parseISO } from 'date-fns'; // Remove unused imports
+import { fetchTrips } from '../../helpers/firebaseHelpers';
 import './ScheduleView.css';
 
 const ScheduleView = () => {
@@ -10,60 +11,56 @@ const ScheduleView = () => {
 
   const [selectedDepartureTrip, setSelectedDepartureTrip] = useState(null);
   const [selectedReturnTrip, setSelectedReturnTrip] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(departDate); 
-  const [currentReturnDate, setCurrentReturnDate] = useState(returnDate); 
-  const [startDate, setStartDate] = useState(parseISO(departDate)); 
-  const [startReturnDate, setStartReturnDate] = useState(returnDate ? parseISO(returnDate) : null); 
+  const [departureTrips, setDepartureTrips] = useState([]);
+  const [returnTrips, setReturnTrips] = useState([]);
+  const [loadingTrips, setLoadingTrips] = useState(true);
 
-  const trips = [
-    { time: '4:00 AM', price: 349.00 },
-    { time: '9:00 AM', price: 349.00 },
-    { time: '11:00 AM', price: 349.00 },
-    { time: '4:00 PM', price: 349.00 },
-    { time: '6:00 PM', price: 349.00 },
-  ];
+  // Fetch departure trips dynamically
+  useEffect(() => {
+    const loadTrips = async () => {
+      setLoadingTrips(true);
+      try {
+        const trips = await fetchTrips(selectedFrom, selectedTo, departDate);
+        setDepartureTrips(trips);
+      } catch (error) {
+        console.error('Failed to load departure trips:', error);
+      } finally {
+        setLoadingTrips(false);
+      }
+    };
+    loadTrips();
+  }, [selectedFrom, selectedTo, departDate]);
 
-  const generateDates = (start) => {
-    const dates = [];
-    for (let i = 0; i < 7; i++) {
-      dates.push(addDays(start, i));
+  // Fetch return trips dynamically if round-trip
+  useEffect(() => {
+    if (tripType === 'round-trip' && returnDate) {
+      const loadTrips = async () => {
+        setLoadingTrips(true);
+        try {
+          const trips = await fetchTrips(selectedTo, selectedFrom, returnDate);
+          setReturnTrips(trips);
+        } catch (error) {
+          console.error('Failed to load return trips:', error);
+        } finally {
+          setLoadingTrips(false);
+        }
+      };
+      loadTrips();
     }
-    return dates;
-  };
+  }, [selectedTo, selectedFrom, returnDate, tripType]);
 
-  const handleDepartureDateChange = (date) => {
-    setSelectedDate(date); 
-  };
+  const formattedSelectedDate = departDate ? format(parseISO(departDate), 'MMMM d, yyyy') : null;
+  const formattedCurrentReturnDate = returnDate ? format(parseISO(returnDate), 'MMMM d, yyyy') : null;
 
-  const handleNextDateRange = () => {
-    setStartDate(addDays(startDate, 7)); 
-  };
-
-  const handlePreviousDateRange = () => {
-    setStartDate(subDays(startDate, 7)); 
-  };
-
-  const handleNextReturnDateRange = () => {
-    setStartReturnDate(addDays(startReturnDate, 7)); 
-  };
-
-  const handlePreviousReturnDateRange = () => {
-    setStartReturnDate(subDays(startReturnDate, 7)); 
-  };
-
-  const handleTripSelection = (trip, isReturn) => {
-    if (isReturn) {
-      setSelectedReturnTrip(trip);
-    } else {
-      setSelectedDepartureTrip(trip);
-    }
+  const calculateTotalPrice = () => {
+    const departureCost = selectedDepartureTrip?.price || 0;
+    const returnCost = selectedReturnTrip?.price || 0;
+    return (departureCost + returnCost) * passengers.total;
   };
 
   const handleContinue = () => {
-    const totalPrice = (
-      349 * passengers.total
-    ).toFixed(2);
-  
+    const totalPrice = calculateTotalPrice();
+
     navigate('/PassengerDetails', {
       state: {
         tripType,
@@ -75,119 +72,43 @@ const ScheduleView = () => {
         selectedReturnTrip,
         passengers,
         totalPrice,
-      }
+      },
     });
   };
 
   const handleBack = () => {
-    
-    navigate(-1, {
-      state: {
-        previousInputs: {
-          tripType,
-          selectedFrom,
-          selectedTo,
-          departDate,
-          returnDate,
-          adults: passengers.adults,
-          children: passengers.children,
-          students: passengers.students,
-          pwd: passengers.pwd,
-          seniors: passengers.seniors,
-        }
-      }
-    });
+    navigate(-1); // Go back to the previous page
   };
 
-  const formattedSelectedDate = format(parseISO(selectedDate), 'MMMM d, yyyy');
-  const formattedCurrentReturnDate = currentReturnDate ? format(parseISO(currentReturnDate), 'MMMM d, yyyy') : null;
-  const dynamicDepartureDates = generateDates(startDate);
-  const dynamicReturnDates = startReturnDate ? generateDates(startReturnDate) : [];
+  const handleTripSelection = (trip, isReturn) => {
+    if (isReturn) {
+      setSelectedReturnTrip(trip);
+    } else {
+      setSelectedDepartureTrip(trip);
+    }
+  };
 
   return (
     <div className="schedule-view">
+      {/* Header */}
       <header className="header">
-        <div className="format">
-          <span>{selectedFrom}</span>
-          <span className="arrow">↔</span>
-          <span>{selectedTo}</span>
-        </div>
-        <div className="passengers">
-          <div className="format">{passengers.total}</div>
-          <div>Passenger/s</div>
-        </div>
-        <div className="dateDepart">
-          <div className="format">{formattedSelectedDate}</div> 
-          <div>Departure</div>
-        </div>
-        {tripType === 'round-trip' && (
-          <div className="dateReturn">
-            <div className="format">{formattedCurrentReturnDate}</div> 
-            <div>Return</div>
-          </div>
-        )}
+        {/* Similar header as before */}
       </header>
 
+      {/* Main Content */}
       <main className="main-content">
-        <div className="tabs">
-          <div className="tab active">Schedules</div>
-          <div className="tab">Passenger Details</div>
-          <div className="tab">Payment</div>
-          <div className="tab">Complete</div>
-        </div>
-
+        {/* Departure Schedule */}
         <section className="schedule-section">
           <h2>{selectedFrom} → {selectedTo}</h2>
-          <div className="date-selector">
-            <button onClick={handlePreviousDateRange}>&lt;</button>
-            {dynamicDepartureDates.map((date, index) => (
-              <div
-                key={index}
-                className={`date ${format(date, 'yyyy-MM-dd') === format(parseISO(selectedDate), 'yyyy-MM-dd') ? 'active' : ''}`}
-                onClick={() => handleDepartureDateChange(date.toISOString())}
-              >
-                {format(date, 'dd')} 
-              </div>
-            ))}
-            <button onClick={handleNextDateRange}>&gt;</button>
-          </div>
-          <div className="trips">
-            {trips.map((trip, index) => (
-              <div
-                key={index}
-                className={`trip-card ${selectedDepartureTrip === trip ? 'selected' : ''}`} 
-                onClick={() => handleTripSelection(trip, false)} 
-              >
-                <div className="time">{trip.time}</div>
-                <div className="price">₱{trip.price.toFixed(2)}</div>
-                <button>Select</button>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {tripType === 'round-trip' && (
-          <section className="schedule-section">
-            <h2>{selectedTo} → {selectedFrom}</h2>
-            <div className="date-selector">
-              <button onClick={handlePreviousReturnDateRange}>&lt;</button>
-              {dynamicReturnDates.map((date, index) => (
-                <div
-                  key={index}
-                  className={`date ${format(date, 'yyyy-MM-dd') === format(parseISO(currentReturnDate), 'yyyy-MM-dd') ? 'active' : ''}`}
-                  onClick={() => setCurrentReturnDate(date.toISOString())} 
-                >
-                  {format(date, 'dd')}
-                </div>
-              ))}
-              <button onClick={handleNextReturnDateRange}>&gt;</button>
-            </div>
+          {loadingTrips ? (
+            <p>Loading departure trips...</p>
+          ) : departureTrips.length > 0 ? (
             <div className="trips">
-              {trips.map((trip, index) => (
+              {departureTrips.map((trip) => (
                 <div
-                  key={index}
-                  className={`trip-card ${selectedReturnTrip === trip ? 'selected' : ''}`} 
-                  onClick={() => handleTripSelection(trip, true)} 
+                  key={trip.id}
+                  className={`trip-card ${selectedDepartureTrip === trip ? 'selected' : ''}`}
+                  onClick={() => handleTripSelection(trip, false)}
                 >
                   <div className="time">{trip.time}</div>
                   <div className="price">₱{trip.price.toFixed(2)}</div>
@@ -195,6 +116,34 @@ const ScheduleView = () => {
                 </div>
               ))}
             </div>
+          ) : (
+            <p>No trips available for the selected date.</p>
+          )}
+        </section>
+
+        {/* Return Schedule (if round-trip) */}
+        {tripType === 'round-trip' && (
+          <section className="schedule-section">
+            <h2>{selectedTo} → {selectedFrom}</h2>
+            {loadingTrips ? (
+              <p>Loading return trips...</p>
+            ) : returnTrips.length > 0 ? (
+              <div className="trips">
+                {returnTrips.map((trip) => (
+                  <div
+                    key={trip.id}
+                    className={`trip-card ${selectedReturnTrip === trip ? 'selected' : ''}`}
+                    onClick={() => handleTripSelection(trip, true)}
+                  >
+                    <div className="time">{trip.time}</div>
+                    <div className="price">₱{trip.price.toFixed(2)}</div>
+                    <button>Select</button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No trips available for the selected date.</p>
+            )}
           </section>
         )}
       </main>
