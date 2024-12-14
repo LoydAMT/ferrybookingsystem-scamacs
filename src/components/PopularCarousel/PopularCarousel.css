@@ -26,6 +26,14 @@
     width: calc(100% - 20px);
   }
 
+  .PopularImages{
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .PopularImages:hover{
+    transform: scale(1.1);
+  }
+
   .slick-track{
     width: 80%;
   }

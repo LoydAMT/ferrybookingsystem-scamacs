@@ -1,10 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import HomeCarousel from '../../components/HomeCarousel/HomeCarousel';
 import PopularCarousel from '../../components/PopularCarousel/PopularCarousel'; // Import the new carousel component
+import AboutUsModal from './AboutUsModal';
+import ContactUsModal from './ContactUsModal';
+import PrivacyPolicyModal from './PrivacyPolicyModal';
 import { Link } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
+  const [showAboutUsModal, setShowAboutUsModal] = useState(false);
+  const [showContactUsModal, setShowContactUsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+
   return (
     <div>
       <div className="HomeContainer">
@@ -44,48 +51,43 @@ const Home = () => {
         <div className='HeaderText2'>
           <h1 id="PopHead">Journey To The Sea Made Simple!</h1>
         </div>
-        <div className='CardsContainer'>
-          <div className='Card'>
-            <div className='CardContent'>
-              <img 
-                src="/images/TRACKING.jpg" 
-                alt="Track Destination" 
-                className="map-image" 
-              />
-              <div className="card-text">
-                Track Your Destination <span className="arrow">→</span>
-              </div>
+          <div className="SecondContent">
+            <div className="Left-side">
+                <img id="coronPic" src="/images/CORON.jfif" alt="CORON"/>
             </div>
-          </div>
-          <div className='Card'>
-            <div className='CardContent'>
-              <img 
-                src="/images/TRACKING.jpg" 
-                alt="Get Started" 
-                className="map-image" 
-              />
-              <div className="card-text">
-                Get Started <span className="arrow">→</span>
-              </div>
+
+            <div className="Right-side">
+                <h3 id="Right-Text">
+                Demure Sailing, Bold Wanderlust – 
+                </h3>
+                <h3 id="Right-Text">
+                  Swift Sail Awaits!
+                </h3>
+                <Link to="/schedule">
+                <button id="BookNowButton2">
+                BOOK NOW <img id="arrow" src="/images/Arrow.png" alt="Arrow" />
+                </button>
+            </Link>
             </div>
+
           </div>
-          <div className='Card'>
-            <div className='CardContent'>
-              <img 
-                src="/images/TRACKING.jpg" 
-                alt="Blank Card" 
-                className="map-image" 
-              />
-              <div className="card-text">
-                Blank Card <span className="arrow">→</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        
       </div>
 
-      <div className="BookNowContainer">
-        <p>lorem ipsim</p>
+      <PrivacyPolicyModal showModal={showPrivacyModal} setShowModal={setShowPrivacyModal} />
+      <AboutUsModal showModal={showAboutUsModal} setShowModal={setShowAboutUsModal} />
+      <ContactUsModal showModal={showContactUsModal} setShowModal={setShowContactUsModal} />
+
+      <div className="FOOTER">
+      <button className="footer-item" onClick={() => setShowAboutUsModal(true)}>
+          About Us
+        </button>
+        <button className="footer-item" onClick={() => setShowContactUsModal(true)}>
+          Contact Us
+        </button>
+        <button className="footer-item" onClick={() => setShowPrivacyModal(true)}>
+          Privacy Policy
+        </button>
       </div>
     </div>
   );
