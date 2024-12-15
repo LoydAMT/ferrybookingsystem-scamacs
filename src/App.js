@@ -93,6 +93,7 @@ function App() {
           />
           <Route path="/signup" element={<Signup onClose={handleCloseSignup} />} />
           <Route path="/community" element={<Community userId={user?.uid} />} />
+          <Route path="/login" element={<Login onClose={handleCloseLogin} />} />
         </Routes>
       </Router>
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
