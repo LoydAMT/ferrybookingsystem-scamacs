@@ -11,7 +11,7 @@ export const styles = {
     borderRadius: "20px",
     fontSize: "14px",
     fontWeight: "500",
-    whiteSpace: "nowrap", /* Forces the text to stay on one line */
+    whiteSpace: "nowrap", 
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
     transition: "opacity 0.3s ease",
   },

@@ -13,18 +13,16 @@ const SupportEngine = () => {
       setMessages([]); // Reset messages when chat is opened
       setShowOptions(false);
 
-      // Messages to display with delay
       const initialMessages = [
         { sender: 'bot', text: "Hey, it's Ruru, your virtual assistant!" },
         { sender: 'bot', text: 'How can I help you today?' },
       ];
 
-      // Add messages one by one with delay
       initialMessages.forEach((msg, index) => {
         setTimeout(() => {
           setMessages((prevMessages) => [...prevMessages, msg]);
-          if (index === initialMessages.length - 1) setShowOptions(true); // Show options after messages
-        }, index * 1000); // Delay of 1 second for each message
+          if (index === initialMessages.length - 1) setShowOptions(true);
+        }, index * 1000);
       });
     }
   }, [isOpen]);
@@ -34,14 +32,14 @@ const SupportEngine = () => {
       ...prevMessages,
       { sender: 'user', text: option },
     ]);
-    setShowOptions(false); // Hide options after a selection
+    setShowOptions(false);
 
     setTimeout(() => {
       setMessages((prevMessages) => [
         ...prevMessages,
         { sender: 'bot', text: `You selected: "${option}"` },
       ]);
-    }, 1000); // Delay response for 1 second
+    }, 1000);
   };
 
   const handleUserInputChange = (e) => {
@@ -86,6 +84,16 @@ const SupportEngine = () => {
                   message.sender === 'bot' ? 'bot-message' : 'user-message'
                 }`}
               >
+                <div className="message-icon">
+                  {message.sender === 'bot' ? (
+                    <img
+                      src="https://i.pinimg.com/736x/77/d0/10/77d010471d917c115521c05add2d4854.jpg"
+                      alt="avatar"
+                    />
+                  ) : (
+                    '👤'
+                  )}
+                </div>
                 <p>{message.text}</p>
               </div>
             ))}
