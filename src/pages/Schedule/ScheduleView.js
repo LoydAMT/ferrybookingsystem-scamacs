@@ -1,27 +1,96 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
 import { format, parseISO, addDays, subDays } from 'date-fns';
 import './ScheduleView.css';
 
 const ScheduleView = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const db = getFirestore();
   const { selectedFrom, selectedTo, departDate, returnDate, passengers, tripType } = location.state || {};
 
   const [selectedDepartureTrip, setSelectedDepartureTrip] = useState(null);
   const [selectedReturnTrip, setSelectedReturnTrip] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(departDate); 
-  const [currentReturnDate, setCurrentReturnDate] = useState(returnDate); 
-  const [startDate, setStartDate] = useState(parseISO(departDate)); 
-  const [startReturnDate, setStartReturnDate] = useState(returnDate ? parseISO(returnDate) : null); 
+  const [selectedDate, setSelectedDate] = useState(departDate);
+  const [currentReturnDate, setCurrentReturnDate] = useState(returnDate);
+  const [startDate, setStartDate] = useState(parseISO(departDate));
+  const [startReturnDate, setStartReturnDate] = useState(returnDate ? parseISO(returnDate) : null);
+  const [trips, setTrips] = useState({ departure: [], return: [] });
 
-  const trips = [
-    { time: '4:00 AM', price: 349.00 },
-    { time: '9:00 AM', price: 349.00 },
-    { time: '11:00 AM', price: 349.00 },
-    { time: '4:00 PM', price: 349.00 },
-    { time: '6:00 PM', price: 349.00 },
-  ];
+  useEffect(() => {
+    const fetchTrips = async () => {
+      try {
+        console.log('Fetching trip data from Firestore...');
+        console.log('Selected From:', selectedFrom, 'Selected To:', selectedTo);
+
+        // Reference to the adminData collection
+        const adminDataRef = collection(db, 'adminData');
+        const adminDataSnapshot = await getDocs(adminDataRef);
+
+        let matchedTrips = { departure: [], return: [] };
+
+        // Loop through each admin data to access the necessary details
+        for (const adminDoc of adminDataSnapshot.docs) {
+          const uid = adminDoc.id; // Get UID for the admin data
+
+          // Access the `times` field from admin data
+          const adminData = adminDoc.data();
+          const { times, companyName } = adminData;
+
+          // Loop through each time in the `times` array
+          for (const index in times) {
+            const tripDetails = times[index]; // Get the trip details from the times array
+
+            // Access the travel information and prices (business and economy)
+            const { details, businessPrice, economyPrice } = tripDetails;
+
+            // Split and trim the details for first and second word, and ensure no extra spaces
+            const [firstWord, secondWord] = details.split('-').map((word) => word.trim());
+
+            // Log first and second words
+            console.log(`First word: "${firstWord}", Second word: "${secondWord}"`);
+            console.log(`from: "${selectedFrom}", to: "${selectedTo}"`);
+
+            // Match the first and second word with selectedFrom and selectedTo
+            if (firstWord === selectedFrom.trim() && secondWord === selectedTo.trim()) {
+              // Determine the price based on the class (business or economy)
+              const price = businessPrice ? businessPrice : economyPrice; // Use business price if available, otherwise economy price
+
+              // If matched, push the trip details into the matchedTrips array
+              // if need makuha ang details sa selected from and to diri lang kuha sa details
+              matchedTrips.departure.push({
+                time: details.trim(), 
+                details: details.trim(), 
+                uid,
+                index, 
+                price, 
+                companyName: companyName.trim(), 
+              });
+
+              console.log(`Matched trip found: UID: ${uid}, From: ${firstWord}, To: ${secondWord}, Time: ${details.trim()}, Price: ${price}, Company: ${companyName.trim()}`);
+            }
+          }
+        }
+
+        // Log the matched trips
+        console.log('Matched Trips:', matchedTrips);
+
+        // Update the state with the matched trips
+        setTrips(matchedTrips);
+
+      } catch (error) {
+        console.error('Error fetching trip data:', error);
+      }
+    };
+
+    fetchTrips();
+  }, [selectedFrom, selectedTo]);
+
+
+
+
+
 
   const generateDates = (start) => {
     const dates = [];
@@ -32,23 +101,23 @@ const ScheduleView = () => {
   };
 
   const handleDepartureDateChange = (date) => {
-    setSelectedDate(date); 
+    setSelectedDate(date);
   };
 
   const handleNextDateRange = () => {
-    setStartDate(addDays(startDate, 7)); 
+    setStartDate(addDays(startDate, 7));
   };
 
   const handlePreviousDateRange = () => {
-    setStartDate(subDays(startDate, 7)); 
+    setStartDate(subDays(startDate, 7));
   };
 
   const handleNextReturnDateRange = () => {
-    setStartReturnDate(addDays(startReturnDate, 7)); 
+    setStartReturnDate(addDays(startReturnDate, 7));
   };
 
   const handlePreviousReturnDateRange = () => {
-    setStartReturnDate(subDays(startReturnDate, 7)); 
+    setStartReturnDate(subDays(startReturnDate, 7));
   };
 
   const handleTripSelection = (trip, isReturn) => {
@@ -63,7 +132,7 @@ const ScheduleView = () => {
     const totalPrice = (
       349 * passengers.total
     ).toFixed(2);
-  
+
     navigate('/PassengerDetails', {
       state: {
         tripType,
@@ -80,7 +149,7 @@ const ScheduleView = () => {
   };
 
   const handleBack = () => {
-    
+
     navigate(-1, {
       state: {
         previousInputs: {
@@ -117,12 +186,12 @@ const ScheduleView = () => {
           <div>Passenger/s</div>
         </div>
         <div className="dateDepart">
-          <div className="format">{formattedSelectedDate}</div> 
+          <div className="format">{formattedSelectedDate}</div>
           <div>Departure</div>
         </div>
         {tripType === 'round-trip' && (
           <div className="dateReturn">
-            <div className="format">{formattedCurrentReturnDate}</div> 
+            <div className="format">{formattedCurrentReturnDate}</div>
             <div>Return</div>
           </div>
         )}
@@ -146,20 +215,19 @@ const ScheduleView = () => {
                 className={`date ${format(date, 'yyyy-MM-dd') === format(parseISO(selectedDate), 'yyyy-MM-dd') ? 'active' : ''}`}
                 onClick={() => handleDepartureDateChange(date.toISOString())}
               >
-                {format(date, 'dd')} 
+                {format(date, 'dd')}
               </div>
             ))}
             <button onClick={handleNextDateRange}>&gt;</button>
           </div>
           <div className="trips">
-            {trips.map((trip, index) => (
+            {trips.departure.map((trip, index) => (
               <div
                 key={index}
-                className={`trip-card ${selectedDepartureTrip === trip ? 'selected' : ''}`} 
-                onClick={() => handleTripSelection(trip, false)} 
+                className={`trip-card`}
               >
                 <div className="time">{trip.time}</div>
-                <div className="price">₱{trip.price.toFixed(2)}</div>
+                <div className="details">{trip.travelDetails}</div>
                 <button>Select</button>
               </div>
             ))}
@@ -175,7 +243,7 @@ const ScheduleView = () => {
                 <div
                   key={index}
                   className={`date ${format(date, 'yyyy-MM-dd') === format(parseISO(currentReturnDate), 'yyyy-MM-dd') ? 'active' : ''}`}
-                  onClick={() => setCurrentReturnDate(date.toISOString())} 
+                  onClick={() => setCurrentReturnDate(date.toISOString())}
                 >
                   {format(date, 'dd')}
                 </div>
@@ -186,8 +254,8 @@ const ScheduleView = () => {
               {trips.map((trip, index) => (
                 <div
                   key={index}
-                  className={`trip-card ${selectedReturnTrip === trip ? 'selected' : ''}`} 
-                  onClick={() => handleTripSelection(trip, true)} 
+                  className={`trip-card ${selectedReturnTrip === trip ? 'selected' : ''}`}
+                  onClick={() => handleTripSelection(trip, true)}
                 >
                   <div className="time">{trip.time}</div>
                   <div className="price">₱{trip.price.toFixed(2)}</div>
@@ -207,7 +275,7 @@ const ScheduleView = () => {
             <>
               <div>{selectedFrom} → {selectedTo}</div>
               <div>{formattedSelectedDate} | {selectedDepartureTrip.time}</div>
-              <div>₱{selectedDepartureTrip.price.toFixed(2)} x {passengers.total}</div> 
+              <div>₱{selectedDepartureTrip.price.toFixed(2)} x {passengers.total}</div>
             </>
           )}
         </div>

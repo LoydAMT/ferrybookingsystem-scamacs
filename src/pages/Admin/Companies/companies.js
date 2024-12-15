@@ -5,7 +5,7 @@ import './companiesAd.css';
 import { v4 as uuidv4 } from 'uuid';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { getFirestore, collection, addDoc, getDocs } from 'firebase/firestore';
-import { doc, updateDoc } from 'firebase/firestore';
+import { getDoc, doc, updateDoc } from 'firebase/firestore';
 // import { firestore } from '../../../firebase';
 
 const CompaniesAd = () => {
@@ -315,6 +315,8 @@ const CompaniesAd = () => {
 
 
 
+
+
         try {
             const db = getFirestore();
 
@@ -326,6 +328,54 @@ const CompaniesAd = () => {
 
             const newVesselUid = newVesselRef.id; // Get the auto-generated ID
             console.log(`Vessel added with ID: ${newVesselUid} to company ${companyUid}`);
+
+
+
+            // trial if this works or not
+            const companyDoc = await getDoc(doc(db, "companies", companyUid));
+            if (!companyDoc.exists()) {
+                console.error("Company not found!");
+                return;
+            }
+
+            const companyName = companyDoc.data().name;
+
+
+            const adminData = {
+                companyUid,
+                companyName,
+                capacity: {
+                    passengers: vesselDetails.capacity.passengers
+                },
+                from: vesselDetails.from,
+                to: vesselDetails.to,
+                details: vesselDetails.time,
+                image: vesselDetails.image,
+                name: vesselDetails.name,
+                price: {
+                    economy: vesselDetails.price.economy,
+                    business: vesselDetails.price.business
+                },
+                status: 'Active',
+                travelTime: {
+                    hours: vesselDetails.travelTime.hours,
+                    minutes: vesselDetails.travelTime.minutes
+                },
+                time: vesselDetails.formattedTime,
+                times: vesselDetails.times,
+                vehicle: vesselDetails.vehicle,
+                vehicleDetail: {
+                    type: vesselDetails.vehicleDetail.type,
+                    rate: vesselDetails.vehicleDetail.rate
+                },
+                vehicleDetails: vesselDetails.vehicleDetails
+            };
+
+            const adminDataRef = await addDoc(
+                collection(db, 'adminData'),
+                adminData
+            );
+
         } catch (error) {
             console.error("Error adding vessel:", error);
         }
@@ -489,8 +539,8 @@ const CompaniesAd = () => {
             // If no conflict, add both times to the list
             if (!hasConflict) {
                 const newTimes = [
-                    `${from} - ${to} (Travel Time: ${travelTimeInMinutes} minutes) (${formattedDepartureTime})`,
-                    `${to} - ${from} (Travel Time: ${travelTimeInMinutes} minutes) (${formattedReturnTime})`
+                    `${from} - ${to} - (Travel Time: ${travelTimeInMinutes} minutes) (${formattedDepartureTime})`,
+                    `${to} - ${from} - (Travel Time: ${travelTimeInMinutes} minutes) (${formattedReturnTime})`
                 ];
 
                 // Save formatted time for vesselDetails.formattedTime
@@ -1047,7 +1097,7 @@ const CompaniesAd = () => {
                                                 className="vessel-tbox"
                                                 type="number"
                                                 name="rate"
-                                                valu    e={vesselDetails.vehicleDetail.rate}
+                                                valu e={vesselDetails.vehicleDetail.rate}
                                                 onChange={handleVehicleDetailsChange}
                                                 min="0"
                                                 required
