@@ -12,6 +12,10 @@ const CompaniesAd = () => {
     const newVesselUid = uuidv4();
     const [searchTerm, setSearchTerm] = useState('');
     const [showModal, setShowModal] = useState(false);
+    //for from and to dropdown
+    const [locations, setLocations] = useState([]);
+
+
     const [companyDetails, setCompanyDetails] = useState({
         name: '',
         logo: null,
@@ -41,15 +45,19 @@ const CompaniesAd = () => {
         vehicle: '',
         vehicleDetails: [],
         vehicleDetail: { type: '', rate: '' },
-        time: '',
+        // time: '',
         times: [],
         image: null,
         status: 'Active',
         travelTime: {
             hours: '',
             minutes: ''
-        }
+        },
+        formattedTime: ''
     });
+
+    //add time for add vessel
+    const isTimeDisabled = !vesselDetails.travelTime.hours || !vesselDetails.travelTime.minutes;
 
     // const [vesselDetails, setVesselDetails] = useState({
     //     name: '',
@@ -212,6 +220,27 @@ const CompaniesAd = () => {
         }));
     };
 
+
+    useEffect(() => {
+        const fetchLocations = async () => {
+            try {
+                const db = getFirestore();
+                const querySnapshot = await getDocs(collection(db, 'Location'));
+                const locationData = querySnapshot.docs.map((doc) => doc.id); // Using the document ID as location name
+                console.log("Fetched Locations:", locationData); // Verify the structure
+                setLocations(locationData);
+            } catch (error) {
+                console.error("Error fetching locations:", error);
+            }
+        };
+
+        fetchLocations();
+    }, []);
+    //console.log("Location Data:", locationData);
+
+
+
+
     // const handleVesselSizeChange = (e) => {
     //     const { name, value } = e.target;
     //     setVesselDetails(prev => ({
@@ -277,10 +306,14 @@ const CompaniesAd = () => {
                 type: vesselDetails.vehicleDetail.type,
                 rate: vesselDetails.vehicleDetail.rate
             },
-            time: vesselDetails.time,
+
+            details: vesselDetails.time,
+            time: vesselDetails.formattedTime,
             times: vesselDetails.times,
             image: vesselDetails.image,
         };
+
+
 
         try {
             const db = getFirestore();
@@ -408,29 +441,109 @@ const CompaniesAd = () => {
 
     // Handle time input change
     const handleTimeInputChange = (e) => {
-        const { value } = e.target;
+        const { name, value } = e.target;
         setVesselDetails((prevDetails) => ({
             ...prevDetails,
-            time: value,
+            travelTime: {
+                ...prevDetails.travelTime,
+                [name]: value,
+            },
         }));
     };
-
     // Add time to the list of times
     const handleAddTime = () => {
+        const { hours, minutes } = vesselDetails.travelTime;
+        const { time, from, to, times } = vesselDetails;
+
+        if (hours && minutes && time) {
+            // Calculate the travel time in minutes
+            const travelTimeInMinutes = parseInt(hours) * 60 + parseInt(minutes);
+
+            // Create a new Date object for the departure time (set it to current Philippine time)
+            const departureTime = new Date(`1970-01-01T${time}:00+08:00`);
+
+            // Calculate the return time by adding travel time and 1-hour break
+            const returnTime = new Date(departureTime);
+            returnTime.setMinutes(returnTime.getMinutes() + travelTimeInMinutes + 60);
+
+            // Format the times as HH:mm AM/PM
+            const formattedDepartureTime = departureTime.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const formattedReturnTime = returnTime.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+            // Calculate conflict windows
+            const departureStartTime = new Date(departureTime);
+            departureStartTime.setMinutes(departureStartTime.getMinutes() - travelTimeInMinutes - 59); // 1 hour before departure - travel time
+            const returnEndTime = new Date(returnTime);
+            returnEndTime.setMinutes(returnEndTime.getMinutes() + travelTimeInMinutes + 59); // 1 hour after return time
+
+            // Check if any of the times in the list conflict with the new time range
+            const hasConflict = times.some(({ time: existingTime }) => {
+                // Parse existing time correctly into a Date object
+                const existingTimeDate = new Date(`1970-01-01T${existingTime}:00+08:00`);
+
+                // Check if the existing time is within the conflict range
+                return (existingTimeDate >= departureStartTime && existingTimeDate <= returnEndTime) ||
+                    (existingTimeDate >= departureTime && existingTimeDate <= returnTime);
+            });
+
+            // If no conflict, add both times to the list
+            if (!hasConflict) {
+                const newTimes = [
+                    `${from} - ${to} (Travel Time: ${travelTimeInMinutes} minutes) (${formattedDepartureTime})`,
+                    `${to} - ${from} (Travel Time: ${travelTimeInMinutes} minutes) (${formattedReturnTime})`
+                ];
+
+                // Save formatted time for vesselDetails.formattedTime
+                const formattedTime = newTimes.map(item => {
+                    // Extract formatted time like "1:00 AM" or "2:00 PM"
+                    const timeMatch = item.match(/\(([^)]+)\)/);
+                    return timeMatch ? timeMatch[1] : '';
+                });
+
+                // Update vesselDetails with formatted times
+                setVesselDetails((prevDetails) => ({
+                    ...prevDetails,
+                    times: [
+                        ...prevDetails.times,
+                        { details: newTimes[0], travelTimeInMinutes, time: formattedDepartureTime },
+                        { details: newTimes[1], travelTimeInMinutes, time: formattedReturnTime },
+                    ],
+                    time: '', // Reset the time input
+                    formattedTime: formattedTime.join(', '), // Store formatted times
+                }));
+            } else {
+                console.log("Conflict detected! Cannot add the new times.");
+            }
+        }
+    };
+
+
+
+
+
+
+
+
+    // Remove time from the list of times
+    const handleRemoveTime = (index) => {
+        const isEven = index % 2 === 0;
+
+        let updatedTimes;
+
+        if (isEven) {
+            // If the index is even, remove both the current time and the next time (pair)
+            updatedTimes = vesselDetails.times.filter((_, idx) => idx !== index && idx !== index + 1);
+        } else {
+            // If the index is odd, remove both the current time and the previous time (pair)
+            updatedTimes = vesselDetails.times.filter((_, idx) => idx !== index && idx !== index - 1);
+        }
+
         setVesselDetails((prevDetails) => ({
             ...prevDetails,
-            times: [...prevDetails.times, prevDetails.time],
-            time: '', // Reset time after adding
+            times: updatedTimes,
         }));
     };
 
-    // Remove a time from the list of times
-    const handleRemoveTime = (index) => {
-        setVesselDetails((prevDetails) => ({
-            ...prevDetails,
-            times: prevDetails.times.filter((_, i) => i !== index),
-        }));
-    };
 
 
     return (
@@ -626,12 +739,12 @@ const CompaniesAd = () => {
 
                         <div className="form-row">
                             <div className="logo-detail" >
-                                
-                                    <img
-                                        src={selectedCompany.logoPath} // Use the fetched Firebase URL for the image
-                                        alt="Company Logo"
-                                    />
-                                
+
+                                <img
+                                    src={selectedCompany.logoPath} // Use the fetched Firebase URL for the image
+                                    alt="Company Logo"
+                                />
+
                             </div>
 
                             <textarea
@@ -838,29 +951,50 @@ const CompaniesAd = () => {
 
 
                         {/* From and To Destination */}
+                        {/* From and To Destination */}
                         <div className="ferry-destination">
                             <h4 className="vessel-headers">From Destination<span className="required">*</span></h4>
-                            <input
+                            <select
                                 className="vessel-tbox"
                                 id="vessel-from"
-                                type="text"
                                 name="from"
                                 value={vesselDetails.from}
                                 onChange={handleVesselInputChange}
                                 required
-                            />
+                            >
+                                <option value="" disabled style={{ color: "black" }}>Select a location</option>
+                                {locations.map((location) => (
+                                    <option key={location} value={location} style={{ color: "black" }}>
+                                        {location}
+                                    </option>
+                                ))}
+                            </select>
 
                             <h4 className="vessel-headers">To Destination<span className="required">*</span></h4>
-                            <input
+                            <select
                                 className="vessel-tbox"
                                 id="vessel-to"
-                                type="text"
                                 name="to"
                                 value={vesselDetails.to}
                                 onChange={handleVesselInputChange}
                                 required
-                            />
+                            >
+                                <option value="" disabled style={{ color: "black" }}>Select a location</option>
+                                {locations.length > 0 ? (
+                                    locations
+                                        .filter((location) => location !== vesselDetails.from) // Exclude the selected "from" value
+                                        .map((location) => (
+                                            <option key={location} value={location} style={{ color: "black" }}>
+                                                {location}
+                                            </option>
+                                        ))
+                                ) : (
+                                    <option style={{ color: "black" }} disabled>No data fetched</option>
+                                )}
+                            </select>
+
                         </div>
+
 
                         {/* Passenger Capacity */}
                         <div className="ferry-capacity">
@@ -886,7 +1020,7 @@ const CompaniesAd = () => {
                                     <option value="yes">Yes</option>
                                     <option value="no">No</option>
                                 </select>
-                                <span className="select-arrow">▼</span> 
+                                <span className="select-arrow">▼</span>
                             </div>
 
 
@@ -951,26 +1085,53 @@ const CompaniesAd = () => {
                                     type="time"
                                     name="time"
                                     value={vesselDetails.time}
-                                    onChange={handleTimeInputChange}
+                                    onChange={(e) => setVesselDetails({ ...vesselDetails, time: e.target.value })}
                                     required
                                 />
-                                <button id="add-time" onClick={handleAddTime}>Add Time</button>
+                                <button
+                                    id="add-time"
+                                    onClick={handleAddTime}
+                                    disabled={isTimeDisabled}
+                                >
+                                    Add Time
+                                </button>
                             </div>
 
-                            {vesselDetails.times.length > 0 && (
+                            {/* {vesselDetails.times.length > 0 && (
                                 <ul className="time-list">
-                                    {vesselDetails.times.map((time, index) => (
-                                        <li key={index} onClick={() => handleRemoveTime(index)}>{time}</li>
+                                    {vesselDetails.times.map((item, index) => (
+                                        <li key={index}>
+                                            {item.time} (Travel Time: {item.travelTimeInMinutes} minutes)
+                                        </li>
                                     ))}
                                 </ul>
-                            )}
+                            )} */}
                         </div>
+
+
+
+                        {/* Times List */}
+                        {/* Times List */}
+                        {vesselDetails.times.length > 0 && (
+                            <div className="time-list-container">
+                                <h4>Time List</h4>
+                                <ul className="time-list">
+                                    {vesselDetails.times.map((item, index) => (
+                                        <li key={index} onClick={() => handleRemoveTime(index)}>
+                                            {item.details}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
 
 
                         <div className="vessel-modal-buttons">
                             <button id="vessel-save" onClick={handleAddVessel}>Add Vessel</button>
                             <button id="vessel-cancel" onClick={() => setShowVesselModal(false)}>Cancel</button>
                         </div>
+
                     </div>
                 </div>
             )}
