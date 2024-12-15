@@ -1163,6 +1163,22 @@ select.vessel-tbox:hover {
 }
 
 
+/* remove time button */
+.remove-time-btn {
+    background: none;
+    border: none;
+    color: red;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  
+  .remove-time-btn:hover {
+    color: darkred;
+  }
+  
+
+
 
 
 
