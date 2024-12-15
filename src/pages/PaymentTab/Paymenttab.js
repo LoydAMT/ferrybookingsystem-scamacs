@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, addDoc} from 'firebase/firestore';
 import { db } from '../../firebase';
 import './Paymenttab.css';
 
@@ -8,15 +8,18 @@ const PaymentTab = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const {
-    tripType = '',
-    selectedFrom = '',
-    selectedTo = '',
-    departDate = '',
-    returnDate = '',
-    selectedDepartureTrip = { time: '', price: 0 },
-    selectedReturnTrip = { time: '', price: 0 },
-    passengers = { total: 0 },
-    totalPrice = 0,
+    contactDetails,
+    passengerDetails,
+    tripType,
+    selectedFrom,
+    selectedTo,
+    departDate,
+    returnDate,
+    selectedDepartureTrip,
+    selectedReturnTrip,
+    passengers,
+    totalPrice,
+    email,
   } = location.state || {};
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
@@ -29,10 +32,6 @@ const PaymentTab = () => {
     setSelectedPaymentMethod(method);
   };
 
-  const {
-    passengerDetails = {}, // Retrieve passenger details from state
-    // Add other details as needed
-  } = location.state || {};
 
   const handleConfirmPayment = async () => {
     if (selectedPaymentMethod === 'e-wallet') {
@@ -70,13 +69,28 @@ const PaymentTab = () => {
           const isPaymentSuccessful = true; // Mock variable; replace with real status if using actual integration
           if (isPaymentSuccessful) {
             alert('Payment Successful');
-            const passengerDocId = `${passengerDetails.firstName}_${passengerDetails.lastName}_${passengerDetails.nationality}
-              _${passengerDetails.birthDate}_${passengerDetails.idUpload}_${passengerDetails.passType}`;
-            await setDoc(doc(db, 'passengerInfo', passengerDocId), {
-              ...passengerDetails,
+            // Retrieve the first name, last name, and email from passengerDetails
+
+            const passengerNames = {};
+        
+            // Loop through all passengers and add their names to the object
+            passengerDetails.forEach((passenger, index) => {
+              passengerNames[`FirstName${index + 1}`] = passenger.firstName;
+              passengerNames[`LastName${index + 1}`] = passenger.lastName;
             });
-  
-            console.log('Passenger info saved to Firestore');
+    
+            const bookingsCollection = collection(db, 'Bookings');
+            await addDoc(bookingsCollection, {
+              ...passengerNames, // Spread the passenger names
+              Email: contactDetails.email,
+              DepartDate: departDate,
+              ReturnDate: returnDate,
+              TripType: tripType,
+              TotalPassengers: passengers.total,
+              TotalPrice: totalPrice
+            });
+
+          console.log('Booking info saved to Firestore');
             
           } else {
             alert('Payment Failed');

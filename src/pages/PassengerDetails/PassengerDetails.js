@@ -2,9 +2,11 @@ import './PassengerDetails.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import React, { useState,useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+
 const PassengerDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const {
     tripType = '',
     selectedFrom = '',
@@ -15,13 +17,13 @@ const PassengerDetails = () => {
     selectedReturnTrip = { time: '', price: 0 },
     passengers = { total: 0 },
     totalPrice = 0,
-
-    
   } = location.state || {};
 
-  
-  
-  const [user, setUser] = useState(null); // Store the user state
+  const [user, setUser] = useState(null);
+  const [passengerIds, setPassengerIds] = useState(
+    Array.from({ length: passengers.total }, () => ({ file: null, preview: null }))
+  );
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -32,9 +34,25 @@ const PassengerDetails = () => {
       }
     });
 
-    // Clean up the subscription when the component unmounts
+    // Local storage handling
+    const savedPassengerDetails = JSON.parse(localStorage.getItem("passengerDetails")) || {};
+    if (Object.keys(savedPassengerDetails).length > 0) {
+      setPassengerIds(savedPassengerDetails.passengerIds || []);
+    }
+
     return () => unsubscribe();
   }, []);
+
+  // Save passenger details to localStorage whenever passengerIds change
+  useEffect(() => {
+    if (passengerIds.length > 0) {
+      const passengerDetails = {
+        passengerIds,
+      };
+      localStorage.setItem("passengerDetails", JSON.stringify(passengerDetails));
+    }
+  }, [passengerIds]);
+
   const handleBack = () => {
     navigate(-1, {
       state: {
@@ -53,51 +71,92 @@ const PassengerDetails = () => {
     });
   };
 
-  const isLoggedIn = user !== null; // Check if the user is logged in
+  const isLoggedIn = user !== null;
 
   const handleProceedToPayment = () => {
     if (!isLoggedIn) {
       alert("You need to log in first to book a schedule.");
       navigate('/login');
       return;
-    } 
-    const passengerDetails = passengerIds.map((idInfo, index) => {
-      const firstName = document.querySelectorAll(".TboxInputs1 input")[index].value;
-      const lastName = document.querySelectorAll(".TboxInputs2 input")[index].value;
-      const nationality = document.querySelectorAll(".Tbox2")[index].value;
-      const day = document.querySelectorAll(".day select")[index].value;
-      const month = document.querySelectorAll(".month select")[index].value;
-      const year = document.querySelectorAll(".year select")[index].value;
-      const birthDate = `${year}-${month}-${day}`;
+    }
 
+    const requiredInputs = document.querySelectorAll(".Tbox, .TboxDate, .Checkbox");
+    let allValid = true;
+
+    requiredInputs.forEach((input) => {
+      if (!input) return;
+      if (input.type === "checkbox" && !input.checked) allValid = false;
+      else if (input.value === "" || input.value === null || input.value === undefined) allValid = false;
+    });
+
+    if (!allValid) {
+      alert("Please complete all required fields.");
+      return;
+    }
+
+    // Gather Passenger Details
+    const passengerDetails = Array.from(document.querySelectorAll(".Forms")).map((form, index) => {
+      const firstName = form.querySelector(".TboxInputs1 input")?.value || '';
+      const lastName = form.querySelector(".TboxInputs2 input")?.value || '';
+      const nationality = form.querySelector(".Tbox2")?.value || '';
+      const day = form.querySelector(".day select")?.value || '';
+      const month = form.querySelector(".month select")?.value || '';
+      const year = form.querySelector(".year select")?.value || '';
+      const birthDate = `${year}-${month}-${day}`;
+  
       return {
         passType: getPassengerType(index),
         firstName,
         lastName,
         nationality,
         birthDate,
-        idUpload: idInfo.preview,
+        idUpload: passengerIds[index].preview,
       };
     });
 
-      navigate('/payment', {
-        state: {
-          passengerDetails,
-          tripType,
-          selectedFrom,
-          selectedTo,
-          departDate,
-          returnDate,
-          selectedDepartureTrip,
-          selectedReturnTrip,
-          passengers,
-          totalPrice,
+    // Gather Contact Information (Email)
+    const email = document.querySelector(".CIInputs2 input")?.value || '';
+    const guestName = document.querySelector(".CIInputs1 input")?.value || '';
+
+    // Save all the relevant details into localStorage
+    const allDetails = {
+      passengerIds,
+      tripType,
+      selectedFrom,
+      selectedTo,
+      departDate,
+      returnDate,
+      selectedDepartureTrip,
+      selectedReturnTrip,
+      passengers,
+      totalPrice,
+      passengerDetails, // Add passenger details here
+      email, // Add email here
+    };
+
+    localStorage.setItem("passengerDetails", JSON.stringify(allDetails));
+
+    // Navigate to Payment Page and pass the necessary details in state
+    navigate('/payment', {
+      state: {
+        contactDetails: {
+          guestName,
+          email,
         },
-      });
-    
+        passengerDetails,  // Pass the passengerDetails object here
+        tripType,
+        selectedFrom,
+        selectedTo,
+        departDate,
+        returnDate,
+        selectedDepartureTrip,
+        selectedReturnTrip,
+        passengers,
+        totalPrice,
+      },
+    });
   };
 
-  
   // Helper function to determine passenger type based on index
   const getPassengerType = (index) => {
     if (index < passengers.adults) return 'Adult';
@@ -106,29 +165,24 @@ const PassengerDetails = () => {
     if (index < passengers.adults + passengers.children + passengers.students + passengers.pwd) return 'PWD';
     return 'Senior Citizen';
   };
-  
-  const [idFile, setIdFile] = useState(null); // To store the selected ID file
-  const [idPreview, setIdPreview] = useState(null); // To store the preview URL
-  const [passengerIds, setPassengerIds] = useState(
-    Array.from({ length: passengers.total }, () => ({ file: null, preview: null }))
-  );
+
+  const [idFile, setIdFile] = useState(null);
+  const [idPreview, setIdPreview] = useState(null);
 
   const handleIdChange = (index) => (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Create a new array with updated state for the specific passenger
         const updatedIds = [...passengerIds];
         updatedIds[index] = {
           file: file,
-          preview: reader.result
+          preview: reader.result,
         };
         setPassengerIds(updatedIds);
       };
       reader.readAsDataURL(file);
     } else {
-      // Reset the specific passenger's ID if no file is selected
       const updatedIds = [...passengerIds];
       updatedIds[index] = { file: null, preview: null };
       setPassengerIds(updatedIds);
