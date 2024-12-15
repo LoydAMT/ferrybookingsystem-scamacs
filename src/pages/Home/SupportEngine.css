@@ -1,22 +1,31 @@
-/* General support engine styles */
+/* Avatar Container */
+.avatar-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1001;
+}
+
+.avatar-container.hidden {
+  display: none; /* Hide the avatar when chat is open */
+}
+
+/* General Chat Container */
 .support-engine {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 300px;
+  width: 350px;
+  height: 500px;
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   z-index: 1000;
-  display: none;
 }
 
-.support-engine.active {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Chat header */
+/* Chat Header */
 .chat-header {
   display: flex;
   justify-content: space-between;
@@ -27,73 +36,153 @@
   border-radius: 10px 10px 0 0;
 }
 
-.close-button {
-  cursor: pointer;
+.close-btn {
+  background: none;
+  border: none;
+  color: white;
   font-size: 18px;
-  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
 
-/* Chatbox container */
-.chatbox {
-  display: flex;
-  flex-direction: column;
-  height: 400px;
-  padding: 10px;
+.close-btn:hover {
+  color: #f8d7da;
 }
 
-.messages {
+/* Chat Body */
+.chat-body {
   flex: 1;
   overflow-y: auto;
-}
-
-.message {
-  padding: 8px 12px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  max-width: 80%;
-}
-
-.message.user {
-  background-color: #d1f7ff;
-  align-self: flex-end;
-}
-
-.message.bot {
-  background-color: #f1f1f1;
-  align-self: flex-start;
-}
-
-.input-area {
-  display: flex;
-  align-items: center;
-}
-
-.input-area input {
-  flex: 1;
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 20px;
-  margin-right: 10px;
+  background-color: #f9f9f9;
 }
 
-.input-area button {
+/* Messages */
+.message {
+  display: flex;
+  margin-bottom: 10px;
+  max-width: 70%;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInMessage 0.5s forwards;
+}
+
+@keyframes fadeInMessage {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bot Messages */
+.bot-message p {
+  background-color: #e7f3ff;
+  color: #333;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 14px;
+}
+
+/* User Messages */
+.user-message {
+  justify-content: flex-end; /* Align messages to the right */
+  display: flex;
+}
+
+.user-message p {
+  background-color: #007bff;
+  color: white;
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  font-size: 14px;
+}
+
+/* Chat Options */
+.chat-options-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+  justify-content: flex-start;
+}
+
+.chat-options-container button {
   background-color: #007bff;
   color: white;
   border: none;
+  padding: 8px 12px;
   border-radius: 20px;
-  padding: 10px 15px;
   cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-/* Avatar styles */
-.avatar-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  cursor: pointer;
-  z-index: 1000;
+.chat-options-container button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
 }
 
-.transition-3 {
-  transition: all 0.3s ease;
+/* Input Area */
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ddd;
+  padding: 10px;
+  background-color: white;
+}
+
+.chat-input input {
+  flex: 1;
+  border: 1px solid #ddd;
+  padding: 8px;
+  border-radius: 20px;
+  outline: none;
+  font-size: 14px;
+  transition: box-shadow 0.3s ease;
+}
+
+.chat-input input:focus {
+  box-shadow: 0 0 5px #007bff;
+  border-color: #007bff;
+}
+
+.chat-input button {
+  margin-left: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.chat-input button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Scrollbar Styling */
+.chat-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.chat-body::-webkit-scrollbar-thumb {
+  background: #007bff;
+  border-radius: 10px;
+}
+
+.chat-body::-webkit-scrollbar-thumb:hover {
+  background: #0056b3;
 }

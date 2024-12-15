@@ -6,11 +6,43 @@ const SupportEngine = () => {
   const [messages, setMessages] = useState([]);
   const [userMessage, setUserMessage] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [showOptions, setShowOptions] = useState(true);
 
   useEffect(() => {
-    // Simulate an initial bot message when the component loads
-    setMessages([{ sender: 'bot', text: 'Hello! How can I assist you today?' }]);
-  }, []);
+    if (isOpen) {
+      setMessages([]); // Reset messages when chat is opened
+      setShowOptions(false);
+
+      // Messages to display with delay
+      const initialMessages = [
+        { sender: 'bot', text: "Hey, it's Ruru, your virtual assistant!" },
+        { sender: 'bot', text: 'How can I help you today?' },
+      ];
+
+      // Add messages one by one with delay
+      initialMessages.forEach((msg, index) => {
+        setTimeout(() => {
+          setMessages((prevMessages) => [...prevMessages, msg]);
+          if (index === initialMessages.length - 1) setShowOptions(true); // Show options after messages
+        }, index * 1000); // Delay of 1 second for each message
+      });
+    }
+  }, [isOpen]);
+
+  const handleOptionClick = (option) => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { sender: 'user', text: option },
+    ]);
+    setShowOptions(false); // Hide options after a selection
+
+    setTimeout(() => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: 'bot', text: `You selected: "${option}"` },
+      ]);
+    }, 1000); // Delay response for 1 second
+  };
 
   const handleUserInputChange = (e) => {
     setUserMessage(e.target.value);
@@ -18,55 +50,78 @@ const SupportEngine = () => {
 
   const handleSendMessage = () => {
     if (userMessage.trim()) {
-      setMessages([...messages, { sender: 'user', text: userMessage }]);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender: 'user', text: userMessage },
+      ]);
       setUserMessage('');
 
       setTimeout(() => {
-        const botResponse = 'Thank you for your message! How else can I help?';
         setMessages((prevMessages) => [
           ...prevMessages,
-          { sender: 'bot', text: botResponse },
+          { sender: 'bot', text: "I'm still learning, but I'll try to help!" },
         ]);
       }, 1000);
     }
   };
 
   return (
-    <>
-      {/* Avatar that opens the chat */}
+    <div>
       {!isOpen && <Avatar onClick={() => setIsOpen(true)} />}
 
-      {/* Chatbox */}
       {isOpen && (
-        <div className="support-engine active">
+        <div className="support-engine">
           <div className="chat-header">
-            <span>Ruru</span>
-            <span className="close-button" onClick={() => setIsOpen(false)}>
-              &times;
-            </span>
+            <h3>Ruru - Virtual Assistant</h3>
+            <button className="close-btn" onClick={() => setIsOpen(false)}>
+              X
+            </button>
           </div>
 
-          <div className="chatbox">
-            <div className="messages">
-              {messages.map((msg, index) => (
-                <div key={index} className={`message ${msg.sender}`}>
-                  <span>{msg.text}</span>
-                </div>
-              ))}
-            </div>
-            <div className="input-area">
-              <input
-                type="text"
-                value={userMessage}
-                onChange={handleUserInputChange}
-                placeholder="Type your message..."
-              />
-              <button onClick={handleSendMessage}>Send</button>
-            </div>
+          <div className="chat-body">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`message ${
+                  message.sender === 'bot' ? 'bot-message' : 'user-message'
+                }`}
+              >
+                <p>{message.text}</p>
+              </div>
+            ))}
+
+            {showOptions && (
+              <div className="chat-options-container">
+                <button onClick={() => handleOptionClick('How to book?')}>
+                  How to book?
+                </button>
+                <button
+                  onClick={() =>
+                    handleOptionClick('What are the available shipping lines?')
+                  }
+                >
+                  What are the available shipping lines?
+                </button>
+                <button onClick={() => handleOptionClick('What is the payment method?')}>
+                  What is the payment method?
+                </button>
+                <button onClick={() => handleOptionClick('More')}>More</button>
+              </div>
+            )}
+          </div>
+
+          <div className="chat-input">
+            <input
+              type="text"
+              value={userMessage}
+              onChange={handleUserInputChange}
+              placeholder="Type your message..."
+            />
+            <button onClick={handleSendMessage}>Send</button>
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

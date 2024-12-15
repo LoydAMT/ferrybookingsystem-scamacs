@@ -3,14 +3,15 @@ import React, { useState } from "react";
 export const styles = {
   avatarHello: {
     position: "absolute",
-    bottom: "80px",
+    bottom: "70px",
     right: "10px",
     backgroundColor: "#0866FF",
     color: "white",
-    padding: "10px 15px",
+    padding: "8px 12px",
     borderRadius: "20px",
     fontSize: "14px",
     fontWeight: "500",
+    whiteSpace: "nowrap", /* Forces the text to stay on one line */
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
     transition: "opacity 0.3s ease",
   },
@@ -31,18 +32,21 @@ const Avatar = (props) => {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div style={props.style} className="avatar-container">
-      <div
-        className="transition-3"
-        style={{
-          ...styles.avatarHello,
-          opacity: hovered ? "1" : "0",
-        }}
-      >
-        Hey, it's Ruru!
-      </div>
+    <div style={{ position: "fixed", bottom: "20px", right: "20px" }}>
+      {/* Message Bubble */}
+      {hovered && (
+        <div
+          className="transition-3"
+          style={{
+            ...styles.avatarHello,
+            opacity: hovered ? "1" : "0",
+          }}
+        >
+          Hey, it's Ruru!
+        </div>
+      )}
 
-      {/* Image-based chat icon */}
+      {/* Chat Avatar */}
       <div
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -50,7 +54,7 @@ const Avatar = (props) => {
         className="transition-3"
         style={{
           ...styles.chatWithMeButton,
-          border: hovered ? "1px solid #f9f0ff" : "4px solid #0866FF",
+          border: hovered ? "2px solid #f0f8ff" : "4px solid #0866FF",
         }}
       />
     </div>
