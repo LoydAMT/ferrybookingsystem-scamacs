@@ -1,7 +1,7 @@
 import './PassengerDetails.css';
 import { useNavigate, useLocation } from 'react-router-dom';
-import React, { useState } from 'react';
-
+import React, { useState,useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 const PassengerDetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,6 +19,22 @@ const PassengerDetails = () => {
     
   } = location.state || {};
 
+  
+  
+  const [user, setUser] = useState(null); // Store the user state
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user); // User is logged in, update state
+      } else {
+        setUser(null); // User is not logged in, clear state
+      }
+    });
+
+    // Clean up the subscription when the component unmounts
+    return () => unsubscribe();
+  }, []);
   const handleBack = () => {
     navigate(-1, {
       state: {
@@ -37,8 +53,14 @@ const PassengerDetails = () => {
     });
   };
 
-  
+  const isLoggedIn = user !== null; // Check if the user is logged in
+
   const handleProceedToPayment = () => {
+    if (!isLoggedIn) {
+      alert("You need to log in first to book a schedule.");
+      navigate('/login');
+      return;
+    } 
     const passengerDetails = passengerIds.map((idInfo, index) => {
       const firstName = document.querySelectorAll(".TboxInputs1 input")[index].value;
       const lastName = document.querySelectorAll(".TboxInputs2 input")[index].value;
@@ -47,7 +69,7 @@ const PassengerDetails = () => {
       const month = document.querySelectorAll(".month select")[index].value;
       const year = document.querySelectorAll(".year select")[index].value;
       const birthDate = `${year}-${month}-${day}`;
-  
+
       return {
         passType: getPassengerType(index),
         firstName,
@@ -57,22 +79,24 @@ const PassengerDetails = () => {
         idUpload: idInfo.preview,
       };
     });
-  
-    navigate('/payment', {
-      state: {
-        passengerDetails,
-        tripType,
-        selectedFrom,
-        selectedTo,
-        departDate,
-        returnDate,
-        selectedDepartureTrip,
-        selectedReturnTrip,
-        passengers,
-        totalPrice,
-      },
-    });
+
+      navigate('/payment', {
+        state: {
+          passengerDetails,
+          tripType,
+          selectedFrom,
+          selectedTo,
+          departDate,
+          returnDate,
+          selectedDepartureTrip,
+          selectedReturnTrip,
+          passengers,
+          totalPrice,
+        },
+      });
+    
   };
+
   
   // Helper function to determine passenger type based on index
   const getPassengerType = (index) => {
