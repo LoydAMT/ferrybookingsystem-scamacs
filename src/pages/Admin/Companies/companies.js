@@ -913,7 +913,7 @@ const CompaniesAd = () => {
                                                 className="vessel-tbox"
                                                 type="number"
                                                 name="rate"
-                                                value={vesselDetails.vehicleDetail.rate}
+                                                valu    e={vesselDetails.vehicleDetail.rate}
                                                 onChange={handleVehicleDetailsChange}
                                                 min="0"
                                                 required
