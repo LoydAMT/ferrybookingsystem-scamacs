@@ -227,49 +227,49 @@ const ScheduleView = () => {
             <button onClick={handleNextDateRange}>&gt;</button>
           </div>
           <div className="trips">
-  {trips.departure.map((trip, index) => (
-    <div key={index} className={`trip-card`}>
-      <div className="time">{trip.dtime}</div>
-      <div className="details">{trip.ddetails}</div>
-      <div className="price">
-        ₱
-        {selectedDepartureTrip?.dtime === trip.dtime
-          ? selectedDepartureTrip.priceType === 'Business'
-            ? trip.businessPrice
-            : trip.economyPrice
-          : 'Select a class'}
-      </div>
-      <div className="radio-container">
-        <label>
-          <input
-            type="radio"
-            name={`departureClass_${trip.dtime}`} // Unique name per trip
-            value="Business"
-            checked={
-              selectedDepartureTrip?.dtime === trip.dtime &&
-              selectedDepartureTrip?.priceType === 'Business'
-            }
-            onChange={() => handleTripSelection(trip, false, 'Business')}
-          />
-          <span>Business</span>
-        </label>
-        <label>
-          <input
-            type="radio"
-            name={`departureClass_${trip.dtime}`} // Unique name per trip
-            value="Economy"
-            checked={
-              selectedDepartureTrip?.dtime === trip.dtime &&
-              selectedDepartureTrip?.priceType === 'Economy'
-            }
-            onChange={() => handleTripSelection(trip, false, 'Economy')}
-          />
-          <span>Economy</span>
-        </label>
-      </div>
-    </div>
-  ))}
-</div>
+                      {trips.departure.map((trip, index) => (
+                        <div key={index} className={`trip-card`}>
+                          <div className="time">{trip.dtime}</div>
+                          <div className="details">{trip.ddetails}</div>
+                          <div className="price">
+                            ₱
+                            {selectedDepartureTrip?.dtime === trip.dtime
+                              ? selectedDepartureTrip.priceType === 'Business'
+                                ? trip.businessPrice
+                                : trip.economyPrice
+                              : 'Select a class'}
+                          </div>
+                          <div className="radio-container">
+                            <label>
+                              <input
+                                type="radio"
+                                name={`departureClass_${trip.dtime}`} // Unique name per trip
+                                value="Business"
+                                checked={
+                                  selectedDepartureTrip?.dtime === trip.dtime &&
+                                  selectedDepartureTrip?.priceType === 'Business'
+                                }
+                                onChange={() => handleTripSelection(trip, false, 'Business')}
+                              />
+                              <span>Business</span>
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name={`departureClass_${trip.dtime}`} // Unique name per trip
+                                value="Economy"
+                                checked={
+                                  selectedDepartureTrip?.dtime === trip.dtime &&
+                                  selectedDepartureTrip?.priceType === 'Economy'
+                                }
+                                onChange={() => handleTripSelection(trip, false, 'Economy')}
+                              />
+                              <span>Economy</span>
+                            </label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
         </section>
 
         {tripType === 'round-trip' && (
@@ -289,36 +289,54 @@ const ScheduleView = () => {
               <button onClick={handleNextReturnDateRange}>&gt;</button>
             </div>
             <div className="trips">
-              {trips.return.map((trip, index) => (
-                <div key={index} className="trip-card-container">
-                  {/* Economy Trip Card */}
-                  <div className={`trip-card ${selectedReturnTrip?.index === trip.index && selectedReturnTrip?.priceType === 'economy' ? 'selected' : ''}`}>
-                    <div className="time">{trip.time}</div>
-                    <div className="details">{trip.details}</div>
-                    <div className="details">Economy Class</div>
-                    <div className="price">₱{trip.economyPrice}</div>
-                    <div className="company">{trip.companyName}</div>
-                    <button onClick={() => handleTripSelection(trip, true, 'economy')}>
-                      Select Economy
-                    </button>
-                  </div>
+                      {trips.return.map((trip, index) => (
+                        <div key={index} className={`trip-card`}>
+                          <div className="time">{trip.time}</div>
+                          <div className="details">{trip.details}</div>
+                          <div className="price">
+                            ₱
+                            {selectedReturnTrip?.time === trip.time
+                              ? selectedReturnTrip.priceType === 'Business'
+                                ? trip.businessPrice
+                                : trip.economyPrice
+                              : 'Select a class'}
+                          </div>
+                          <div className="radio-container">
+                            {/* Economy Class */}
+                            <label>
+                              <input
+                                type="radio"
+                                name={`returnClass_${trip.time}`} // Unique name per trip
+                                value="Economy"
+                                checked={
+                                  selectedReturnTrip?.time === trip.time &&
+                                  selectedReturnTrip?.priceType === 'Economy'
+                                }
+                                onChange={() => handleTripSelection(trip, true, 'Economy')}
+                              />
+                              <span>Economy </span>
+                            </label>
 
-                  {/* Business Trip Card */}
+                  {/* Business Class */}
                   {trip.businessPrice && (
-                    <div className={`trip-card ${selectedReturnTrip?.index === trip.index && selectedReturnTrip?.priceType === 'business' ? 'selected' : ''}`}>
-                      <div className="time">{trip.time}</div>
-                      <div className="details">{trip.details}</div>
-                      <div className="details">Business Class</div>
-                      <div className="price">₱{trip.businessPrice}</div>
-                      <div className="company">{trip.companyName}</div>
-                      <button onClick={() => handleTripSelection(trip, true, 'business')}>
-                        Select Business
-                      </button>
-                    </div>
+                    <label>
+                      <input
+                        type="radio"
+                        name={`returnClass_${trip.time}`} // Unique name per trip
+                        value="Business"
+                        checked={
+                          selectedReturnTrip?.time === trip.time &&
+                          selectedReturnTrip?.priceType === 'Business'
+                        }
+                        onChange={() => handleTripSelection(trip, true, 'Business')}
+                      />
+                      <span>Business </span>
+                    </label>
                   )}
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
           </section>
         )}
       </main>
@@ -348,24 +366,33 @@ const ScheduleView = () => {
             <div>{selectedTo} → {selectedFrom}</div>
             <div>{formattedCurrentReturnDate} | {selectedReturnTrip.time}</div>
             <div>{selectedReturnTrip.priceType.toUpperCase()} Class</div>
-            <div>₱{
-              selectedReturnTrip.priceType === 'business'
-                ? selectedReturnTrip.businessPrice
-                : selectedReturnTrip.economyPrice
-            } x {passengers.total}</div>
+            <div>₱{' '}
+                  {selectedReturnTrip.priceType === 'Business'
+                    ? selectedReturnTrip.businessPrice 
+                    : selectedReturnTrip.economyPrice } 
+                    {' '} x {passengers.total}
+            </div>
           </div>
         )}
         <div className="total">
           <span>Total</span>
-          <span>
-          ₱
-              {selectedDepartureTrip
-                ? (
-                    (selectedDepartureTrip.priceType === 'Business'
-                      ? selectedDepartureTrip.businessPrice
-                      : selectedDepartureTrip.economyPrice) 
-                  ) * (passengers?.total || 1)
-                : 0}
+          <span> ₱
+                    {(
+                      (selectedDepartureTrip
+                        ? Number(
+                            selectedDepartureTrip.priceType === 'Business'
+                              ? selectedDepartureTrip.businessPrice
+                              : selectedDepartureTrip.economyPrice
+                          )
+                        : 0) +
+                      (selectedReturnTrip
+                        ? Number(
+                            selectedReturnTrip.priceType === 'Business'
+                              ? selectedReturnTrip.businessPrice
+                              : selectedReturnTrip.economyPrice
+                          )
+                        : 0)
+                    ) * (passengers?.total || 1)}
           </span>
         </div>
         <button 
