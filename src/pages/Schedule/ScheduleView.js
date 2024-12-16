@@ -302,20 +302,7 @@ const ScheduleView = () => {
                               : 'Select a class'}
                           </div>
                           <div className="radio-container">
-                            {/* Economy Class */}
-                            <label>
-                              <input
-                                type="radio"
-                                name={`returnClass_${trip.time}`} // Unique name per trip
-                                value="Economy"
-                                checked={
-                                  selectedReturnTrip?.time === trip.time &&
-                                  selectedReturnTrip?.priceType === 'Economy'
-                                }
-                                onChange={() => handleTripSelection(trip, true, 'Economy')}
-                              />
-                              <span>Economy </span>
-                            </label>
+                           
 
                   {/* Business Class */}
                   {trip.businessPrice && (
@@ -332,7 +319,22 @@ const ScheduleView = () => {
                       />
                       <span>Business </span>
                     </label>
+
                   )}
+                   {/* Economy Class */}
+                   <label>
+                              <input
+                                type="radio"
+                                name={`returnClass_${trip.time}`} // Unique name per trip
+                                value="Economy"
+                                checked={
+                                  selectedReturnTrip?.time === trip.time &&
+                                  selectedReturnTrip?.priceType === 'Economy'
+                                }
+                                onChange={() => handleTripSelection(trip, true, 'Economy')}
+                              />
+                              <span>Economy </span>
+                            </label>
                 </div>
               </div>
             ))}
