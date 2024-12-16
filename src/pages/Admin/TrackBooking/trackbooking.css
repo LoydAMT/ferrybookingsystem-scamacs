@@ -1,0 +1,68 @@
+/* Container */
+.bookings-container {
+  width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.bookings-table {
+  width: 100%;
+  border-collapse: separate; /* Ensure spacing for shadows */
+  border-spacing: 0; /* Remove default spacing */
+}
+
+.bookings-table th,
+.bookings-table td {
+    padding: 12px;
+    text-align: left;
+}
+
+.bookings-table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border-radius:2px;
+    box-shadow: 0 2px 4px rgba(202, 222, 255, 0.871), 
+    inset 0 1px 3px rgba(255, 255, 255, 0.6); 
+}
+
+.bookings-table tr {
+    background-color: white; /* Set row background */
+    border-radius: 8px; /* Rounded corners for bevel effect */
+    box-shadow: 0 2px 4px rgba(202, 222, 255, 0.871), 
+                inset 0 1px 3px rgba(255, 255, 255, 0.6); 
+    margin: 5px 0; 
+    transition: transform 0.2s; 
+}
+
+.bookings-table tr:hover {
+    transform: translateY(-2px); /* Slight lift on hover */
+    background-color: #e9ecef; /* Change background color on hover */
+}
+
+.bookings-table tr:nth-child(even) {
+    background-color: #f8f9fa; /* Alternating row color */
+}
+.search-bars {
+  display: flex; /* Ensure flex is applied */
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 15px; /* Increased padding */
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  height: 50px; /* Set a fixed height */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for the search bar */
+}
+
+.search-bars input {
+  flex-grow: 1;
+  border: none;
+  background: transparent;
+  margin-left: 10px;
+  font-size: 16px;
+  outline: none;
+}
