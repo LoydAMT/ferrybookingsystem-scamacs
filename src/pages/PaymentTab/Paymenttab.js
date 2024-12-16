@@ -26,8 +26,6 @@ const PaymentTab = () => {
     totalPrice,
     time,
     email,
-    selectedDepartureTime,
-    selectedReturnTime,
   } = location.state || {};
 
   const calculateTotalPrice = (totalPrice, passengers, passengerDetails = [], passengerIds = []) => {
