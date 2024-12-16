@@ -19,6 +19,195 @@ const ScheduleView = () => {
   const [startReturnDate, setStartReturnDate] = useState(returnDate ? parseISO(returnDate) : null);
   const [trips, setTrips] = useState({ departure: [], return: [] });
 
+  // useEffect(() => {
+  //   const fetchTrips = async () => {
+  //     try {
+  //       console.log('Fetching trip data from Firestore...');
+  //       console.log('Selected From:', selectedFrom, 'Selected To:', selectedTo);
+
+  //       const adminDataRef = collection(db, 'adminData');
+  //       const adminDataSnapshot = await getDocs(adminDataRef);
+
+  //       let matchedTrips = { departure: [], return: [] };
+
+  //       for (const adminDoc of adminDataSnapshot.docs) {
+  //         const adminData = adminDoc.data();
+  //         const { times, price, from, to, name: companyName } = adminData;
+
+  //         // Add exact string matching and case-insensitive comparison
+  //         const isFromMatch = from.toLowerCase().trim() === selectedFrom.toLowerCase().trim();
+  //         const isToMatch = to.toLowerCase().trim() === selectedTo.toLowerCase().trim();
+
+  //         // Only process if exact route match is found
+  //         if (isFromMatch && isToMatch) {
+  //           times.forEach((timeEntry, index) => {
+  //             const departureDetails = timeEntry.details;
+  //             const departureTime = timeEntry.time;
+  //             const travelTimeInMinutes = timeEntry.travelTimeInMinutes;
+
+  //             matchedTrips.departure.push({
+  //               ddetails: departureDetails,
+  //               dtime: departureTime,
+  //               travelTimeInMinutes,
+  //               businessPrice: price.business,
+  //               economyPrice: price.economy,
+  //               companyName,
+  //               index
+  //             });
+  //           });
+        
+  //       for (const adminDoc of adminDataSnapshot.docs) {
+  //         const adminData = adminDoc.data();
+  //         const { times, price, from, to, name: companyName } = adminData;
+
+  //         // Only match BANAGO to BORACAY routes
+  //         const isFromBanago = from.toLowerCase().trim() === 'banago';
+  //         const isToBoracay = to.toLowerCase().trim() === 'boracay';
+
+  //         if (isFromBanago && isToBoracay) {
+  //           times.forEach((timeEntry, index) => {
+  //             const departureDetails = timeEntry.details;
+  //             const departureTime = timeEntry.time;
+  //             const travelTimeInMinutes = timeEntry.travelTimeInMinutes;
+
+  //             // Only add if the details contain BANAGO - BORACAY
+  //             if (departureDetails.includes('BANAGO - BORACAY')) {
+  //               matchedTrips.departure.push({
+  //                 ddetails: departureDetails,
+  //                 dtime: departureTime,
+  //                 travelTimeInMinutes,
+  //                 businessPrice: price.business,
+  //                 economyPrice: price.economy,
+  //                 companyName,
+  //                 index
+  //               });
+  //             }
+  //           });
+  //         }
+  //       }
+
+  //         // Return trips (if needed)
+  //         const isReturnFromMatch = from.toLowerCase().trim() === selectedTo.toLowerCase().trim();
+  //         const isReturnToMatch = to.toLowerCase().trim() === selectedFrom.toLowerCase().trim();
+
+  //         if (isReturnFromMatch && isReturnToMatch) {
+  //           times.forEach((timeEntry, index) => {
+  //             const returnDetails = timeEntry.details;
+  //             const returnTime = timeEntry.time;
+  //             const travelTimeInMinutes = timeEntry.travelTimeInMinutes;
+
+  //             matchedTrips.return.push({
+  //               rdetails: returnDetails,
+  //               rtime: returnTime,
+  //               travelTimeInMinutes,
+  //               businessPrice: price.business,
+  //               economyPrice: price.economy,
+  //               companyName,
+  //               index
+  //             });
+  //           });
+  //         }
+        
+
+  //       console.log('Matched Trips:', matchedTrips);
+        
+  //       // Add validation before setting trips
+  //       if (matchedTrips.departure.length === 0 && matchedTrips.return.length === 0) {
+  //         console.log('No matching trips found');
+  //       }
+        
+  //       setTrips(matchedTrips);
+
+  //     } catch (error) {
+  //       console.error('Error fetching trip data:', error);
+  //     }
+  //   };
+
+  //   // Only fetch if both from and to locations are selected
+  //   if (selectedFrom && selectedTo) {
+  //     fetchTrips();
+  //   }
+  // }, [selectedFrom, selectedTo, db]);
+  // useEffect(() => {
+  //   const fetchTrips = async () => {
+  //     try {
+  //       console.log('Fetching trip data from Firestore...');
+  //       console.log('Selected From:', selectedFrom, 'Selected To:', selectedTo);
+
+  //       const adminDataRef = collection(db, 'adminData');
+  //       const adminDataSnapshot = await getDocs(adminDataRef);
+
+  //       let matchedTrips = { departure: [], return: [] };
+
+  //       // for (const adminDoc of adminDataSnapshot.docs) {
+  //       //   const adminData = adminDoc.data();
+  //       //   const { times, price, from, to, name: companyName } = adminData;
+
+  //       //   // Add exact string matching and case-insensitive comparison
+  //       //   const isFromMatch = from.toLowerCase().trim() === selectedFrom.toLowerCase().trim();
+  //       //   const isToMatch = to.toLowerCase().trim() === selectedTo.toLowerCase().trim();
+
+  //       //   // Only process if exact route match is found
+  //       //   if (isFromMatch && isToMatch) {
+  //       //     times.forEach((timeEntry, index) => {
+  //       //       const departureDetails = timeEntry.details;
+  //       //       const departureTime = timeEntry.time;
+  //       //       const travelTimeInMinutes = timeEntry.travelTimeInMinutes;
+
+  //       //       matchedTrips.departure.push({
+  //       //         ddetails: departureDetails,
+  //       //         dtime: departureTime,
+  //       //         travelTimeInMinutes,
+  //       //         businessPrice: price.business,
+  //       //         economyPrice: price.economy,
+  //       //         companyName,
+  //       //         index
+  //       //       });
+  //       //     });
+  //        // }
+
+  //         // // Return trips (if needed)
+  //         // const isReturnFromMatch = from.toLowerCase().trim() === selectedTo.toLowerCase().trim();
+  //         // const isReturnToMatch = to.toLowerCase().trim() === selectedFrom.toLowerCase().trim();
+
+  //         // if (isReturnFromMatch && isReturnToMatch) {
+  //         //   times.forEach((timeEntry, index) => {
+  //         //     const returnDetails = timeEntry.details;
+  //         //     const returnTime = timeEntry.time;
+  //         //     const travelTimeInMinutes = timeEntry.travelTimeInMinutes;
+
+  //         //     matchedTrips.return.push({
+  //         //       rdetails: returnDetails,
+  //         //       rtime: returnTime,
+  //         //       travelTimeInMinutes,
+  //         //       businessPrice: price.business,
+  //         //       economyPrice: price.economy,
+  //         //       companyName,
+  //         //       index
+  //         //     });
+  //         //   });
+  //         // }
+  //       }
+
+  //       console.log('Matched Trips:', matchedTrips);
+        
+  //       // Add validation before setting trips
+  //       if (matchedTrips.departure.length === 0 && matchedTrips.return.length === 0) {
+  //         console.log('No matching trips found');
+  //       }
+        
+  //       setTrips(matchedTrips);
+
+  //     } catch (error) {
+  //       console.error('Error fetching trip data:', error);
+  //     }
+  //   };
+
+  //   // Only fetch if both from and to locations are selected
+  //   if (selectedFrom && selectedTo) {
+  //     fetchTrips();
+  //   }
+  // }, [selectedFrom, selectedTo, db]);
   useEffect(() => {
     const fetchTrips = async () => {
       try {
@@ -28,48 +217,35 @@ const ScheduleView = () => {
         const adminDataRef = collection(db, 'adminData');
         const adminDataSnapshot = await getDocs(adminDataRef);
 
-        let matchedTrips = { departure: [], return: [] };
+        // Only store departure trips
+        let matchedTrips = { departure: [] };
 
         for (const adminDoc of adminDataSnapshot.docs) {
           const adminData = adminDoc.data();
           const { times, price, from, to, name: companyName } = adminData;
 
-          // Validate if the route matches
-          if (from.trim() === selectedFrom.trim() && to.trim() === selectedTo.trim()) {
-            // Process each time entry
+          // Match based on selectedFrom and selectedTo
+          const isFromMatch = from.toLowerCase().trim() === selectedFrom.toLowerCase().trim();
+          const isToMatch = to.toLowerCase().trim() === selectedTo.toLowerCase().trim();
+
+          if (isFromMatch && isToMatch) {
             times.forEach((timeEntry, index) => {
               const departureDetails = timeEntry.details;
               const departureTime = timeEntry.time;
               const travelTimeInMinutes = timeEntry.travelTimeInMinutes;
 
-              matchedTrips.departure.push({
-                details: departureDetails,
-                time: departureTime,
-                travelTimeInMinutes,
-                businessPrice: price.business,
-                economyPrice: price.economy,
-                companyName,
-                index
-              });
-            });
-          }
-
-          // Check for return trips (opposite direction)
-          if (from.trim() === selectedTo.trim() && to.trim() === selectedFrom.trim()) {
-            times.forEach((timeEntry, index) => {
-              const returnDetails = timeEntry.details;
-              const returnTime = timeEntry.time;
-              const travelTimeInMinutes = timeEntry.travelTimeInMinutes;
-
-              matchedTrips.return.push({
-                details: returnDetails,
-                time: returnTime,
-                travelTimeInMinutes,
-                businessPrice: price.business,
-                economyPrice: price.economy,
-                companyName,
-                index
-              });
+              // Only add if details match the selected route
+              if (departureDetails.includes(`${selectedFrom} - ${selectedTo}`)) {
+                matchedTrips.departure.push({
+                  ddetails: departureDetails,
+                  dtime: departureTime,
+                  travelTimeInMinutes,
+                  businessPrice: price.business,
+                  economyPrice: price.economy,
+                  companyName,
+                  index
+                });
+              }
             });
           }
         }
@@ -82,9 +258,11 @@ const ScheduleView = () => {
       }
     };
 
-    fetchTrips();
-  }, [selectedFrom, selectedTo, db]);
-
+    // Only fetch if both locations are selected
+    if (selectedFrom && selectedTo) {
+      fetchTrips();
+    }
+}, [selectedFrom, selectedTo, db]);
   const generateDates = (start) => {
     const dates = [];
     for (let i = 0; i < 7; i++) {
@@ -136,7 +314,7 @@ const ScheduleView = () => {
     console.log('Departure Price:', departurePrice);
     console.log('Return Price:', returnPrice);
   
-    const totalPrice = ((departurePrice || 0) + (returnPrice || 0)) * passengers.total /10;
+    const totalPrice = ((departurePrice || 0) + (returnPrice || 0)) * passengers.total ;
   
     navigate('/PassengerDetails', {
       state: {
@@ -225,36 +403,49 @@ const ScheduleView = () => {
             <button onClick={handleNextDateRange}>&gt;</button>
           </div>
           <div className="trips">
-            {trips.departure.map((trip, index) => (
-              <div key={index} className="trip-card-container">
-                {/* Economy Trip Card */}
-                <div className={`trip-card ${selectedDepartureTrip?.index === trip.index && selectedDepartureTrip?.priceType === 'economy' ? 'selected' : ''}`}>
-                  <div className="time">{trip.time}</div>
-                  <div className="details">{trip.details}</div>
-                  <div className="details">Economy Class</div>
-                  <div className="price">₱{trip.economyPrice}</div>
-                  <div className="company">{trip.companyName}</div>
-                  <button onClick={() => handleTripSelection(trip, false, 'economy')}>
-                    Select Economy
-                  </button>
-                </div>
-
-                {/* Business Trip Card */}
-                {trip.businessPrice && (
-                  <div className={`trip-card ${selectedDepartureTrip?.index === trip.index && selectedDepartureTrip?.priceType === 'business' ? 'selected' : ''}`}>
-                    <div className="time">{trip.time}</div>
-                    <div className="details">{trip.details}</div>
-                    <div className="details">Business Class</div>
-                    <div className="price">₱{trip.businessPrice}</div>
-                    <div className="company">{trip.companyName}</div>
-                    <button onClick={() => handleTripSelection(trip, false, 'business')}>
-                      Select Business
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+  {trips.departure.map((trip, index) => (
+    <div key={index} className={`trip-card`}>
+      <div className="time">{trip.dtime}</div>
+      <div className="details">{trip.ddetails}</div>
+      <div className="price">
+        ₱
+        {selectedDepartureTrip?.dtime === trip.dtime
+          ? selectedDepartureTrip.priceType === 'Business'
+            ? trip.businessPrice
+            : trip.economyPrice
+          : 'Select a class'}
+      </div>
+      <div className="radio-container">
+        <label>
+          <input
+            type="radio"
+            name={`departureClass_${trip.dtime}`} // Unique name per trip
+            value="Business"
+            checked={
+              selectedDepartureTrip?.dtime === trip.dtime &&
+              selectedDepartureTrip?.priceType === 'Business'
+            }
+            onChange={() => handleTripSelection(trip, false, 'Business')}
+          />
+          <span>Business</span>
+        </label>
+        <label>
+          <input
+            type="radio"
+            name={`departureClass_${trip.dtime}`} // Unique name per trip
+            value="Economy"
+            checked={
+              selectedDepartureTrip?.dtime === trip.dtime &&
+              selectedDepartureTrip?.priceType === 'Economy'
+            }
+            onChange={() => handleTripSelection(trip, false, 'Economy')}
+          />
+          <span>Economy</span>
+        </label>
+      </div>
+    </div>
+  ))}
+</div>
         </section>
 
         {tripType === 'round-trip' && (
