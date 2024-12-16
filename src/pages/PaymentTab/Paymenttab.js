@@ -20,12 +20,13 @@ const PaymentTab = () => {
     returnDate,
     selectedDepartureTrip,
     selectedReturnTrip,
+    selectedDepartureTime,
+    selectedReturnTime,
     passengers,
     totalPrice,
     time,
     email,
-    selectedDepartureTime,
-    selectedReturnTime,
+
   } = location.state || {};
 
   const calculateTotalPrice = (totalPrice, passengers, passengerDetails = [], passengerIds = []) => {
@@ -110,7 +111,6 @@ const PaymentTab = () => {
     setSelectedPaymentMethod(method);
   };
   
-  //sendemail
   const sendEmail = () => {
     const bookingReference = `REF-${Math.random().toString(36).substr(2, 9).toUpperCase()}`; // Generate a random booking reference number
     const guestList = passengerDetails
@@ -135,7 +135,6 @@ const PaymentTab = () => {
 
       Total Passengers: ${passengers.total}  
       Total Price: ₱${totalPrice}
-      Total Price: ₱${discountedTotalPrice}
 
       We look forward to serving you. Have a pleasant trip!
 
@@ -172,7 +171,7 @@ const PaymentTab = () => {
           body: JSON.stringify({
             data: {
               attributes: {
-                amount: discountedTotalPrice * 100, // Convert to cents
+                amount: totalPrice * 100, // Convert to cents
                 redirect: {
                   success: 'https://swiftsail-ferries.vercel.app///paymentsuccess',
                   failed: 'https://swiftsail-ferries.vercel.app///paymentfailure',
@@ -208,13 +207,14 @@ const PaymentTab = () => {
               ...passengerNames, // Spread the passenger names
               SelectedDest: selectedTo,
               SelectedRet: selectedFrom,
+              SelectedDestTime: selectedDepartureTime,
+              SelectedRetTime:selectedReturnTime,
               Email: contactDetails.email,
               DepartDate: departDate,
               ReturnDate: returnDate,
               TripType: tripType,
               TotalPassengers: passengers.total,
-              TotalPrice: totalPrice,
-              TimeBought: new Date().toLocaleString()
+              TotalPrice: totalPrice
             });
 
           console.log('Booking info saved to Firestore');
