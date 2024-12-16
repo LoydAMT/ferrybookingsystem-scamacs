@@ -44,6 +44,8 @@ const MyTicketsModal = ({ ticket, onClose }) => {
           <div className="CenterLeftPart">
           <h3>Booking Details</h3>
           <p>Status: Confirmed</p>
+          <p>Booking Date: </p>
+          <p>{ticket.TimeBought || 'N/A'}</p>
           <p>Email: {ticket.Email || 'N/A'} </p>
           </div>
 

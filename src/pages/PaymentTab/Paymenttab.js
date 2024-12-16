@@ -213,7 +213,8 @@ const PaymentTab = () => {
               ReturnDate: returnDate,
               TripType: tripType,
               TotalPassengers: passengers.total,
-              TotalPrice: totalPrice
+              TotalPrice: totalPrice,
+              TimeBought: new Date().toLocaleString()
             });
 
           console.log('Booking info saved to Firestore');
