@@ -17,6 +17,9 @@ const ScheduleView = () => {
   const [startDate, setStartDate] = useState(parseISO(departDate));
   const [startReturnDate, setStartReturnDate] = useState(returnDate ? parseISO(returnDate) : null);
   const [trips, setTrips] = useState({ departure: [], return: [] });
+  const [selectedDepartureTime, setSelectedDepartureTime] = useState(null);
+const [selectedReturnTime, setSelectedReturnTime] = useState(null);
+
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -116,43 +119,36 @@ const ScheduleView = () => {
   };
 
   const handleTripSelection = (trip, isReturn, priceType) => {
-    const selectedTripWithPriceType = { ...trip, priceType };
+    const selectedTripWithPriceType = { 
+      ...trip, 
+      priceType,
+      time: isReturn ? trip.time : trip.dtime  // Normalize the time property
+    };
+    const selectedTime = isReturn ? trip.time : trip.dtime;
+  
     if (isReturn) {
       setSelectedReturnTrip(selectedTripWithPriceType);
+      setSelectedReturnTime(selectedTime);
     } else {
       setSelectedDepartureTrip(selectedTripWithPriceType);
+      setSelectedDepartureTime(selectedTime);
     }
   };
   const handleContinue = () => {
-    console.log('Departure Trip:', selectedDepartureTrip);
-    console.log('Return Trip:', selectedReturnTrip);
-  
     const departurePrice = selectedDepartureTrip?.priceType === 'business' 
       ? selectedDepartureTrip?.businessPrice 
       : selectedDepartureTrip?.economyPrice;
-    
+  
     const returnPrice = selectedReturnTrip?.priceType === 'business'
       ? selectedReturnTrip?.businessPrice
       : selectedReturnTrip?.economyPrice;
   
-    console.log('Departure Price:', departurePrice);
-    console.log('Return Price:', returnPrice);
-  
-    const totalPrice =
-    (
+    const totalPrice = (
       (selectedDepartureTrip
-        ? Number(
-            selectedDepartureTrip?.priceType === 'Business'
-              ? selectedDepartureTrip?.businessPrice || 0
-              : selectedDepartureTrip?.economyPrice || 0
-          )
+        ? Number(departurePrice || 0)
         : 0) +
       (selectedReturnTrip
-        ? Number(
-            selectedReturnTrip?.priceType === 'Business'
-              ? selectedReturnTrip?.businessPrice || 0
-              : selectedReturnTrip?.economyPrice || 0
-          )
+        ? Number(returnPrice || 0)
         : 0)
     ) * (passengers?.total || 1);
   
@@ -165,12 +161,13 @@ const ScheduleView = () => {
         returnDate: formattedCurrentReturnDate,
         selectedDepartureTrip,
         selectedReturnTrip,
+        selectedDepartureTime,
+        selectedReturnTime,
         passengers,
         totalPrice: totalPrice.toFixed(2),
       }
     });
   };
-
   const handleBack = () => {
     navigate(-1, {
       state: {
@@ -180,6 +177,8 @@ const ScheduleView = () => {
           selectedTo,
           departDate,
           returnDate,
+          selectedDepartureTime,
+          selectedReturnTime,
           adults: passengers.adults,
           children: passengers.children,
           students: passengers.students,
@@ -189,7 +188,7 @@ const ScheduleView = () => {
       }
     });
   };
-
+  
   const formattedSelectedDate = format(parseISO(selectedDate), 'MMMM d, yyyy');
   const formattedCurrentReturnDate = currentReturnDate ? format(parseISO(currentReturnDate), 'MMMM d, yyyy') : null;
   const dynamicDepartureDates = generateDates(startDate);
@@ -360,69 +359,81 @@ const ScheduleView = () => {
       </main>
 
       <aside className="summary">
-        <h3>Summary</h3>
-        <div className="summary-section">
-          <h4>Departure</h4>
-          {selectedDepartureTrip && (
-            <>
-              <div>{selectedFrom} → {selectedTo}</div>
-              <div>{formattedSelectedDate} | {selectedDepartureTrip.time}</div>
-              <div>{selectedDepartureTrip.priceType.toUpperCase()} Class</div>
-               <div>₱{' '}
+  <h3>Summary</h3>
+  <div className="summary-section">
+    <h4>Departure</h4>
+
+    {selectedDepartureTrip && (
+  <>
+    <div>{selectedFrom} → {selectedTo}</div>
+    <div>
+      {formattedSelectedDate} | {selectedDepartureTime}
+    </div>
+    <div>{selectedDepartureTrip.priceType.toUpperCase()} Class</div>
+        <div>
+          ₱{' '}
           {selectedDepartureTrip.priceType === 'Business'
-            ? selectedDepartureTrip.businessPrice 
-            : selectedDepartureTrip.economyPrice } 
-            {' '} x {passengers.total}
+            ? selectedDepartureTrip.businessPrice
+            : selectedDepartureTrip.economyPrice}{' '}
+          x {passengers.total}
         </div>
-            </>
-          )}
-        
-        </div>
-        {tripType === 'round-trip' && selectedReturnTrip && (
-          <div className="summary-section">
-            <h4>Return</h4>
-            <div>{selectedTo} → {selectedFrom}</div>
-            <div>{formattedCurrentReturnDate} | {selectedReturnTrip.time}</div>
-            <div>{selectedReturnTrip.priceType.toUpperCase()} Class</div>
-            <div>₱{' '}
-                  {selectedReturnTrip.priceType === 'Business'
-                    ? selectedReturnTrip.businessPrice 
-                    : selectedReturnTrip.economyPrice } 
-                    {' '} x {passengers.total}
-            </div>
-          </div>
-        )}
-        <div className="total">
-          <span>Total</span>
-          <span> ₱
-                    {(
-                      (selectedDepartureTrip
-                        ? Number(
-                            selectedDepartureTrip.priceType === 'Business'
-                              ? selectedDepartureTrip.businessPrice
-                              : selectedDepartureTrip.economyPrice
-                          )
-                        : 0) +
-                      (selectedReturnTrip
-                        ? Number(
-                            selectedReturnTrip.priceType === 'Business'
-                              ? selectedReturnTrip.businessPrice
-                              : selectedReturnTrip.economyPrice
-                          )
-                        : 0)
-                    ) * (passengers?.total || 1)}
-          </span>
-        
-        </div>
-        <button 
-          className="continue-btn" 
-          onClick={handleContinue}
-          disabled={!selectedDepartureTrip || (tripType === 'round-trip' && !selectedReturnTrip)}
-        >
-          Continue
-        </button>
-        <button className="back-btn" onClick={handleBack}>Back</button>
-      </aside>
+      </>
+    )}
+  </div>
+  {tripType === 'round-trip' && selectedReturnTrip && (
+  <div className="summary-section">
+    <h4>Return</h4>
+    <div>{selectedTo} → {selectedFrom}</div>
+    <div>
+      {formattedCurrentReturnDate} | {selectedReturnTime}
+    </div>
+    <div>{selectedReturnTrip.priceType.toUpperCase()} Class</div>
+      <div>
+        ₱{' '}
+        {selectedReturnTrip.priceType === 'Business'
+          ? selectedReturnTrip.businessPrice
+          : selectedReturnTrip.economyPrice}{' '}
+        x {passengers.total}
+      </div>
+    </div>
+  )}
+
+  <div className="total">
+    <span>Total</span>
+    <span>
+      ₱
+      {(
+        (selectedDepartureTrip
+          ? Number(
+              selectedDepartureTrip.priceType === 'Business'
+                ? selectedDepartureTrip.businessPrice
+                : selectedDepartureTrip.economyPrice
+            )
+          : 0) +
+        (selectedReturnTrip
+          ? Number(
+              selectedReturnTrip.priceType === 'Business'
+                ? selectedReturnTrip.businessPrice
+                : selectedReturnTrip.economyPrice
+            )
+          : 0)
+      ) *
+        (passengers?.total || 1)}
+    </span>
+  </div>
+
+  <button
+    className="continue-btn"
+    onClick={handleContinue}
+    disabled={!selectedDepartureTrip || (tripType === 'round-trip' && !selectedReturnTrip)}
+  >
+    Continue
+  </button>
+  <button className="back-btn" onClick={handleBack}>
+    Back
+  </button>
+</aside>
+
 
       <footer className="footer">
         <div></div>

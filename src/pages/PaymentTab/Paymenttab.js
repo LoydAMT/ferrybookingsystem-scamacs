@@ -58,7 +58,7 @@ const PaymentTab = () => {
       ${guestList}
 
       Total Passengers: ${passengers.total}  
-      Total Price: ₱${totalPrice/10}
+      Total Price: ₱${totalPrice}
 
       We look forward to serving you. Have a pleasant trip!
 
@@ -134,7 +134,7 @@ const PaymentTab = () => {
               ReturnDate: returnDate,
               TripType: tripType,
               TotalPassengers: passengers.total,
-              TotalPrice: totalPrice/10
+              TotalPrice: totalPrice
             });
 
           console.log('Booking info saved to Firestore');
@@ -172,7 +172,7 @@ const PaymentTab = () => {
             <p>Departure: {departDate}</p>
             {tripType === 'round-trip' && <p>Return: {returnDate}</p>}
             <p>Passengers: {passengers.total}</p>
-            <p>Total Price: ₱{totalPrice/10}</p>
+            <p>Total Price: ₱{totalPrice}</p>
           </div>
         </div>
       </header>
