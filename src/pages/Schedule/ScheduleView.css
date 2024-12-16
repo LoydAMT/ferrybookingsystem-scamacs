@@ -76,8 +76,7 @@
 
 .trip-card {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;  /* Changed to column layout */
   padding: 1rem;
   border: 1px solid #ccc;
   margin-bottom: 0.5rem;
@@ -101,6 +100,35 @@
 
 .trip-card button:hover {
   background-color: #003a8a;
+}
+
+/* New styles for the trip details layout */
+.trip-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;  /* Add space between details and radio buttons */
+}
+
+.radio-container {
+  display: flex;
+  gap: 2rem;  /* Space between radio buttons */
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.radio-container label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.radio-container input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
 }
 
 /* Styling for continue and back buttons */

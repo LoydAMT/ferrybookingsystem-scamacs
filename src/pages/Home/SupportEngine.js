@@ -1,76 +1,123 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './SupportEngine.css';
 import Avatar from './Avatar';
+import translations from './translations';
 
 const SupportEngine = () => {
   const [messages, setMessages] = useState([]);
-  const [userMessage, setUserMessage] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-  const [showOptions, setShowOptions] = useState(true);
+  const [userMessage, setUserMessage] = useState(''); 
+  const [isOpen, setIsOpen] = useState(false); 
+  const [showOptions, setShowOptions] = useState([]); 
+  const [language, setLanguage] = useState('en'); 
+  const chatEndRef = useRef(null); 
+  const t = translations[language]; 
+
+  // Auto-scroll to the bottom when messages are updated
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   useEffect(() => {
     if (isOpen) {
-      setMessages([]); // Reset messages when chat is opened
-      setShowOptions(false);
-
       const initialMessages = [
-        { sender: 'bot', text: "Hey, it's Ruru, your virtual assistant!" },
-        { sender: 'bot', text: 'How can I help you today?' },
+        { sender: 'bot', text: t.greeting1 },
+        { sender: 'bot', text: t.greeting2 },
+        { sender: 'bot', text: t.greeting3 },
       ];
 
-      initialMessages.forEach((msg, index) => {
-        setTimeout(() => {
-          setMessages((prevMessages) => [...prevMessages, msg]);
-          if (index === initialMessages.length - 1) setShowOptions(true);
-        }, index * 1000);
-      });
+      if (messages.length === 0) {
+        initialMessages.forEach((msg, index) => {
+          setTimeout(() => {
+            setMessages((prevMessages) => [...prevMessages, msg]);
+            if (index === initialMessages.length - 1) {
+              setShowOptions(t.options); 
+            }
+          }, index * 1000);
+        });
+      } else {
+        setShowOptions(t.options);
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, language]);
 
   const handleOptionClick = (option) => {
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      { sender: 'user', text: option },
-    ]);
-    setShowOptions(false);
+    const updatedTranslations = translations[language];
+    setMessages((prevMessages) => [...prevMessages, { sender: 'user', text: option }]);
+    setShowOptions([]); // Temporarily hide options while processing
 
-    setTimeout(() => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: 'bot', text: `You selected: "${option}"` },
-      ]);
-    }, 1000);
-  };
+    let botResponse = '';
 
-  const handleUserInputChange = (e) => {
-    setUserMessage(e.target.value);
-  };
+    switch (option) {
+      case updatedTranslations.options[0]:
+        botResponse = updatedTranslations.howToBook;
+        break;
 
-  const handleSendMessage = () => {
-    if (userMessage.trim()) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender: 'user', text: userMessage },
-      ]);
-      setUserMessage('');
+      case updatedTranslations.options[1]:
+        botResponse = updatedTranslations.shippingLines;
+        break;
 
-      setTimeout(() => {
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          { sender: 'bot', text: "I'm still learning, but I'll try to help!" },
-        ]);
-      }, 1000);
+      case updatedTranslations.options[2]: 
+        botResponse = updatedTranslations.paymentMethod;
+        break;
+
+      case updatedTranslations.options[3]: 
+        botResponse = updatedTranslations.more;
+        setTimeout(() => setShowOptions(['Yes', 'No']), 500);
+        break;
+
+      case 'Yes':
+        botResponse = updatedTranslations.yes;
+        break;
+
+      case 'No':
+        botResponse = updatedTranslations.no;
+        break;
+
+      case updatedTranslations.options[4]: 
+        botResponse = updatedTranslations.languagePrompt;
+        setShowOptions(['English', 'Korean', 'Japanese']);
+        return;
+
+        case 'English':
+          setLanguage('en');
+          botResponse = 'Language changed to English!';
+          setShowOptions(translations['en'].options); 
+          break;
+        
+        case 'Korean':
+          setLanguage('ko');
+          botResponse = '언어가 한국어로 변경되었습니다!';
+          setShowOptions(translations['ko'].options);
+          break;
+        
+        case 'Japanese':
+          setLanguage('ja');
+          botResponse = '言語が日本語に変更されました！';
+          setShowOptions(translations['ja'].options);
+          break;
+        
+
+      default:
+        botResponse = updatedTranslations.unknown;
+        break;
     }
+
+    
+    setTimeout(() => {
+      setMessages((prevMessages) => [...prevMessages, { sender: 'bot', text: botResponse }]);
+      if (!['Change Language', 'Yes', 'No'].includes(option)) {
+        setShowOptions(updatedTranslations.options);
+      }
+    }, 1000);
   };
 
   return (
     <div>
       {!isOpen && <Avatar onClick={() => setIsOpen(true)} />}
-
       {isOpen && (
         <div className="support-engine">
           <div className="chat-header">
-            <h3>Ruru - Virtual Assistant</h3>
+            <h3>Ruru</h3>
             <button className="close-btn" onClick={() => setIsOpen(false)}>
               X
             </button>
@@ -80,52 +127,41 @@ const SupportEngine = () => {
             {messages.map((message, index) => (
               <div
                 key={index}
-                className={`message ${
-                  message.sender === 'bot' ? 'bot-message' : 'user-message'
-                }`}
+                className={`message ${message.sender === 'bot' ? 'bot-message' : 'user-message'}`}
               >
                 <div className="message-icon">
                   {message.sender === 'bot' ? (
                     <img
                       src="https://i.pinimg.com/736x/77/d0/10/77d010471d917c115521c05add2d4854.jpg"
-                      alt="avatar"
+                      alt="bot avatar"
                     />
                   ) : (
-                    '👤'
+                    <span>👤</span>
                   )}
                 </div>
-                <p>{message.text}</p>
+                <p dangerouslySetInnerHTML={{ __html: message.text }} />
               </div>
             ))}
-
-            {showOptions && (
+            {showOptions.length > 0 && (
               <div className="chat-options-container">
-                <button onClick={() => handleOptionClick('How to book?')}>
-                  How to book?
-                </button>
-                <button
-                  onClick={() =>
-                    handleOptionClick('What are the available shipping lines?')
-                  }
-                >
-                  What are the available shipping lines?
-                </button>
-                <button onClick={() => handleOptionClick('What is the payment method?')}>
-                  What is the payment method?
-                </button>
-                <button onClick={() => handleOptionClick('More')}>More</button>
+                {showOptions.map((option, index) => (
+                  <button key={index} onClick={() => handleOptionClick(option)}>
+                    {option}
+                  </button>
+                ))}
               </div>
             )}
+            <div ref={chatEndRef} /> {/* Auto-scroll reference */}
           </div>
 
           <div className="chat-input">
             <input
               type="text"
               value={userMessage}
-              onChange={handleUserInputChange}
-              placeholder="Type your message..."
+              onChange={(e) => setUserMessage(e.target.value)}
+              placeholder={t.placeholder || 'Type your message...'}
             />
-            <button onClick={handleSendMessage}>Send</button>
+            <button onClick={() => handleOptionClick(userMessage)}>Send</button>
           </div>
         </div>
       )}
