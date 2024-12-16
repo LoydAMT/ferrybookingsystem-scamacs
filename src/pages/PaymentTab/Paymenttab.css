@@ -77,6 +77,11 @@
     border-color: #007bff;
     background-color: #f8f9fa;
   }
+
+  .payment-option.selected {
+    background-color: #007bff;
+    color: white; /* Text color changes for contrast */
+  }
   
   .payment-buttons {
     display: flex;
