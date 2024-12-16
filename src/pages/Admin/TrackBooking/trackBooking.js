@@ -68,7 +68,7 @@ const BookingsTable = () => {
               <td>{booking.DepartDate}</td>
               <td>{booking.TripType}</td>
               <td>{booking.TotalPassengers}</td>
-              <td>${booking.TotalPrice}</td>
+              <td>₱{booking.TotalPrice}</td>
               
               <td>{booking.Email}</td>
              
