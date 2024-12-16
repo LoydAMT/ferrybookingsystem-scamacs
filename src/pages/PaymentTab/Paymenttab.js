@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { collection, addDoc} from 'firebase/firestore';
 import { db } from '../../firebase';
 import './Paymenttab.css';
+import emailjs from '@emailjs/browser';
 
 const PaymentTab = () => {
   const location = useLocation();
@@ -19,6 +20,7 @@ const PaymentTab = () => {
     selectedReturnTrip,
     passengers,
     totalPrice,
+    time,
     email,
   } = location.state || {};
 
@@ -31,7 +33,52 @@ const PaymentTab = () => {
   const handlePaymentMethodSelect = (method) => {
     setSelectedPaymentMethod(method);
   };
+  
+  //sendemail
+  const sendEmail = () => {
+    const bookingReference = `REF-${Math.random().toString(36).substr(2, 9).toUpperCase()}`; // Generate a random booking reference number
+    const guestList = passengerDetails
+      .map((passenger, index) => `${index + 1}. ${passenger.firstName} ${passenger.lastName}`)
+      .join('\n');
+    const emailParams = {
+      from_email: 'rainelynsungahid@gmail.com',
+      to_email: contactDetails.email, // Recipient email from contactDetails
+      subject: 'Payment Confirmation',
+      message: `Dear ${contactDetails.firstName} ${contactDetails.lastName},
 
+      Thank you for booking with SwiftSail Ferries. Here are your booking details:
+
+      Status: Confirmed  
+      Place: ${selectedFrom} → ${selectedTo}  
+      Departure Date: ${departDate}  
+      Time: ${selectedDepartureTrip.time}${tripType === 'round-trip' ? ` / Return: ${selectedReturnTrip.time}` : ''}
+      Booking Reference Number: ${bookingReference}  
+
+      Guest List:  
+      ${guestList}
+
+      Total Passengers: ${passengers.total}  
+      Total Price: ₱${totalPrice/10}
+
+      We look forward to serving you. Have a pleasant trip!
+
+      Best regards,  
+      SwiftSail Ferries
+    `,
+    };
+    emailjs
+    .send('service_uxyb39q', 'template_uau31cw', emailParams, 'iRnFZfZp_o8-89uKj')
+    .then(
+      (result) => {
+        console.log('Email sent successfully:', result.text);
+        alert('Confirmation email sent!');
+      },
+      (error) => {
+        console.error('Error sending email:', error.text);
+        alert('Failed to send confirmation email.');
+      }
+    );
+  };
 
   const handleConfirmPayment = async () => {
     if (selectedPaymentMethod === 'e-wallet') {
@@ -48,7 +95,7 @@ const PaymentTab = () => {
           body: JSON.stringify({
             data: {
               attributes: {
-                amount: totalPrice * 100, // Convert to cents
+                amount: totalPrice * 10, // Convert to cents
                 redirect: {
                   success: 'https://swiftsail-ferries.vercel.app///paymentsuccess',
                   failed: 'https://swiftsail-ferries.vercel.app///paymentfailure',
@@ -87,10 +134,11 @@ const PaymentTab = () => {
               ReturnDate: returnDate,
               TripType: tripType,
               TotalPassengers: passengers.total,
-              TotalPrice: totalPrice
+              TotalPrice: totalPrice/10
             });
 
           console.log('Booking info saved to Firestore');
+          sendEmail();
             
           } else {
             alert('Payment Failed');
@@ -124,7 +172,7 @@ const PaymentTab = () => {
             <p>Departure: {departDate}</p>
             {tripType === 'round-trip' && <p>Return: {returnDate}</p>}
             <p>Passengers: {passengers.total}</p>
-            <p>Total Price: ₱{totalPrice}</p>
+            <p>Total Price: ₱{totalPrice/10}</p>
           </div>
         </div>
       </header>
@@ -157,6 +205,7 @@ const PaymentTab = () => {
         <button className="back-button" onClick={handleBack}>
           Back
         </button>
+
         <button className="confirm-payment" onClick={handleConfirmPayment}>
           Confirm Payment
         </button>
