@@ -11,6 +11,8 @@ const PaymentTab = () => {
   const {
     contactDetails,
     passengerDetails,
+    passengerTypeCounts,
+    passengerIds,
     tripType,
     selectedFrom,
     selectedTo,
@@ -22,7 +24,81 @@ const PaymentTab = () => {
     totalPrice,
     time,
     email,
+    selectedDepartureTime,
+    selectedReturnTime,
   } = location.state || {};
+
+  const calculateTotalPrice = (totalPrice, passengers, passengerDetails = [], passengerIds = []) => {
+    let perPerson = 0;         // Price per person
+    let discount = 0;          // Total discount
+    let discountedPrice = 0;   // Final price after discount
+    
+    // Ensure all parameters have default values
+    const safePassengers = passengers || {};
+    
+    // Destructure passenger types with default values
+    const {
+      total = 0,
+      students = 0,
+      pwd = 0,
+      seniors = 0,
+      children = 0,
+      adults = 0,
+    } = safePassengers;
+  
+    // 1. Calculate per person cost based on total price and total passengers
+    if (total > 0) {
+      perPerson = (totalPrice) / total;
+    }
+  
+    // 2. Calculate discounts based on passenger type and ID verification
+    const discountedPassengers = passengerDetails.reduce((acc, passenger, index) => {
+      // Ensure we have a corresponding ID entry
+      const idPreview = passengerIds[index] ? passengerIds[index].preview : null;
+      
+      switch(passenger.passType) {
+        case 'Student':
+          if (idPreview !== null) acc.students++;
+          break;
+        case 'PWD':
+          if (idPreview !== null) acc.pwd++;
+          break;
+        case 'Senior Citizen':
+          if (idPreview !== null) acc.seniors++;
+          break;
+        case 'Child':
+          if (idPreview !== null) acc.children++;
+          break;
+      }
+      
+      return acc;
+    }, {
+      students: 0,
+      pwd: 0,
+      seniors: 0,
+      children: 0
+    });
+  
+    // Calculate discounted prices
+    const studentPrice = perPerson * discountedPassengers.students * 0.2;   // 20% off for verified students
+    const pwdPrice = perPerson * discountedPassengers.pwd * 0.2;            // 20% off for verified PWD
+    const seniorPrice = perPerson * discountedPassengers.seniors * 0.2;     // 20% off for verified seniors
+    const childPrice = perPerson * discountedPassengers.children * 0.5;     // 50% off for verified children
+  
+    // 3. Calculate the total discounted price
+    discount = studentPrice + pwdPrice + seniorPrice + childPrice;
+    discountedPrice = (perPerson * total) - discount;
+  
+    return discountedPrice.toFixed(2); // Return price with 2 decimal points
+  };
+  
+
+  const discountedTotalPrice = calculateTotalPrice(
+    totalPrice, 
+    passengers, 
+    passengerDetails, 
+    passengerIds
+  );
 
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
 
@@ -44,14 +120,14 @@ const PaymentTab = () => {
       from_email: 'rainelynsungahid@gmail.com',
       to_email: contactDetails.email, // Recipient email from contactDetails
       subject: 'Payment Confirmation',
-      message: `Dear ${contactDetails.firstName} ${contactDetails.lastName},
+      message: `Dear ${contactDetails.guestName},
 
       Thank you for booking with SwiftSail Ferries. Here are your booking details:
 
       Status: Confirmed  
       Place: ${selectedFrom} → ${selectedTo}  
-      Departure Date: ${departDate}  
-      Time: ${selectedDepartureTrip.time}${tripType === 'round-trip' ? ` / Return: ${selectedReturnTrip.time}` : ''}
+      Departure Date: ${departDate} ${selectedDepartureTime}
+      Return Date: ${returnDate} ${selectedReturnTime} 
       Booking Reference Number: ${bookingReference}  
 
       Guest List:  
@@ -59,6 +135,7 @@ const PaymentTab = () => {
 
       Total Passengers: ${passengers.total}  
       Total Price: ₱${totalPrice}
+      Total Price: ₱${discountedTotalPrice}
 
       We look forward to serving you. Have a pleasant trip!
 
@@ -95,7 +172,7 @@ const PaymentTab = () => {
           body: JSON.stringify({
             data: {
               attributes: {
-                amount: totalPrice * 10, // Convert to cents
+                amount: discountedTotalPrice * 100, // Convert to cents
                 redirect: {
                   success: 'https://swiftsail-ferries.vercel.app///paymentsuccess',
                   failed: 'https://swiftsail-ferries.vercel.app///paymentfailure',

@@ -144,6 +144,14 @@ const PassengerDetails = () => {
           email,
         },
         passengerDetails,  // Pass the passengerDetails object here
+        passengerTypeCounts: {
+          adults: passengers.adults,
+          children: passengers.children,
+          students: passengers.students,
+          pwd: passengers.pwd,
+          seniors: passengers.seniors || 0  // Add this if not already present
+        },
+        passengerIds: passengerIds,
         tripType,
         selectedFrom,
         selectedTo,
@@ -341,7 +349,7 @@ const PassengerDetails = () => {
               </div>
                 
               <div className="TboxInputs4">
-      {(passengerType === 'Student' || passengerType === 'Senior Citizen' || passengerType === 'PWD') && (
+      {(passengerType === 'Student' || passengerType === 'Senior Citizen' || passengerType === 'PWD' || passengerType === 'Child') && (
           <div className="TboxInputs4">
             <div className="id-upload">
             <input
