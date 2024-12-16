@@ -210,59 +210,85 @@ const ScheduleView = () => {
   // }, [selectedFrom, selectedTo, db]);
   useEffect(() => {
     const fetchTrips = async () => {
-      try {
-        console.log('Fetching trip data from Firestore...');
-        console.log('Selected From:', selectedFrom, 'Selected To:', selectedTo);
+        try {
+            console.log('Fetching trip data from Firestore...');
+            console.log('Selected From:', selectedFrom, 'Selected To:', selectedTo);
 
-        const adminDataRef = collection(db, 'adminData');
-        const adminDataSnapshot = await getDocs(adminDataRef);
+            const adminDataRef = collection(db, 'adminData');
+            const adminDataSnapshot = await getDocs(adminDataRef);
 
-        // Only store departure trips
-        let matchedTrips = { departure: [] };
+            // Initialize both departure and return arrays
+            let matchedTrips = { departure: [], return: [] };
 
-        for (const adminDoc of adminDataSnapshot.docs) {
-          const adminData = adminDoc.data();
-          const { times, price, from, to, name: companyName } = adminData;
+            for (const adminDoc of adminDataSnapshot.docs) {
+                const adminData = adminDoc.data();
+                const { times, price, from, to, name: companyName } = adminData;
 
-          // Match based on selectedFrom and selectedTo
-          const isFromMatch = from.toLowerCase().trim() === selectedFrom.toLowerCase().trim();
-          const isToMatch = to.toLowerCase().trim() === selectedTo.toLowerCase().trim();
+                // Match based on selectedFrom and selectedTo
+                const isFromMatch = from.toLowerCase().trim() === selectedFrom.toLowerCase().trim();
+                const isToMatch = to.toLowerCase().trim() === selectedTo.toLowerCase().trim();
 
-          if (isFromMatch && isToMatch) {
-            times.forEach((timeEntry, index) => {
-              const departureDetails = timeEntry.details;
-              const departureTime = timeEntry.time;
-              const travelTimeInMinutes = timeEntry.travelTimeInMinutes;
+                if (isFromMatch && isToMatch) {
+                    times.forEach((timeEntry, index) => {
+                        const departureDetails = timeEntry.details;
+                        const departureTime = timeEntry.time;
+                        const travelTimeInMinutes = timeEntry.travelTimeInMinutes;
 
-              // Only add if details match the selected route
-              if (departureDetails.includes(`${selectedFrom} - ${selectedTo}`)) {
-                matchedTrips.departure.push({
-                  ddetails: departureDetails,
-                  dtime: departureTime,
-                  travelTimeInMinutes,
-                  businessPrice: price.business,
-                  economyPrice: price.economy,
-                  companyName,
-                  index
-                });
-              }
-            });
-          }
+                        // Only add if details match the selected route
+                        if (departureDetails.includes(`${selectedFrom} - ${selectedTo}`)) {
+                            matchedTrips.departure.push({
+                                ddetails: departureDetails,
+                                dtime: departureTime,
+                                travelTimeInMinutes,
+                                businessPrice: price.business,
+                                economyPrice: price.economy,
+                                companyName,
+                                index
+                            });
+                        }
+                    });
+                }
+
+                // Handle return trips
+                const isReturnFromMatch = from.toLowerCase().trim() === selectedTo.toLowerCase().trim();
+                const isReturnToMatch = to.toLowerCase().trim() === selectedFrom.toLowerCase().trim();
+
+                if (isReturnFromMatch && isReturnToMatch) {
+                    times.forEach((timeEntry, index) => {
+                        const returnDetails = timeEntry.details;
+                        const returnTime = timeEntry.time;
+
+                        // Only add if details match the return route
+                        if (returnDetails.includes(`${selectedTo} - ${selectedFrom}`)) {
+                            matchedTrips.return.push({
+                                details: returnDetails,
+                                time: returnTime,
+                                businessPrice: price.business,
+                                economyPrice: price.economy,
+                                companyName,
+                                index
+                            });
+                        }
+                    });
+                }
+            }
+
+            console.log('Matched Trips:', matchedTrips);
+            setTrips(matchedTrips);
+
+        } catch (error) {
+            console.error('Error fetching trip data:', error);
         }
-
-        console.log('Matched Trips:', matchedTrips);
-        setTrips(matchedTrips);
-
-      } catch (error) {
-        console.error('Error fetching trip data:', error);
-      }
     };
 
     // Only fetch if both locations are selected
     if (selectedFrom && selectedTo) {
-      fetchTrips();
+        fetchTrips();
     }
 }, [selectedFrom, selectedTo, db]);
+
+
+
   const generateDates = (start) => {
     const dates = [];
     for (let i = 0; i < 7; i++) {
