@@ -9,6 +9,7 @@ import styles from './Profile.module.css';
 const Profile = () => {
   // States for user data
   const [tickets, setTickets] = useState([]); // Store fetched tickets
+  const [bookingHistory, setBookingHistory] = useState([]); // Store past bookings
   const [selectedTicket, setSelectedTicket] = useState(null); // Store the selected ticket for the modal
   const [ticketModalVisible, setTicketModalVisible] = useState(false); // State for ticket modal visibility
   const [userData, setUserData] = useState(null);
@@ -20,13 +21,11 @@ const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
   const [loadingModalVisible, setLoadingModalVisible] = useState(false); // State for loading modal
 
-
-  
   useEffect(() => {
     const loadTickets = async () => {
       const auth = getAuth();
       const user = auth.currentUser;
-  
+
       // If no user is currently authenticated, wait a moment
       if (!user) {
         // Add a short delay to ensure authentication is complete
@@ -35,14 +34,19 @@ const Profile = () => {
             try {
               const db = getFirestore();
               const userEmail = currentUser.email;
-  
+
               const bookingsRef = collection(db, 'Bookings');
               const querySnapshot = await getDocs(bookingsRef);
-  
+
+              // Filter tickets: exclude past DepartDates
               const userTickets = querySnapshot.docs
                 .filter((doc) => doc.data().Email === userEmail)
+                .filter((doc) => {
+                  const departDate = new Date(doc.data().DepartDate);
+                  return departDate >= new Date(); // Only future tickets
+                })
                 .map((doc) => ({ id: doc.id, ...doc.data() }));
-  
+
               setTickets(userTickets);
             } catch (error) {
               console.error('Error fetching tickets:', error);
@@ -57,14 +61,19 @@ const Profile = () => {
         try {
           const db = getFirestore();
           const userEmail = user.email;
-  
+
           const bookingsRef = collection(db, 'Bookings');
           const querySnapshot = await getDocs(bookingsRef);
-  
+
+          // Filter tickets: exclude past DepartDates
           const userTickets = querySnapshot.docs
             .filter((doc) => doc.data().Email === userEmail)
+            .filter((doc) => {
+              const departDate = new Date(doc.data().DepartDate);
+              return departDate >= new Date(); // Only future tickets
+            })
             .map((doc) => ({ id: doc.id, ...doc.data() }));
-  
+
           setTickets(userTickets);
         } catch (error) {
           console.error('Error fetching tickets:', error);
@@ -72,32 +81,36 @@ const Profile = () => {
         }
       }
     };
-  
+
     loadTickets();
   }, []); // Empty dependency array
-  
+
   const handleTabChange = async (tab) => {
     setActiveTab(tab);
-  
+
     if (tab === 'myTickets') {
       try {
         const auth = getAuth();
         const db = getFirestore();
         const user = auth.currentUser;
-  
+
         if (user) {
           const userEmail = user.email;
-  
+
           // Fetch all documents in the 'Bookings' collection
           const bookingsRef = collection(db, 'Bookings');
           const querySnapshot = await getDocs(bookingsRef);
-  
-          // Filter documents where the Email matches the user's email
+
+          // Filter tickets: exclude past DepartDates
           const userTickets = querySnapshot.docs
             .filter((doc) => doc.data().Email === userEmail)
-            .map((doc) => ({ id: doc.id, ...doc.data() })); // Include the document ID and data
-  
-          setTickets(userTickets); // Store the filtered tickets in state
+            .filter((doc) => {
+              const departDate = new Date(doc.data().DepartDate);
+              return departDate >= new Date(); // Only future tickets
+            })
+            .map((doc) => ({ id: doc.id, ...doc.data() }));
+
+          setTickets(userTickets);
         } else {
           console.log('User not authenticated.');
           setTickets([]);
@@ -106,35 +119,59 @@ const Profile = () => {
         console.error('Error fetching tickets:', error);
         setTickets([]);
       }
-    } else {
-      setTicketContent(
-        tab === 'bookingHistory'
-          ? 'Content for Booking History'
-          : 'Ticket information displayed here'
-      );
+    } else if (tab === 'bookingHistory') {
+      try {
+        const auth = getAuth();
+        const db = getFirestore();
+        const user = auth.currentUser;
+
+        if (user) {
+          const userEmail = user.email;
+
+          // Fetch all documents in the 'Bookings' collection
+          const bookingsRef = collection(db, 'Bookings');
+          const querySnapshot = await getDocs(bookingsRef);
+
+          // Get current date
+          const currentDate = new Date();
+
+          // Filter booking history: past departure dates and matching email
+          const pastBookings = querySnapshot.docs
+            .filter((doc) => {
+              const bookingData = doc.data();
+              // Check if email matches and departure date is in the past
+              if (bookingData.Email === userEmail && bookingData.DepartDate) {
+                // Parse the date format "12/17/2024, 4:50:49 AM"
+                const departDate = new Date(bookingData.DepartDate);
+                return departDate < currentDate;
+              }
+              return false;
+            })
+            .map((doc) => ({ id: doc.id, ...doc.data() }));
+
+          setBookingHistory(pastBookings);
+        } else {
+          console.log('User not authenticated.');
+          setBookingHistory([]);
+        }
+      } catch (error) {
+        console.error('Error fetching booking history:', error);
+        setBookingHistory([]);
+      }
     }
   };
-  
+
   // Handle opening the modal with ticket details
-  // Open the modal
-const viewTicketDetails = (ticket) => {
-  setSelectedTicket(ticket);
-  setTicketModalVisible(true);
-};
+  const viewTicketDetails = (ticket) => {
+    setSelectedTicket(ticket);
+    setTicketModalVisible(true);
+  };
 
-// Close the modal
-const closeTicketModal = () => {
-  setSelectedTicket(null);
-  setTicketModalVisible(false);
-};
-
-// Rendering the modal
-{ticketModalVisible && selectedTicket && (
-  <MyTicketsModal
-    ticket={selectedTicket}
-    onClose={closeTicketModal}
-  />
-)}
+  // Close the modal
+  const closeTicketModal = () => {
+    setSelectedTicket(null);
+    setTicketModalVisible(false);
+  };
 
   // Format date of birth
   const formatDateOfBirth = () => {
@@ -266,41 +303,61 @@ const closeTicketModal = () => {
             </button>
           </div>
           <div className={styles.TicketDisplay}>
-  {activeTab === 'myTickets' && tickets.length > 0 ? (
-    tickets.map((ticket) => (
-      <div key={ticket.id} className={styles.TicketCards}>
-      <div className={styles.TicketWhole}>
-        <div className={styles.TicketLeftSide}>
-        <p><strong>Booking ID:</strong> {ticket.id}</p>
-        <p><strong>Booker Name:</strong> {`${ticket.FirstName1} ${ticket.LastName1}` || 'N/A'}</p>
-        <p><strong>Date:</strong> {ticket.DepartDate || 'N/A'}</p>
-        </div>
+            {activeTab === 'myTickets' && tickets.length > 0 ? (
+              tickets.map((ticket) => (
+                <div key={ticket.id} className={styles.TicketCards}>
+                  <div className={styles.TicketWhole}>
+                    <div className={styles.TicketLeftSide}>
+                      <p><strong>Booking ID:</strong> {ticket.id}</p>
+                      <p><strong>Booker Name:</strong> {`${ticket.FirstName1} ${ticket.LastName1}` || 'N/A'}</p>
+                      <p><strong>Date:</strong> {ticket.DepartDate || 'N/A'}</p>
+                    </div>
 
-        <div className={styles.TicketRightSide}>
-        <button
-          className={styles.ViewTicketButton}
-          onClick={() => viewTicketDetails(ticket)}
-        >
-          View Ticket
-        </button>
+                    <div className={styles.TicketRightSide}>
+                      <button
+                        className={styles.ViewTicketButton}
+                        onClick={() => viewTicketDetails(ticket)}
+                      >
+                        View Ticket
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : activeTab === 'myTickets' ? (
+              <p>No tickets found.</p>
+            ) : activeTab === 'bookingHistory' && bookingHistory.length > 0 ? (
+              bookingHistory.map((booking) => (
+                <div key={booking.id} className={styles.TicketCards}>
+                  <div className={styles.TicketWhole}>
+                    <div className={styles.TicketLeftSide}>
+                      <p><strong>Booking ID:</strong> {booking.id}</p>
+                      <p><strong>Booker Name:</strong> {`${booking.FirstName1} ${booking.LastName1}` || 'N/A'}</p>
+                      <p><strong>Departure Date:</strong> {booking.DepartDate || 'N/A'}</p>
+                    </div>
+                    <div className={styles.TicketRightSide}>
+                      <button
+                        className={styles.ViewTicketButton}
+                        onClick={() => viewTicketDetails(booking)}
+                      >
+                        View Ticket
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : activeTab === 'bookingHistory' ? (
+              <p>No past bookings found.</p>
+            ) : null}
+          </div>
         </div>
       </div>
-      </div>
-    ))
-  ) : activeTab === 'myTickets' ? (
-    <p>No tickets found.</p>
-  ) : (
-    <p>{ticketContent}</p>
-  )}
-</div>
-</div>
-      </div>
 
-      {/* Modal for upload success */}
+      {/* Modal for ticket details */}
       {ticketModalVisible && selectedTicket && (
         <MyTicketsModal
-          ticket={selectedTicket} // Pass the selected ticket to the modal
-          onClose={closeTicketModal} // Pass the function to close the modal
+          ticket={selectedTicket}
+          onClose={closeTicketModal}
         />
       )}
     </div>
