@@ -68,6 +68,7 @@ const MyTicketsModal = ({ ticket, onClose }) => {
         {/* Show Departure Date */}
         <h3>
           <p><strong>Departure Date:</strong> {ticket.DepartDate || 'N/A'}</p>
+          <p><strong>Destination:</strong> {ticket.SelectedRet || 'N/A'}</p>
         </h3>
         <hr />
 

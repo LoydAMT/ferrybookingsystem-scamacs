@@ -20,6 +20,8 @@ const PaymentTab = () => {
     returnDate,
     selectedDepartureTrip,
     selectedReturnTrip,
+    selectedDepartureTime,
+    selectedReturnTime,
     passengers,
     totalPrice,
     time,
@@ -208,6 +210,8 @@ const PaymentTab = () => {
               ...passengerNames, // Spread the passenger names
               SelectedDest: selectedTo,
               SelectedRet: selectedFrom,
+              SelectedDestTime: selectedDepartureTime,
+              SelectedRetTime:selectedReturnTime,
               Email: contactDetails.email,
               DepartDate: departDate,
               ReturnDate: returnDate,
