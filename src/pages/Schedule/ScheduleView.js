@@ -167,21 +167,6 @@ const [selectedReturnTime, setSelectedReturnTime] = useState(null);
         totalPrice: totalPrice.toFixed(2),
       }
     });
-    navigate('/Paymenttab', {
-      state: {
-        tripType,
-        selectedFrom,
-        selectedTo,
-        departDate: formattedSelectedDate,
-        returnDate: formattedCurrentReturnDate,
-        selectedDepartureTrip,
-        selectedReturnTrip,
-        selectedDepartureTime,
-        selectedReturnTime,
-        passengers,
-        totalPrice: totalPrice.toFixed(2),
-      }
-    });
   };
   const handleBack = () => {
     navigate(-1, {
