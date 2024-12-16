@@ -1,7 +1,7 @@
 /* src/pages/Profile.module.css */
 
 .container {
-  font-family: 'Roboto', sans-serif; 
+  font-family: 'Open Sans', sans-serif;
   }
   
   .header {
@@ -233,3 +233,46 @@
   color: #3491f6;
   
  }
+
+ .TicketWhole{
+  display: flex;
+  align-content: space-between;
+ }
+
+ .TicketLeftSide{
+
+ }
+
+ .TicketRightSide{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+ }
+
+
+ .TicketDisplay{
+  background-color: #D5EEF9;
+  gap: 10px;
+ }
+
+ .TicketCards{
+  border: solid whitesmoke 1px;
+ }
+
+ .ViewTicketButton{
+  border: none;
+  background-color: #00bfff;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100px;
+  height: 75px;
+  border-radius: 10px;
+ }
+
+ .ViewTicketButton:hover{
+  background-color: #0099cc;
+ }
+ 

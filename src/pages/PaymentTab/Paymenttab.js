@@ -82,6 +82,8 @@ const PaymentTab = () => {
             const bookingsCollection = collection(db, 'Bookings');
             await addDoc(bookingsCollection, {
               ...passengerNames, // Spread the passenger names
+              SelectedDest: selectedTo,
+              SelectedRet: selectedFrom,
               Email: contactDetails.email,
               DepartDate: departDate,
               ReturnDate: returnDate,
