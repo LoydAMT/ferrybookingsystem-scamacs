@@ -508,13 +508,15 @@ const ScheduleView = () => {
               <div>{selectedFrom} → {selectedTo}</div>
               <div>{formattedSelectedDate} | {selectedDepartureTrip.time}</div>
               <div>{selectedDepartureTrip.priceType.toUpperCase()} Class</div>
-              <div>₱{
-                selectedDepartureTrip.priceType === 'business' 
-                  ? selectedDepartureTrip.businessPrice 
-                  : selectedDepartureTrip.economyPrice
-              } x {passengers.total}</div>
+               <div>₱{' '}
+          {selectedDepartureTrip.priceType === 'Business'
+            ? selectedDepartureTrip.businessPrice 
+            : selectedDepartureTrip.economyPrice } 
+            {' '} x {passengers.total}
+        </div>
             </>
           )}
+        
         </div>
         {tripType === 'round-trip' && selectedReturnTrip && (
           <div className="summary-section">
@@ -532,10 +534,14 @@ const ScheduleView = () => {
         <div className="total">
           <span>Total</span>
           <span>
-            ₱{(
-              ((selectedDepartureTrip?.priceType === 'business' ? selectedDepartureTrip?.businessPrice : selectedDepartureTrip?.economyPrice) || 0) +
-              ((selectedReturnTrip?.priceType === 'business' ? selectedReturnTrip?.businessPrice : selectedReturnTrip?.economyPrice) || 0)
-            ) * passengers.total / 10}
+          ₱
+              {selectedDepartureTrip
+                ? (
+                    (selectedDepartureTrip.priceType === 'Business'
+                      ? selectedDepartureTrip.businessPrice
+                      : selectedDepartureTrip.economyPrice) 
+                  ) * (passengers?.total || 1)
+                : ""}
           </span>
         </div>
         <button 
