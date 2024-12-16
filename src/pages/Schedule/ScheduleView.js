@@ -541,7 +541,7 @@ const ScheduleView = () => {
                       ? selectedDepartureTrip.businessPrice
                       : selectedDepartureTrip.economyPrice) 
                   ) * (passengers?.total || 1)
-                : ""}
+                : 0}
           </span>
         </div>
         <button 
