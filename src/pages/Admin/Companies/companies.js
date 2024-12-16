@@ -538,9 +538,14 @@ const CompaniesAd = () => {
 
             // If no conflict, add both times to the list
             if (!hasConflict) {
-                const newTimes = [
-                    `${from} - ${to} - (Travel Time: ${travelTimeInMinutes} minutes) (${formattedDepartureTime})`,
-                    `${to} - ${from} - (Travel Time: ${travelTimeInMinutes} minutes) (${formattedReturnTime})`
+                 const newTimes = [
+                     `${from} - ${to} - (Travel Time: ${travelTimeInMinutes} minutes) (${formattedDepartureTime})`,
+                     `${to} - ${from} - (Travel Time: ${travelTimeInMinutes} minutes) (${formattedReturnTime})`
+                 ];
+
+                 const newEntries = [
+                    { from, to },
+                    { from: to, to: from }
                 ];
 
                 // Save formatted time for vesselDetails.formattedTime
@@ -555,8 +560,8 @@ const CompaniesAd = () => {
                     ...prevDetails,
                     times: [
                         ...prevDetails.times,
-                        { details: newTimes[0], travelTimeInMinutes, time: formattedDepartureTime },
-                        { details: newTimes[1], travelTimeInMinutes, time: formattedReturnTime },
+                        { details: newTimes[0], travelTimeInMinutes, time: formattedDepartureTime, from: from, to: to},
+                        { details: newTimes[1], travelTimeInMinutes, time: formattedReturnTime, from: to, to: from},
                     ],
                     time: '', // Reset the time input
                     formattedTime: formattedTime.join(', '), // Store formatted times
