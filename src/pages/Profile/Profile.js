@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import MyTicketsModal from './MyTicketsModal';
+import './MyTicketsModal.css';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, getDoc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, updateDoc, getDocs, collection } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import styles from './Profile.module.css'; 
 
 const Profile = () => {
   // States for user data
+  const [tickets, setTickets] = useState([]); // Store fetched tickets
+  const [selectedTicket, setSelectedTicket] = useState(null); // Store the selected ticket for the modal
+  const [ticketModalVisible, setTicketModalVisible] = useState(false); // State for ticket modal visibility
   const [userData, setUserData] = useState(null);
   const [activeTab, setActiveTab] = useState('myTickets');
   const [ticketContent, setTicketContent] = useState('Ticket information displayed here');
@@ -15,6 +20,8 @@ const Profile = () => {
   const [modalVisible, setModalVisible] = useState(false); // State to manage modal visibility
   const [loadingModalVisible, setLoadingModalVisible] = useState(false); // State for loading modal
 
+
+  
   useEffect(() => {
     const fetchUserData = async () => {
       const auth = getAuth();
@@ -39,23 +46,65 @@ const Profile = () => {
     fetchUserData();
   }, []);
 
-  const handleTabChange = (tab) => {
+  const handleTabChange = async (tab) => {
     setActiveTab(tab);
-    // Update ticketContent based on the selected tab
-    switch (tab) {
-      case 'myTickets':
-        setTicketContent('Content for My Tickets');
-        break;
-      case 'bookingHistory':
-        setTicketContent('Content for Booking History');
-        break;
-      case 'bookmarks':
-        setTicketContent('Content for Bookmarks');
-        break;
-      default:
-        setTicketContent('Ticket information displayed here');
+  
+    if (tab === 'myTickets') {
+      try {
+        const auth = getAuth();
+        const db = getFirestore();
+        const user = auth.currentUser;
+  
+        if (user) {
+          const userEmail = user.email;
+  
+          // Fetch all documents in the 'Bookings' collection
+          const bookingsRef = collection(db, 'Bookings');
+          const querySnapshot = await getDocs(bookingsRef);
+  
+          // Filter documents where the Email matches the user's email
+          const userTickets = querySnapshot.docs
+            .filter((doc) => doc.data().Email === userEmail)
+            .map((doc) => ({ id: doc.id, ...doc.data() })); // Include the document ID and data
+  
+          setTickets(userTickets); // Store the filtered tickets in state
+        } else {
+          console.log('User not authenticated.');
+          setTickets([]);
+        }
+      } catch (error) {
+        console.error('Error fetching tickets:', error);
+        setTickets([]);
+      }
+    } else {
+      setTicketContent(
+        tab === 'bookingHistory'
+          ? 'Content for Booking History'
+          : 'Ticket information displayed here'
+      );
     }
   };
+  
+  // Handle opening the modal with ticket details
+  // Open the modal
+const viewTicketDetails = (ticket) => {
+  setSelectedTicket(ticket);
+  setTicketModalVisible(true);
+};
+
+// Close the modal
+const closeTicketModal = () => {
+  setSelectedTicket(null);
+  setTicketModalVisible(false);
+};
+
+// Rendering the modal
+{ticketModalVisible && selectedTicket && (
+  <MyTicketsModal
+    ticket={selectedTicket}
+    onClose={closeTicketModal}
+  />
+)}
 
   // Format date of birth
   const formatDateOfBirth = () => {
@@ -185,41 +234,44 @@ const Profile = () => {
             >
               Booking History
             </button>
-            <button
-              className={activeTab === 'bookmarks' ? styles.activeTab : ''}
-              onClick={() => handleTabChange('bookmarks')}
-            >
-              Bookmarks
-            </button>
           </div>
-          <div className={styles.ticketDisplay}>
-            <p>{ticketContent}</p>
-          </div>
+          <div className={styles.TicketDisplay}>
+  {activeTab === 'myTickets' && tickets.length > 0 ? (
+    tickets.map((ticket) => (
+      <div key={ticket.id} className={styles.TicketCards}>
+      <div className={styles.TicketWhole}>
+        <div className={styles.TicketLeftSide}>
+        <p><strong>Booking ID:</strong> {ticket.id}</p>
+        <p><strong>Booker Name:</strong> {`${ticket.FirstName1} ${ticket.LastName1}` || 'N/A'}</p>
+        <p><strong>Date:</strong> {ticket.DepartDate || 'N/A'}</p>
         </div>
 
-        <div className={styles.uploadSection}>
-          {uploadStatus && <p className={styles.uploadStatus}>{uploadStatus}</p>}
+        <div className={styles.TicketRightSide}>
+        <button
+          className={styles.ViewTicketButton}
+          onClick={() => viewTicketDetails(ticket)}
+        >
+          View Ticket
+        </button>
         </div>
+      </div>
+      </div>
+    ))
+  ) : activeTab === 'myTickets' ? (
+    <p>No tickets found.</p>
+  ) : (
+    <p>{ticketContent}</p>
+  )}
+</div>
+</div>
       </div>
 
       {/* Modal for upload success */}
-      {modalVisible && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            
-          <button className={styles.closeButton} onClick={closeModal}>✖</button>
-            <p>Uploaded successfully!</p>
-          </div>
-        </div>
-      )}
-
-      {/* Modal for loading during upload */}
-      {loadingModalVisible && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-          <p>Uploading...</p>
-          </div>
-        </div>
+      {ticketModalVisible && selectedTicket && (
+        <MyTicketsModal
+          ticket={selectedTicket} // Pass the selected ticket to the modal
+          onClose={closeTicketModal} // Pass the function to close the modal
+        />
       )}
     </div>
   );
