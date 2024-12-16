@@ -23,29 +23,59 @@ const Profile = () => {
 
   
   useEffect(() => {
-    const fetchUserData = async () => {
+    const loadTickets = async () => {
       const auth = getAuth();
-      const db = getFirestore();
       const user = auth.currentUser;
-
-      if (user) {
-        try {
-          const userDoc = await getDoc(doc(db, 'users', user.uid));
-          if (userDoc.exists()) {
-            setUserData(userDoc.data());
-            setImageUrl(userDoc.data().profilePic); // Set existing profile picture URL
-          } else {
-            console.log('No such document!');
+  
+      // If no user is currently authenticated, wait a moment
+      if (!user) {
+        // Add a short delay to ensure authentication is complete
+        const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+          if (currentUser) {
+            try {
+              const db = getFirestore();
+              const userEmail = currentUser.email;
+  
+              const bookingsRef = collection(db, 'Bookings');
+              const querySnapshot = await getDocs(bookingsRef);
+  
+              const userTickets = querySnapshot.docs
+                .filter((doc) => doc.data().Email === userEmail)
+                .map((doc) => ({ id: doc.id, ...doc.data() }));
+  
+              setTickets(userTickets);
+            } catch (error) {
+              console.error('Error fetching tickets:', error);
+              setTickets([]);
+            }
           }
+          // Unsubscribe to prevent memory leaks
+          unsubscribe();
+        });
+      } else {
+        // If user is already authenticated
+        try {
+          const db = getFirestore();
+          const userEmail = user.email;
+  
+          const bookingsRef = collection(db, 'Bookings');
+          const querySnapshot = await getDocs(bookingsRef);
+  
+          const userTickets = querySnapshot.docs
+            .filter((doc) => doc.data().Email === userEmail)
+            .map((doc) => ({ id: doc.id, ...doc.data() }));
+  
+          setTickets(userTickets);
         } catch (error) {
-          console.error('Error fetching user data:', error);
+          console.error('Error fetching tickets:', error);
+          setTickets([]);
         }
       }
     };
-
-    fetchUserData();
-  }, []);
-
+  
+    loadTickets();
+  }, []); // Empty dependency array
+  
   const handleTabChange = async (tab) => {
     setActiveTab(tab);
   
