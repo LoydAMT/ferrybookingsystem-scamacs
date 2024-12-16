@@ -138,7 +138,23 @@ const ScheduleView = () => {
     console.log('Departure Price:', departurePrice);
     console.log('Return Price:', returnPrice);
   
-    const totalPrice = ((departurePrice || 0) + (returnPrice || 0)) * passengers.total ;
+    const totalPrice =
+    (
+      (selectedDepartureTrip
+        ? Number(
+            selectedDepartureTrip?.priceType === 'Business'
+              ? selectedDepartureTrip?.businessPrice || 0
+              : selectedDepartureTrip?.economyPrice || 0
+          )
+        : 0) +
+      (selectedReturnTrip
+        ? Number(
+            selectedReturnTrip?.priceType === 'Business'
+              ? selectedReturnTrip?.businessPrice || 0
+              : selectedReturnTrip?.economyPrice || 0
+          )
+        : 0)
+    ) * (passengers?.total || 1);
   
     navigate('/PassengerDetails', {
       state: {
@@ -394,6 +410,7 @@ const ScheduleView = () => {
                         : 0)
                     ) * (passengers?.total || 1)}
           </span>
+        
         </div>
         <button 
           className="continue-btn" 
