@@ -23,7 +23,7 @@ const translations = {
         Payments are securely processed on our platform.`,
       more: `Would you like to talk to a virtual agent for further assistance?<br>
         Click "Yes" to connect or "No" to continue chatting with me.`,
-      yes: `You chose to talk to a virtual agent. This feature is not available yet, but I’m here to help!`,
+      yes: `Please wait, we are redirecting you to our agent.`,
       no: `Alright, feel free to ask me anything else or choose an option below.`,
       unknown: "I'm not sure about that, but I can assist you with booking or schedules!",
       options: ['How to book?', 'What are the available shipping lines?', 'What is the payment method?', 'More', 'Change Language'],
@@ -53,7 +53,7 @@ const translations = {
         - 은행 송금<br>
         결제는 안전하게 처리됩니다.`,
       more: '추가 지원을 위해 가상 상담원과 이야기하시겠습니까?<br>"예"를 클릭하면 연결되며, "아니오"를 클릭하면 계속 대화할 수 있습니다.',
-      yes: '가상 상담원과 대화하기를 선택했습니다. 이 기능은 아직 사용할 수 없지만, 제가 도와드리겠습니다!',
+      yes: '잠시만 기다려주세요. 당사 에이전트로 리디렉션 중입니다.',
       no: '알겠습니다. 다른 질문이 있으시면 옵션을 선택하거나 물어보세요.',
       unknown: '잘 모르겠지만 예약이나 일정을 도와드릴 수 있습니다!',
       options: ['예약 방법은?', '사용 가능한 선박 라인은?', '결제 방법은?', '더 보기', '언어 변경'],
@@ -83,7 +83,7 @@ const translations = {
         - 銀行振込<br>
         支払いは安全に処理されます。`,
       more: '追加サポートのため、仮想エージェントと話しますか？<br>"はい"をクリックすると接続され、"いいえ"をクリックするとチャットを続けられます。',
-      yes: '仮想エージェントとの会話を選択しました。この機能はまだ利用できませんが、私がお手伝いします！',
+      yes: 'お待ちください。エージェントにリダイレクトします。',
       no: 'わかりました。他の質問があれば、オプションを選ぶか聞いてください。',
       unknown: 'それについてはわかりませんが、予約やスケジュールのサポートはできます！',
       options: ['予約方法は？', '利用可能な船舶会社は？', '支払い方法は？', 'さらに表示', '言語を変更'],

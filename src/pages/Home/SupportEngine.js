@@ -1,15 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import io from 'socket.io-client';
 import './SupportEngine.css';
-import Avatar from './Avatar';
+import Avatar from './Avatar'; // Import Avatar.js
 import translations from './translations';
+
+const socket = io('http://localhost:5000'); // Connect to the WebSocket server
 
 const SupportEngine = () => {
   const [messages, setMessages] = useState([]);
-  const [userMessage, setUserMessage] = useState(''); 
-  const [isOpen, setIsOpen] = useState(false); 
-  const [showOptions, setShowOptions] = useState([]); 
-  const [language, setLanguage] = useState('en'); 
-  const chatEndRef = useRef(null); 
+  const [userMessage, setUserMessage] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [showOptions, setShowOptions] = useState([]);
+  const [language, setLanguage] = useState('en');
+  const [isRealTimeChat, setIsRealTimeChat] = useState(false);
+  const chatEndRef = useRef(null);
   const t = translations[language]; 
 
   // Auto-scroll to the bottom when messages are updated
@@ -60,17 +64,31 @@ const SupportEngine = () => {
         botResponse = updatedTranslations.paymentMethod;
         break;
 
-      case updatedTranslations.options[3]: 
-        botResponse = updatedTranslations.more;
+        case updatedTranslations.options[3]: // More
+        botResponse = t.more;
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { sender: 'bot', text: botResponse },
+        ]);
         setTimeout(() => setShowOptions(['Yes', 'No']), 500);
-        break;
+        return;
 
-      case 'Yes':
-        botResponse = updatedTranslations.yes;
-        break;
+      case 'Yes': // User chooses "Yes"
+        botResponse = t.yes;
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { sender: 'bot', text: botResponse },
+        ]);
+        setTimeout(() => {
+          setIsRealTimeChat(true);
+          socket.emit('notify admin', { message: 'A user needs real-time support!' });
+          setShowOptions([]);
+        }, 1000);
+        return;
 
-      case 'No':
-        botResponse = updatedTranslations.no;
+      case 'No': // User chooses "No"
+        botResponse = t.no;
+        setTimeout(() => setShowOptions(t.options), 500);
         break;
 
       case updatedTranslations.options[4]: 
