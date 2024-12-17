@@ -69,6 +69,7 @@ const BookingsTable = () => {
       <table className="bookings-table">
         <thead>
           <tr>
+            <th>Reference Number</th>
             <th>Passenger Names</th>
             <th>Depart Date</th>
             <th>Trip Type</th>
@@ -81,6 +82,7 @@ const BookingsTable = () => {
         <tbody>
           {filteredDetails.map((booking) => (
             <tr key={booking.id}>
+              <td>{booking.id}</td>
               <td>
                 {Object.keys(booking)
                   .filter((key) => key.startsWith('FirstName'))
@@ -101,7 +103,7 @@ const BookingsTable = () => {
                 <div className="action-buttons">
                   <button
                     className="action-button cancel-button"
-                    onClick={() => handleCancel(booking.id)} // Pass document ID to handleCancel
+                    onClick={() => handleCancel(booking.id)}
                   >
                     Cancel
                   </button>
