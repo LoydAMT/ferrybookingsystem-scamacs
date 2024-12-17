@@ -16,6 +16,8 @@ const PassengerDetails = () => {
     selectedDepartureTrip = { time: '', price: 0 },
     selectedReturnTrip = { time: '', price: 0 },
     passengers = { total: 0 },
+    selectedDepartureTime ='',
+    selectedReturnTime = '',
     totalPrice = 0,
   } = location.state || {};
 
@@ -128,8 +130,11 @@ const PassengerDetails = () => {
       returnDate,
       selectedDepartureTrip,
       selectedReturnTrip,
+      selectedDepartureTime,
+      selectedReturnTime,
       passengers,
       totalPrice,
+
       passengerDetails, // Add passenger details here
       email, // Add email here
     };
@@ -159,6 +164,8 @@ const PassengerDetails = () => {
         returnDate,
         selectedDepartureTrip,
         selectedReturnTrip,
+        selectedDepartureTime,
+        selectedReturnTime,
         passengers,
         totalPrice,
       },
