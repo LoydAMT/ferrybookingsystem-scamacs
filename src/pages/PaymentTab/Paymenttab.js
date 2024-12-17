@@ -176,7 +176,7 @@ const PaymentTab = () => {
     }
   
     try {
-      const response = await fetch(paymongoEndpoint, {
+      const response = await fetch(paymongoEndpoint, {  
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -185,7 +185,7 @@ const PaymentTab = () => {
         body: JSON.stringify({
           data: {
             attributes: {
-              amount: totalPrice * 100, // Convert to cents
+              amount: discountedTotalPrice * 100, // Convert to cents
               redirect: {
                 success: 'https://swiftsail-ferries.vercel.app///paymentsuccess',
                 failed: 'https://swiftsail-ferries.vercel.app///paymentfailure',
@@ -258,7 +258,7 @@ const PaymentTab = () => {
             <p>Departure: {departDate}</p>
             {tripType === 'round-trip' && <p>Return: {returnDate}</p>}
             <p>Passengers: {passengers.total}</p>
-            <p>Total Price: ₱{totalPrice}</p>
+            <p>Total Price: ₱{discountedTotalPrice}</p>
           </div>
         </div>
       </header>
