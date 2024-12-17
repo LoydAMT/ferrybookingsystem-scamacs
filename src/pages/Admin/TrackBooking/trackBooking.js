@@ -142,12 +142,7 @@ const BookingsTable = () => {
                     >
                       Cancel
                     </button>
-                    <button
-                      className="action-button move-button"
-                      onClick={() => handleMove(booking)}
-                    >
-                      Move
-                    </button>
+                    
                   </div>
                 </td>
               </tr>

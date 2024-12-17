@@ -52,7 +52,7 @@ const Dashboard = () => {
             { name: 'Users List', tab: 'UserList' },
             { name: 'Bookings', tab: 'Bookings' },
             { name: 'Companies', tab: 'Companies' },
-            { name: 'User Booking', tab: 'UserBooking' },
+            { name:'List of Booking', tab: 'UserBooking' },
             { name: 'Analytics', tab: 'Analytics' },
             { name: 'Security', tab: 'Security', verify: true },
           ].map(({ name, tab, verify }) => (
