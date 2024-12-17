@@ -5,9 +5,12 @@ import { db } from '../../firebase';
 import './Paymenttab.css';
 import emailjs from '@emailjs/browser';
 
+
 const PaymentTab = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [bookingReference, setBookingReference] = useState(null);
+
   const {
     contactDetails,
     passengerDetails,
@@ -110,9 +113,9 @@ const PaymentTab = () => {
     setSelectedPaymentMethod(method);
   };
   
+  
   //sendemail
-  const sendEmail = () => {
-    const bookingReference = `REF-${Math.random().toString(36).substr(2, 9).toUpperCase()}`; // Generate a random booking reference number
+  const sendEmail = (bookingReference) => {
     const guestList = passengerDetails
       .map((passenger, index) => `${index + 1}. ${passenger.firstName} ${passenger.lastName}`)
       .join('\n');
@@ -203,7 +206,7 @@ const PaymentTab = () => {
             });
     
             const bookingsCollection = collection(db, 'Bookings');
-            await addDoc(bookingsCollection, {
+            const docRef = await addDoc(bookingsCollection, {
               ...passengerNames, // Spread the passenger names
               SelectedDest: selectedTo,
               SelectedRet: selectedFrom,
@@ -215,8 +218,10 @@ const PaymentTab = () => {
               TotalPrice: totalPrice
             });
 
+            setBookingReference(docRef.id); // Save the document ID to state
+            sendEmail(docRef.id); // Pass the ID to sendEmail
+
           console.log('Booking info saved to Firestore');
-          sendEmail();
             
           } else {
             alert('Payment Failed');
