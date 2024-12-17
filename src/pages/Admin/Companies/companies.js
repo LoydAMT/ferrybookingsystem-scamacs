@@ -159,7 +159,8 @@ const CompaniesAd = () => {
 
             const docRef = await addDoc(collection(db, 'companies'), companyData);
             console.log('Company Document written with ID: ', docRef.id);
-            alert('Company added successfully!');
+            showSuccessModal('Company added successfully!');
+
         } catch (error) {
             console.error('Error uploading company data:', error);
             alert(`Failed to add company: ${error.message}`);
@@ -180,12 +181,47 @@ const CompaniesAd = () => {
             });
             setShowModal(false);
         }
+
+
     };
+
+    // Function to show a generic success modal
+    const showSuccessModal = (message) => {
+        // Create the modal container
+        const modal = document.createElement('div');
+        modal.classList.add('successModal-overlay');
+        modal.innerHTML = `
+        <div class="successModal-content">
+            <h2>Success</h2>
+            <p>${message}</p>
+            <button class="successModal-close-btn">OK</button>
+        </div>
+    `;
+
+        // Append modal to the body
+        document.body.appendChild(modal);
+
+        // Add event listener to close the modal
+        modal.querySelector('.successModal-close-btn').addEventListener('click', () => {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.remove();
+            }, 300);
+        });
+
+        // Activate modal animation
+        setTimeout(() => modal.classList.add('active'), 10);
+    };
+
+
 
     const handleCompanyClick = (company) => {
         setSelectedCompany(company);
         setShowSelectedModal(true);
     };
+
+
+
 
     const handleUpdateCompany = async () => {
         if (!selectedCompany) return;
@@ -331,7 +367,7 @@ const CompaniesAd = () => {
 
 
 
-            // trial if this works or not
+            // trial if this works or not, nigana ra
             const companyDoc = await getDoc(doc(db, "companies", companyUid));
             if (!companyDoc.exists()) {
                 console.error("Company not found!");
@@ -375,6 +411,9 @@ const CompaniesAd = () => {
                 collection(db, 'adminData'),
                 adminData
             );
+
+            showSuccessModal('Vessel added successfully!');
+
 
         } catch (error) {
             console.error("Error adding vessel:", error);
@@ -538,12 +577,12 @@ const CompaniesAd = () => {
 
             // If no conflict, add both times to the list
             if (!hasConflict) {
-                 const newTimes = [
-                     `${from} - ${to} - (Travel Time: ${travelTimeInMinutes} minutes) (${formattedDepartureTime})`,
-                     `${to} - ${from} - (Travel Time: ${travelTimeInMinutes} minutes) (${formattedReturnTime})`
-                 ];
+                const newTimes = [
+                    `${from} - ${to} - (Travel Time: ${travelTimeInMinutes} minutes) (${formattedDepartureTime})`,
+                    `${to} - ${from} - (Travel Time: ${travelTimeInMinutes} minutes) (${formattedReturnTime})`
+                ];
 
-                 const newEntries = [
+                const newEntries = [
                     { from, to },
                     { from: to, to: from }
                 ];
@@ -560,8 +599,8 @@ const CompaniesAd = () => {
                     ...prevDetails,
                     times: [
                         ...prevDetails.times,
-                        { details: newTimes[0], travelTimeInMinutes, time: formattedDepartureTime, from: from, to: to},
-                        { details: newTimes[1], travelTimeInMinutes, time: formattedReturnTime, from: to, to: from},
+                        { details: newTimes[0], travelTimeInMinutes, time: formattedDepartureTime, from: from, to: to },
+                        { details: newTimes[1], travelTimeInMinutes, time: formattedReturnTime, from: to, to: from },
                     ],
                     time: '', // Reset the time input
                     formattedTime: formattedTime.join(', '), // Store formatted times

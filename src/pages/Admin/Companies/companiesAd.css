@@ -1192,5 +1192,75 @@ select.vessel-tbox:hover {
 
 
 
+/* Success Modal Overlay */
+.successModal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+    z-index: 9999;
+}
+
+.successModal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Success Modal Content */
+.successModal-content {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-30px);
+    transition: all 0.3s ease-in-out;
+}
+
+.successModal-overlay.active .successModal-content {
+    transform: translateY(0);
+}
+
+/* Modal Heading */
+.successModal-content h2 {
+    color: #28a745; /* Green color for success */
+    margin-bottom: 10px;
+}
+
+/* Modal Message */
+.successModal-content p {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Close Button */
+.successModal-close-btn {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.successModal-close-btn:hover {
+    background-color: #218838;
+}
+
+
+
+
+
 
 
