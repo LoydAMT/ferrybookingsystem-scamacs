@@ -20,13 +20,12 @@ const PaymentTab = () => {
     returnDate,
     selectedDepartureTrip,
     selectedReturnTrip,
-    selectedDepartureTime,
-    selectedReturnTime,
     passengers,
     totalPrice,
     time,
     email,
-
+    selectedDepartureTime,
+    selectedReturnTime,
   } = location.state || {};
 
   const calculateTotalPrice = (totalPrice, passengers, passengerDetails = [], passengerIds = []) => {
@@ -81,10 +80,10 @@ const PaymentTab = () => {
     });
   
     // Calculate discounted prices
-    const studentPrice = perPerson * passengers.students * 0.2;   // 20% off for verified students
-    const pwdPrice = perPerson * passengers.pwd * 0.2;            // 20% off for verified PWD
-    const seniorPrice = perPerson * passengers.seniors * 0.2;     // 20% off for verified seniors
-    const childPrice = perPerson * passengers.children * 0.5;     // 50% off for verified children
+    const studentPrice = perPerson * discountedPassengers.students * 0.2;   // 20% off for verified students
+    const pwdPrice = perPerson * discountedPassengers.pwd * 0.2;            // 20% off for verified PWD
+    const seniorPrice = perPerson * discountedPassengers.seniors * 0.2;     // 20% off for verified seniors
+    const childPrice = perPerson * discountedPassengers.children * 0.5;     // 50% off for verified children
   
     // 3. Calculate the total discounted price
     discount = studentPrice + pwdPrice + seniorPrice + childPrice;
@@ -111,6 +110,7 @@ const PaymentTab = () => {
     setSelectedPaymentMethod(method);
   };
   
+  //sendemail
   const sendEmail = () => {
     const bookingReference = `REF-${Math.random().toString(36).substr(2, 9).toUpperCase()}`; // Generate a random booking reference number
     const guestList = passengerDetails
@@ -155,93 +155,85 @@ const PaymentTab = () => {
       }
     );
   };
+
   const handleConfirmPayment = async () => {
-    const paymongoPublicKey = 'pk_test_D8eC3g7r6y3kC7Z439fX3MoH';
-    const paymongoEndpoint = 'https://api.paymongo.com/v1/sources';
-    
-    let paymentType = '';
-    switch (selectedPaymentMethod) {
-      case 'e-wallet':
-        paymentType = 'gcash';
-        break;
-      case 'bank_transfer':
-        paymentType = 'bank_transfer';
-        break;
-      case 'card':
-        paymentType = 'card';
-        break;
-      default:
-        alert('Please select a valid payment method.');
-        return;
-    }
-  
-    try {
-      const response = await fetch(paymongoEndpoint, {  
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Basic ${btoa(paymongoPublicKey + ':')}`,
-        },
-        body: JSON.stringify({
-          data: {
-            attributes: {
-              amount: discountedTotalPrice * 100, // Convert to cents
-              redirect: {
-                success: 'https://swiftsail-ferries.vercel.app///paymentsuccess',
-                failed: 'https://swiftsail-ferries.vercel.app///paymentfailure',
-              },
-              type: paymentType, // Dynamic payment type
-              currency: 'PHP',
-            },
+    if (selectedPaymentMethod === 'e-wallet') {
+      const paymongoPublicKey = 'pk_test_D8eC3g7r6y3kC7Z439fX3MoH';
+      const paymongoEndpoint = 'https://api.paymongo.com/v1/sources';
+
+      try {
+        const response = await fetch(paymongoEndpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Basic ${btoa(paymongoPublicKey + ':')}`,
           },
-        }),
-      });
-  
-      const result = await response.json();
-      if (result.data && result.data.attributes && result.data.attributes.redirect) {
-        window.open(result.data.attributes.redirect.checkout_url, '_blank');
-  
-        // Simulate a payment result response after redirection (mock response)
-        const isPaymentSuccessful = true; // Mock variable; replace with real status if using actual integration
-        if (isPaymentSuccessful) {
-          alert('Payment Successful');
-          
-          const passengerNames = {};
-          passengerDetails.forEach((passenger, index) => {
-            passengerNames[`FirstName${index + 1}`] = passenger.firstName;
-            passengerNames[`LastName${index + 1}`] = passenger.lastName;
-          });
-  
-          const bookingsCollection = collection(db, 'Bookings');
-          await addDoc(bookingsCollection, {
-            ...passengerNames,
-            SelectedDest: selectedTo,
-            SelectedRet: selectedFrom,
-            SelectedDestTime: selectedDepartureTime,
-            SelectedRetTime: selectedReturnTime,
-            Email: contactDetails.email,
-            DepartDate: departDate,
-            ReturnDate: returnDate,
-            TripType: tripType,
-            TotalPassengers: passengers.total,
-            TotalPrice: totalPrice,
-          });
-  
+          body: JSON.stringify({
+            data: {
+              attributes: {
+                amount: discountedTotalPrice * 100, // Convert to cents
+                redirect: {
+                  success: 'https://swiftsail-ferries.vercel.app///paymentsuccess',
+                  failed: 'https://swiftsail-ferries.vercel.app///paymentfailure',
+                },
+                type: 'gcash', // Change this if needed
+                currency: 'PHP',
+              },
+            },
+          }),
+        });
+
+        const result = await response.json();
+        if (result.data && result.data.attributes && result.data.attributes.redirect) {
+          // Show success or failure popup based on the result
+          window.open(result.data.attributes.redirect.checkout_url, '_blank');
+
+          // Simulate a payment result response after redirection (mock response)
+          const isPaymentSuccessful = true; // Mock variable; replace with real status if using actual integration
+          if (isPaymentSuccessful) {
+            alert('Payment Successful');
+            // Retrieve the first name, last name, and email from passengerDetails
+
+            const passengerNames = {};
+        
+            // Loop through all passengers and add their names to the object
+            passengerDetails.forEach((passenger, index) => {
+              passengerNames[`FirstName${index + 1}`] = passenger.firstName;
+              passengerNames[`LastName${index + 1}`] = passenger.lastName;
+            });
+    
+            const bookingsCollection = collection(db, 'Bookings');
+            await addDoc(bookingsCollection, {
+              ...passengerNames, // Spread the passenger names
+              SelectedDest: selectedTo,
+              SelectedRet: selectedFrom,
+              Email: contactDetails.email,
+              DepartDate: departDate,
+              ReturnDate: returnDate,
+              TripType: tripType,
+              TotalPassengers: passengers.total,
+              TotalPrice: totalPrice
+            });
+
           console.log('Booking info saved to Firestore');
           sendEmail();
-        } else {
-          alert('Payment Failed');
+            
+          } else {
+            alert('Payment Failed');
+          }
+          
+          // Navigate to the homepage after showing the message
+          navigate('/');
         }
-  
+      } catch (error) {
+        console.error('Error initiating PayMongo payment:', error);
+        alert('Payment Failed');
         navigate('/');
       }
-    } catch (error) {
-      console.error('Error initiating PayMongo payment:', error);
-      alert('Payment Failed');
-      navigate('/');
+    } else {
+      alert('Please select a valid payment method.');
     }
   };
-  
 
   return (
     <div className="payment-container">
@@ -258,7 +250,7 @@ const PaymentTab = () => {
             <p>Departure: {departDate}</p>
             {tripType === 'round-trip' && <p>Return: {returnDate}</p>}
             <p>Passengers: {passengers.total}</p>
-            <p>Total Price: ₱{discountedTotalPrice}</p>
+            <p>Total Price: ₱{totalPrice}</p>
           </div>
         </div>
       </header>
@@ -266,12 +258,23 @@ const PaymentTab = () => {
       <div className="payment-methods">
         <h3>Select Payment Method</h3>
         <div className="payment-options">
-          
-          <button
+          <button 
+            className={`payment-option ${selectedPaymentMethod === 'card' ? 'selected' : ''}`}
+            onClick={() => handlePaymentMethodSelect('card')}
+          >
+            Credit/Debit Card
+          </button>
+          <button 
             className={`payment-option ${selectedPaymentMethod === 'e-wallet' ? 'selected' : ''}`}
             onClick={() => handlePaymentMethodSelect('e-wallet')}
           >
             E-Wallet
+          </button>
+          <button 
+            className={`payment-option ${selectedPaymentMethod === 'bank' ? 'selected' : ''}`}
+            onClick={() => handlePaymentMethodSelect('bank')}
+          >
+            Bank Transfer
           </button>
         </div>
       </div>
@@ -281,11 +284,7 @@ const PaymentTab = () => {
           Back
         </button>
 
-        <button
-          className="confirm-payment"
-          onClick={handleConfirmPayment}
-          disabled={!selectedPaymentMethod} // Disable if no payment method selected
-        >
+        <button className="confirm-payment" onClick={handleConfirmPayment}>
           Confirm Payment
         </button>
       </div>
