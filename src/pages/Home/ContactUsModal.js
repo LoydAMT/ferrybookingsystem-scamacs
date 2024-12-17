@@ -1,3 +1,5 @@
+import React from 'react';
+import './ContactUsModal.css';
 const ContactUsModal = ({ isOpen, onClose}) => {
   if (!isOpen) return null;
 
@@ -11,7 +13,7 @@ const ContactUsModal = ({ isOpen, onClose}) => {
             policy, please contact us at <a href="mailto:swiftsail.ferries@gmail.com">swiftsail.ferries@gmail.com</a>.
           </p>
         </div>
-        <button className="close-button" onClick={onClose} aria-label="Close">
+        <button className="cclose-button" onClick={onClose} aria-label="Close">
           Close
         </button>
       </div>

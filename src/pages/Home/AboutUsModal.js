@@ -1,3 +1,6 @@
+import React from 'react';
+import './AboutUsModal.css';
+
 const AboutUsModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
@@ -36,7 +39,7 @@ const AboutUsModal = ({ isOpen, onClose }) => {
             Thank you for choosing Swift Sail Ferries. We look forward to being a part of your journey and making your travels unforgettable!
           </p>
         </div>
-        <button className="close-button" onClick={onClose} aria-label="Close">
+        <button className="aclose-button" onClick={onClose} aria-label="Close">
           Close
         </button>
       </div>

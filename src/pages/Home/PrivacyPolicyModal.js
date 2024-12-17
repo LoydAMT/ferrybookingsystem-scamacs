@@ -34,7 +34,7 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => {
             policy, please contact us at swiftsail.ferries@gmail.com.
           </p> */}
         </div>
-        <button className="close-button" onClick={onClose} aria-label="Close">
+        <button className="pclose-button" onClick={onClose} aria-label="Close">
           Close
         </button>
       </div>
