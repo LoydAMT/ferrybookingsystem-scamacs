@@ -5,9 +5,9 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div className="modal-overlay">
       <div className="modal-content">
-        <h2 id="modal-title">Privacy Policy</h2>
+        <h2>Privacy Policy</h2>
         <div className="modal-body">
           <p>
             <strong>Introduction:</strong> Your privacy is important to us. This
@@ -29,12 +29,12 @@ const PrivacyPolicyModal = ({ isOpen, onClose }) => {
             <strong>Data Protection:</strong> We implement secure protocols to
             protect your information from unauthorized access.
           </p>
-          {/* <p>
+          <p>
             <strong>Contact Us:</strong> If you have any questions about this
             policy, please contact us at swiftsail.ferries@gmail.com.
-          </p> */}
+          </p>
         </div>
-        <button className="pclose-button" onClick={onClose} aria-label="Close">
+        <button className="close-button" onClick={onClose}>
           Close
         </button>
       </div>

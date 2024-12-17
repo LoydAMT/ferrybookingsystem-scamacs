@@ -1,41 +1,67 @@
 import React, { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import { getFirestore, collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  doc, 
+  deleteDoc, 
+  query, 
+  where 
+} from 'firebase/firestore';
 import './trackbooking.css';
 
 const BookingsTable = () => {
   const [bookings, setBookings] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
-    const fetchBookings = async () => {
+    const fetchUsersAndBookings = async () => {
       try {
         const db = getFirestore();
+        
+        // Fetch Bookings
         const bookingsCollection = collection(db, 'Bookings');
         const bookingsSnapshot = await getDocs(bookingsCollection);
         const bookingsList = bookingsSnapshot.docs.map((doc) => ({
-          id: doc.id, // Capture the document ID
+          id: doc.id,
           ...doc.data(),
         }));
-        console.log('Fetched bookings:', bookingsList); // Debugging log
+
+        // Fetch Users
+        const usersCollection = collection(db, 'users');
+        const usersSnapshot = await getDocs(usersCollection);
+        
+        // Create a mapping of email to user info
+        const userMapping = {};
+        usersSnapshot.docs.forEach((userDoc) => {
+          const userData = userDoc.data();
+          userMapping[userData.email] = {
+            firstName: userData.firstName,
+            lastName: userData.lastName
+          };
+        });
+
+        setUserInfo(userMapping);
         setBookings(bookingsList);
       } catch (error) {
-        console.error('Error fetching bookings:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    fetchBookings();
+    fetchUsersAndBookings();
   }, []);
 
   const handleCancel = async (bookingId) => {
-    console.log('Attempting to cancel booking with ID:', bookingId); // Debugging log
+    console.log('Attempting to cancel booking with ID:', bookingId);
     const confirm = window.confirm('Are you sure you want to cancel this booking?');
     if (confirm) {
       try {
         const db = getFirestore();
-        const bookingDoc = doc(db, 'Bookings', bookingId); // Use booking ID to get the document
-        await deleteDoc(bookingDoc); // Delete the booking document from Firestore
-        setBookings(bookings.filter((booking) => booking.id !== bookingId)); // Update state to reflect the cancellation
+        const bookingDoc = doc(db, 'Bookings', bookingId);
+        await deleteDoc(bookingDoc);
+        setBookings(bookings.filter((booking) => booking.id !== bookingId));
         alert('Booking has been successfully canceled.');
       } catch (error) {
         console.error('Error deleting booking:', error);
@@ -45,7 +71,7 @@ const BookingsTable = () => {
   };
 
   const handleMove = (booking) => {
-    console.log('Move clicked for booking:', booking); // Debugging log
+    console.log('Move clicked for booking:', booking);
     alert('Move functionality is not implemented yet.');
   };
 
@@ -69,6 +95,8 @@ const BookingsTable = () => {
       <table className="bookings-table">
         <thead>
           <tr>
+            <th>Reference Number</th>
+            <th>Booked By</th>
             <th>Passenger Names</th>
             <th>Depart Date</th>
             <th>Trip Type</th>
@@ -79,42 +107,47 @@ const BookingsTable = () => {
           </tr>
         </thead>
         <tbody>
-          {filteredDetails.map((booking) => (
-            <tr key={booking.id}>
-              <td>
-                {Object.keys(booking)
-                  .filter((key) => key.startsWith('FirstName'))
-                  .map(
-                    (key) =>
-                      `${booking[key]} ${
-                        booking[`LastName${key.slice(9)}`] || ''
-                      }`
-                  )
-                  .join(', ')}
-              </td>
-              <td>{booking.DepartDate}</td>
-              <td>{booking.TripType}</td>
-              <td>{booking.TotalPassengers}</td>
-              <td>₱{booking.TotalPrice}</td>
-              <td>{booking.Email}</td>
-              <td>
-                <div className="action-buttons">
-                  <button
-                    className="action-button cancel-button"
-                    onClick={() => handleCancel(booking.id)} // Pass document ID to handleCancel
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="action-button move-button"
-                    onClick={() => handleMove(booking)}
-                  >
-                    Move
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
+          {filteredDetails.map((booking) => {
+            // Get booked by information
+            const bookedByUser = userInfo[booking.Email] || {};
+            const bookedByName = bookedByUser.firstName && bookedByUser.lastName
+              ? `${bookedByUser.firstName} ${bookedByUser.lastName}`
+              : 'Unknown';
+
+            return (
+              <tr key={booking.id}>
+                <td>{booking.id}</td>
+                <td>{bookedByName}</td>
+                <td>
+                  {Object.keys(booking)
+                    .filter((key) => key.startsWith('FirstName'))
+                    .map(
+                      (key) =>
+                        `${booking[key]} ${
+                          booking[`LastName${key.slice(9)}`] || ''
+                        }`
+                    )
+                    .join(', ')}
+                </td>
+                <td>{booking.DepartDate}</td>
+                <td>{booking.TripType}</td>
+                <td>{booking.TotalPassengers}</td>
+                <td>₱{booking.TotalPrice}</td>
+                <td>{booking.Email}</td>
+                <td>
+                  <div className="action-buttons">
+                    <button
+                      className="action-button cancel-button"
+                      onClick={() => handleCancel(booking.id)}
+                    >
+                      Cancel
+                    </button>
+                    
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

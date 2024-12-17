@@ -142,15 +142,36 @@ const [selectedReturnTime, setSelectedReturnTime] = useState(null);
     const returnPrice = selectedReturnTrip?.priceType === 'business'
       ? selectedReturnTrip?.businessPrice
       : selectedReturnTrip?.economyPrice;
+      const calculateTotalPrice = (selectedDepartureTrip, selectedReturnTrip, passengers) => {
+        const departurePrice =
+          selectedDepartureTrip &&
+          Number(
+            selectedDepartureTrip.priceType === 'Business'
+              ? selectedDepartureTrip.businessPrice
+              : selectedDepartureTrip.economyPrice
+          );
+      
+        const returnPrice =
+          selectedReturnTrip &&
+          Number(
+            selectedReturnTrip.priceType === 'Business'
+              ? selectedReturnTrip.businessPrice
+              : selectedReturnTrip.economyPrice
+          );
+      
+        return (
+          (departurePrice || 0) +
+          (returnPrice || 0)
+        ) * (passengers?.total || 1);
+      };
+      
   
-    const totalPrice = (
-      (selectedDepartureTrip
-        ? Number(departurePrice || 0)
-        : 0) +
-      (selectedReturnTrip
-        ? Number(returnPrice || 0)
-        : 0)
-    ) * (passengers?.total || 1);
+    const totalPrice = calculateTotalPrice(
+      selectedDepartureTrip,
+      selectedReturnTrip,
+      passengers
+    );
+    
   
     navigate('/PassengerDetails', {
       state: {

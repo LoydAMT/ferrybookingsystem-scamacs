@@ -60,7 +60,7 @@ const Home = () => {
           </div>
           <div className="Right-side">
             <h3 id="Right-Text">
-              Demure Sailing, Bold Wanderlust – 
+              Demure Sailing, Bold Wanderlust –
             </h3>
             <h3 id="Right-Text">
               Swift Sail Awaits!
@@ -75,9 +75,18 @@ const Home = () => {
       </div>
 
       {/* Modals */}
-      <PrivacyPolicyModal showModal={showPrivacyModal} setShowModal={setShowPrivacyModal} />
-      <AboutUsModal showModal={showAboutUsModal} setShowModal={setShowAboutUsModal} />
-      <ContactUsModal showModal={showContactUsModal} setShowModal={setShowContactUsModal} />
+      <PrivacyPolicyModal 
+        isOpen={showPrivacyModal} 
+        onClose={() => setShowPrivacyModal(false)} 
+      />
+      <AboutUsModal 
+        isOpen={showAboutUsModal} 
+        onClose={() => setShowAboutUsModal(false)} 
+      />
+      <ContactUsModal 
+        isOpen={showContactUsModal} 
+        onClose={() => setShowContactUsModal(false)} 
+      />
 
       {/* SupportEngine Component */}
       <SupportEngine />
