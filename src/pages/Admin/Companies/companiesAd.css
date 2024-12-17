@@ -159,6 +159,8 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
 }
 .modal-content textarea{
     box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1), 
@@ -174,6 +176,8 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     position: relative;
     overflow: hidden; 
+    overflow-y: auto;
+    animation: slideIn 0.3s ease-out;
 }
 
 
@@ -231,6 +235,11 @@
     cursor: pointer;
     margin-top:25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logo-upload:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+    border-color: #0056b3;
 }
 .logo-upload img {
     width: 100%; 
@@ -323,15 +332,18 @@ label {
     justify-content: flex-end;
     gap: 10px;
     margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 .modal-buttons button {
+    flex: 1;
+    max-width: 200px;
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .modal-buttons button:first-child {
