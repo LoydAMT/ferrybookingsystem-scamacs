@@ -2,6 +2,9 @@ import './PassengerDetails.css';
 import { useNavigate, useLocation } from 'react-router-dom';
 import React, { useState,useEffect } from 'react';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import PrivacyPolicyModal from './PrivacyPolicyModal';
+
+
 
 const PassengerDetails = () => {
   const navigate = useNavigate();
@@ -203,6 +206,21 @@ const PassengerDetails = () => {
       setPassengerIds(updatedIds);
     }
   };
+
+
+  const [isPrivacyPolicyOpen, setIsPrivacyPolicyOpen] = useState(false);
+
+  // Handlers
+  const handleOpenPrivacyPolicy = () => setIsPrivacyPolicyOpen(true);
+  const handleClosePrivacyPolicy = () => setIsPrivacyPolicyOpen(false);
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+  }, []);
+
 
   return (
     <div className="Passenger-Details">
@@ -457,10 +475,22 @@ const PassengerDetails = () => {
         <div className="Confirmation">
         <div className="ConfCheckBox">
         <h4 className="Headers">
-        <input type="checkbox" className="Checkbox"/>
-        <span className="subtext3">I confirm that I have read, understood, and agree to the updated Ferry Demure <a href="/privacy-policy" className="privacy-policy">Privacy Policy</a>, which provides additional information on 
-        how my Personal Information is used. <span className="required">*</span>
-        </span>
+        <input type="checkbox" className="Checkbox" />
+        <span className="subtext3">
+        I confirm that I have read, understood, and agree to the updated Ferry Demure{' '}
+        <button
+          type="button"
+          className="privacy-policy-link"
+          onClick={handleOpenPrivacyPolicy}
+        >
+          Privacy Policy
+        </button>
+        , which provides additional information on how my Personal Information is
+        used. <span className="required">*</span>
+      </span>
+
+      {/* Render Privacy Policy Modal */}
+      <PrivacyPolicyModal isOpen={isPrivacyPolicyOpen} onClose={handleClosePrivacyPolicy} />
         </h4>  
         </div>
         </div>  
